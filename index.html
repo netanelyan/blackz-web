@@ -3,24 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>BlackZ — בניית חנויות Shopify והעלאת קמפיינים</title>
-<meta name="description" content="בונים לך חנות Shopify ומעלים את הקמפיין הראשון ב-Meta ובטיקטוק. מאחורי BlackZ עומדות חנויות ומותגים אמיתיים שאני מנהל בעצמי.">
+<title>BlackZ — בונים מותגים באינטרנט</title>
+<meta name="description" content="BlackZ בונה ומריצה חנויות ומוצרים דיגיטליים משלה — ובונה חנויות Shopify וקמפיינים לעסקים.">
 <meta name="theme-color" content="#0A0A0C">
 <meta name="color-scheme" content="dark">
 
 <!-- ============ Open Graph — [להחליף בכתובת האמיתית ובתמונת שיתוף] ============ -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
-<meta property="og:title" content="BlackZ — בניית חנויות Shopify והעלאת קמפיינים">
-<meta property="og:description" content="חנות Shopify מלאה + קמפיין ראשון ב-Meta ובטיקטוק. מאחורי זה חנויות אמיתיות שאני מנהל בעצמי.">
+<meta property="og:title" content="BlackZ — בונים מותגים באינטרנט">
+<meta property="og:description" content="חנויות ומוצרים דיגיטליים שאנחנו מריצים בעצמנו — ואת אותו הדבר אנחנו בונים לכם.">
 <meta property="og:url" content="https://blackz.example">
 <!-- <meta property="og:image" content="https://blackz.example/og.jpg"> -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230A0A0C'/><text x='50' y='70' font-size='62' font-family='Arial,sans-serif' font-weight='bold' text-anchor='middle' fill='%23B8F135'>Z</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230A0A0C'/><text x='50' y='72' font-size='66' font-family='Arial Black,Arial,sans-serif' font-weight='900' text-anchor='middle' fill='%23B8F135'>Z</text></svg>">
 
 <style>
 /* ==========================================================================
-   BLACKZ — קובץ יחיד. כל המשתנים לעיצוב מרוכזים כאן למטה.
-   לשינוי מיתוג: ערכו רק את הבלוק :root הבא.
+   BLACKZ — קובץ יחיד. כל משתני העיצוב מרוכזים ב-:root שלמטה.
+   לשינוי מיתוג: ערכו רק את הבלוק הזה.
+
+   מבנה העמוד:
+     חלק 01 — המותג    : מה זה BlackZ · המיזמים שלנו · מי עומד מאחורי
+     חלק 02 — השירותים : מה אנחנו עושים · החבילה · תהליך · מגבלות · שאלות · יצירת קשר
    ========================================================================== */
 :root{
 
@@ -32,9 +36,9 @@
   --c-line:        #262630;   /* קווי הפרדה */
   --c-line-hi:     #3A3A48;   /* קו בהובר/פוקוס */
 
-  --c-text:        #F4F4F7;   /* טקסט ראשי */
-  --c-text-dim:    #A6A6B6;   /* טקסט משני */
-  --c-text-faint:  #71718A;   /* טקסט עמום */
+  --c-text:        #F6F6F9;   /* טקסט ראשי */
+  --c-text-dim:    #ADADBD;   /* טקסט משני */
+  --c-text-faint:  #74748C;   /* טקסט עמום */
 
   --c-accent:      #B8F135;   /* צבע המותג — [להחליף אם יש לך צבע מותג] */
   --c-accent-dim:  #94C420;
@@ -46,25 +50,32 @@
 
   --c-ph:          #FFC53D;   /* צבע סימון פלייסהולדרים [כאלה] */
 
-  /* ---------- טיפוגרפיה ---------- */
-  --f-sans: "Segoe UI", "Noto Sans Hebrew", "Rubik", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  --f-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  /* ---------- טיפוגרפיה ----------
+     מחסנית פונטים "מוצקה": מעדיפה פונטים עבריים גיאומטריים ובעלי גוף מלא
+     (Assistant/Rubik/Heebo אם מותקנים במכשיר), ונופלת לפונט המערכת.
+     אין פונט חיצוני — אפס בקשות רשת. */
+  --f-sans: "Assistant","Rubik","Heebo","Arial Hebrew","Segoe UI",system-ui,-apple-system,"Noto Sans Hebrew",Arial,sans-serif;
+  --f-mono: ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
 
-  --fs-xs:   .78rem;
-  --fs-sm:   .88rem;
-  --fs-base: 1rem;
-  --fs-md:   clamp(1.05rem, 1rem + .3vw, 1.18rem);
-  --fs-lg:   clamp(1.25rem, 1.1rem + .8vw, 1.6rem);
-  --fs-xl:   clamp(1.6rem, 1.3rem + 1.7vw, 2.4rem);
-  --fs-2xl:  clamp(2.1rem, 1.5rem + 3.2vw, 3.9rem);
+  --fs-xs:   .8rem;
+  --fs-sm:   .9rem;
+  --fs-base: 1.02rem;
+  --fs-md:   clamp(1.08rem, 1rem + .35vw, 1.22rem);
+  --fs-lg:   clamp(1.3rem, 1.12rem + .9vw, 1.7rem);
+  --fs-xl:   clamp(1.75rem, 1.35rem + 2vw, 2.7rem);
+  --fs-2xl:  clamp(2.3rem, 1.55rem + 3.7vw, 4.3rem);
 
-  --lh-tight: 1.16;
-  --lh-snug:  1.4;
-  --lh-body:  1.72;
+  --lh-tight: 1.08;
+  --lh-snug:  1.35;
+  --lh-body:  1.7;
 
   --fw-normal: 400;
   --fw-med:    600;
   --fw-bold:   800;
+  --fw-black:  900;   /* כותרות — הגוף ה"מוצק" */
+
+  --tracking-tight: -.03em;
+  --tracking-wide:  .16em;
 
   /* ---------- מרווחים ---------- */
   --sp-1: .25rem;
@@ -77,7 +88,7 @@
   --sp-8: 4.5rem;
   --sp-9: 6.5rem;
 
-  --sec-pad-y: clamp(3.5rem, 9vw, 7rem);
+  --sec-pad-y: clamp(3.25rem, 8vw, 6rem);
 
   /* ---------- מבנה ---------- */
   --wrap:        1120px;
@@ -112,30 +123,37 @@ body{
   font-family:var(--f-sans);
   font-size:var(--fs-base);
   line-height:var(--lh-body);
-  font-weight:var(--fw-normal);
   -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
   overflow-x:hidden;
 }
-h1,h2,h3,h4{margin:0;line-height:var(--lh-tight);font-weight:var(--fw-bold);letter-spacing:-.015em;text-wrap:balance}
+h1,h2,h3,h4{
+  margin:0;
+  line-height:var(--lh-tight);
+  font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-tight);
+  text-wrap:balance;
+}
+h3,h4{line-height:var(--lh-snug)}
 p{margin:0}
 ul,ol{margin:0;padding:0;list-style:none}
 a{color:inherit;text-decoration:none}
 img,svg{max-width:100%;display:block}
 button,input,textarea,select{font:inherit;color:inherit}
+strong{font-weight:var(--fw-bold)}
 
 /* בידוד דו-כיווני: לכל מספר/טקסט לועזי שנמצא בקצה שורה עברית.
    מונע היפוך של טווחי מחיר, סימני פיסוק ותווים כמו "+" בסוף שם לועזי. */
-.ltr{direction:ltr;unicode-bidi:isolate;}
+.ltr{direction:ltr;unicode-bidi:isolate}
 .num{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
 
 :focus-visible{outline:2px solid var(--c-accent);outline-offset:3px;border-radius:4px}
-
 ::selection{background:var(--c-accent);color:var(--c-accent-ink)}
 
 .skip{
   position:absolute;inset-inline-start:-9999px;top:0;z-index:200;
   background:var(--c-accent);color:var(--c-accent-ink);
-  padding:var(--sp-3) var(--sp-4);font-weight:var(--fw-bold);
+  padding:var(--sp-3) var(--sp-4);font-weight:var(--fw-black);
 }
 .skip:focus{inset-inline-start:var(--sp-4);top:var(--sp-2)}
 
@@ -147,8 +165,8 @@ button,input,textarea,select{font:inherit;color:inherit}
 
 .kicker{
   display:inline-flex;align-items:center;gap:var(--sp-2);
-  font-size:var(--fs-xs);font-weight:var(--fw-bold);
-  letter-spacing:.14em;text-transform:uppercase;
+  font-size:var(--fs-xs);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
   color:var(--c-accent);margin-bottom:var(--sp-4);
 }
 .kicker::before{content:"";width:22px;height:2px;background:var(--c-accent);border-radius:2px}
@@ -156,24 +174,45 @@ button,input,textarea,select{font:inherit;color:inherit}
 .sec-title{font-size:var(--fs-xl);margin-bottom:var(--sp-4)}
 .sec-lead{color:var(--c-text-dim);font-size:var(--fs-md);max-width:56ch;margin-bottom:var(--sp-6)}
 
-/* סימון פלייסהולדר — כל דבר שצריך למלא מסומן כך ובולט לעין */
+/* סימון פלייסהולדר — כל דבר שצריך למלא */
 .ph{
-  display:inline;
-  color:var(--c-ph);
+  display:inline;color:var(--c-ph);
   background:rgba(255,197,61,.09);
   border:1px dashed rgba(255,197,61,.5);
-  border-radius:5px;
-  padding:.05em .38em;
-  font-size:.94em;
-  font-weight:var(--fw-med);
+  border-radius:5px;padding:.05em .38em;
+  font-size:.94em;font-weight:var(--fw-med);
   unicode-bidi:isolate;
 }
+
+/* ==========================  מחיצת חלקים (01 / 02)  ========================== */
+.part{
+  border-block:1px solid var(--c-line);
+  background:
+    linear-gradient(180deg,rgba(184,241,53,.055),transparent 65%),
+    var(--c-bg);
+  padding-block:clamp(2.75rem,7vw,4.5rem);
+  position:relative;overflow:hidden;
+}
+.part::before{
+  content:"";position:absolute;top:0;inset-inline:0;height:2px;
+  background:linear-gradient(to left,var(--c-accent),transparent 55%);
+}
+.part__in{display:flex;align-items:flex-start;gap:clamp(1rem,4vw,2.5rem)}
+.part__num{
+  font-family:var(--f-mono);font-size:clamp(2.4rem,8vw,4.6rem);
+  font-weight:var(--fw-black);line-height:.85;
+  color:transparent;-webkit-text-stroke:1.5px var(--c-line-hi);
+  flex:none;direction:ltr;
+}
+.part__title{font-size:var(--fs-xl);margin-bottom:var(--sp-3)}
+.part__sub{color:var(--c-text-dim);font-size:var(--fs-md);max-width:52ch}
 
 /* ==========================  כפתורים  ========================== */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
-  padding:.92rem 1.6rem;border-radius:var(--radius-pill);
-  font-weight:var(--fw-bold);font-size:var(--fs-base);
+  padding:.95rem 1.65rem;border-radius:var(--radius-pill);
+  font-weight:var(--fw-black);font-size:var(--fs-base);
+  letter-spacing:-.01em;
   border:1px solid transparent;cursor:pointer;
   transition:transform var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
   text-align:center;line-height:1.25;
@@ -198,8 +237,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 
 /* ==========================  הדר  ========================== */
 .hdr{
-  position:sticky;top:0;z-index:100;
-  height:var(--header-h);
+  position:sticky;top:0;z-index:100;height:var(--header-h);
   display:flex;align-items:center;
   background:rgba(10,10,12,.72);
   backdrop-filter:saturate(160%) blur(14px);
@@ -207,21 +245,21 @@ button,input,textarea,select{font:inherit;color:inherit}
   border-bottom:1px solid transparent;
   transition:border-color var(--dur) var(--ease), background var(--dur) var(--ease);
 }
-.hdr.is-stuck{border-bottom-color:var(--c-line);background:rgba(10,10,12,.92)}
+.hdr.is-stuck{border-bottom-color:var(--c-line);background:rgba(10,10,12,.93)}
 .hdr__in{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);width:100%}
-.hdr__nav{display:none;gap:var(--sp-5);font-size:var(--fs-sm);color:var(--c-text-dim)}
+.hdr__nav{display:none;gap:var(--sp-5);font-size:var(--fs-sm);font-weight:var(--fw-med);color:var(--c-text-dim)}
 .hdr__nav a{transition:color var(--dur) var(--ease)}
 .hdr__nav a:hover{color:var(--c-text)}
-@media (min-width:860px){ .hdr__nav{display:flex} }
+@media (min-width:900px){ .hdr__nav{display:flex} }
 
 /* לוגו — [להחליף בקובץ לוגו אם יש. כרגע: וורדמארק טקסטואלי] */
 .logo{display:inline-flex;align-items:center;gap:.5rem;direction:ltr}
 .logo__mark{
-  width:26px;height:26px;border-radius:7px;flex:none;
+  width:27px;height:27px;border-radius:7px;flex:none;
   background:var(--c-accent);color:var(--c-accent-ink);
-  display:grid;place-items:center;font-weight:var(--fw-bold);font-size:.95rem;
+  display:grid;place-items:center;font-weight:var(--fw-black);font-size:1rem;
 }
-.logo__txt{font-weight:var(--fw-bold);letter-spacing:.14em;font-size:.95rem}
+.logo__txt{font-weight:var(--fw-black);letter-spacing:.15em;font-size:.97rem}
 
 /* ==========================  Hero  ========================== */
 .hero{position:relative;padding-block:clamp(3rem,10vw,6.5rem) clamp(3rem,8vw,5.5rem);overflow:hidden}
@@ -231,16 +269,16 @@ button,input,textarea,select{font:inherit;color:inherit}
   pointer-events:none;
 }
 .hero__in{position:relative;z-index:1}
-.hero h1{font-size:var(--fs-2xl);margin-bottom:var(--sp-5);max-width:17ch}
+.hero h1{font-size:var(--fs-2xl);margin-bottom:var(--sp-5);max-width:16ch}
 .hero h1 .hl{color:var(--c-accent)}
-.hero__sub{font-size:var(--fs-md);color:var(--c-text-dim);max-width:52ch;margin-bottom:var(--sp-6)}
+.hero__sub{font-size:var(--fs-md);color:var(--c-text-dim);max-width:54ch;margin-bottom:var(--sp-6)}
 
 .chips{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-bottom:var(--sp-6)}
 .chip{
   display:inline-flex;align-items:center;gap:.45rem;
-  padding:.42rem .85rem;border-radius:var(--radius-pill);
+  padding:.45rem .9rem;border-radius:var(--radius-pill);
   background:var(--c-surface);border:var(--border);
-  font-size:var(--fs-sm);color:var(--c-text-dim);
+  font-size:var(--fs-sm);font-weight:var(--fw-med);color:var(--c-text-dim);
 }
 .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--c-accent);flex:none}
 
@@ -250,43 +288,22 @@ button,input,textarea,select{font:inherit;color:inherit}
   border-inline-start:2px solid var(--c-line-hi);
 }
 
-/* ==========================  ההצעה  ========================== */
-.offer-grid{display:grid;gap:var(--sp-3);margin-bottom:var(--sp-6)}
-@media (min-width:700px){ .offer-grid{grid-template-columns:1fr 1fr} }
-.deliver{
-  display:flex;gap:var(--sp-3);align-items:flex-start;
-  padding:var(--sp-4);background:var(--c-surface);
-  border:var(--border);border-radius:var(--radius);
+/* ==========================  עמודי התווך של המותג  ========================== */
+.pillars{display:grid;gap:var(--sp-4)}
+@media (min-width:760px){ .pillars{grid-template-columns:repeat(3,1fr)} }
+.pillar{
+  padding:var(--sp-5);border-radius:var(--radius-lg);
+  background:var(--c-surface);border:var(--border);
   transition:border-color var(--dur) var(--ease), background var(--dur) var(--ease);
 }
-.deliver:hover{border-color:var(--c-line-hi);background:var(--c-surface-hi)}
-.deliver__tick{
-  flex:none;width:22px;height:22px;border-radius:50%;
-  background:var(--c-accent-glow);color:var(--c-accent);
-  display:grid;place-items:center;font-size:.72rem;font-weight:var(--fw-bold);
-  margin-top:.2rem;
-}
-.deliver p{font-size:var(--fs-sm);line-height:1.6}
+.pillar:hover{border-color:var(--c-line-hi);background:var(--c-surface-hi)}
+.pillar h3{font-size:var(--fs-lg);margin-bottom:var(--sp-3);color:var(--c-accent)}
+.pillar p{color:var(--c-text-dim);font-size:var(--fs-sm)}
 
-.info-grid{display:grid;gap:var(--sp-4);margin-bottom:var(--sp-6)}
-@media (min-width:700px){ .info-grid{grid-template-columns:1fr 1fr} }
-.info{
-  padding:var(--sp-5);border-radius:var(--radius-lg);
-  background:linear-gradient(180deg,var(--c-surface),var(--c-bg-alt));
-  border:var(--border);
-}
-.info h3{font-size:var(--fs-lg);margin-bottom:var(--sp-3);color:var(--c-accent)}
-.info p{color:var(--c-text-dim);font-size:var(--fs-sm)}
-.info p + p{margin-top:var(--sp-3)}
-.info__fine{
-  margin-top:var(--sp-4);padding-top:var(--sp-3);
-  border-top:1px dashed var(--c-line-hi);
-  font-size:var(--fs-xs);color:var(--c-text-faint);
-}
-
-/* ==========================  הוכחה  ========================== */
+/* ==========================  מיזמים  ========================== */
 .proof-grid{display:grid;gap:var(--sp-4)}
 @media (min-width:640px){ .proof-grid{grid-template-columns:1fr 1fr} }
+@media (min-width:1000px){ .proof-grid{grid-template-columns:repeat(3,1fr)} }
 .venture{
   display:flex;flex-direction:column;
   padding:var(--sp-5);border-radius:var(--radius-lg);
@@ -304,14 +321,14 @@ button,input,textarea,select{font:inherit;color:inherit}
 .venture__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3)}
 .venture__name{font-size:var(--fs-lg)}
 .venture__tag{
-  font-size:var(--fs-xs);color:var(--c-text-faint);
+  font-size:var(--fs-xs);font-weight:var(--fw-med);color:var(--c-text-faint);
   border:var(--border);border-radius:var(--radius-pill);
   padding:.2rem .6rem;white-space:nowrap;
 }
 .venture__desc{color:var(--c-text-dim);font-size:var(--fs-sm);margin-bottom:var(--sp-4);flex:1}
 .venture__link{
   display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;
-  font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--c-accent);
+  font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--c-accent);
   border-bottom:1px solid transparent;transition:border-color var(--dur) var(--ease);
 }
 .venture__link:hover{border-bottom-color:var(--c-accent)}
@@ -325,49 +342,112 @@ button,input,textarea,select{font:inherit;color:inherit}
   font-size:var(--fs-md);font-weight:var(--fw-med);
 }
 
+/* ==========================  שירותים  ========================== */
+.svc-grid{display:grid;gap:var(--sp-4);margin-bottom:var(--sp-6)}
+@media (min-width:820px){ .svc-grid{grid-template-columns:repeat(3,1fr)} }
+.svc{
+  padding:var(--sp-5);border-radius:var(--radius-lg);
+  background:var(--c-surface);border:var(--border);
+  display:flex;flex-direction:column;gap:var(--sp-3);
+  transition:border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.svc:hover{border-color:var(--c-line-hi);background:var(--c-surface-hi)}
+.svc__no{
+  font-family:var(--f-mono);font-size:var(--fs-xs);font-weight:var(--fw-black);
+  color:var(--c-accent);letter-spacing:.1em;direction:ltr;
+}
+.svc h3{font-size:var(--fs-lg)}
+.svc p{color:var(--c-text-dim);font-size:var(--fs-sm)}
+
+/* חבילה */
+.pack{
+  border-radius:var(--radius-lg);border:1px solid rgba(184,241,53,.28);
+  background:linear-gradient(180deg,rgba(184,241,53,.07),var(--c-surface) 55%);
+  padding:clamp(1.4rem,4vw,2.4rem);
+}
+.pack__head{margin-bottom:var(--sp-5)}
+.pack__badge{
+  display:inline-block;font-size:var(--fs-xs);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
+  background:var(--c-accent);color:var(--c-accent-ink);
+  padding:.25rem .7rem;border-radius:var(--radius-pill);margin-bottom:var(--sp-3);
+}
+.pack__head h3{font-size:var(--fs-lg);margin-bottom:var(--sp-2)}
+.pack__head p{color:var(--c-text-dim);font-size:var(--fs-sm)}
+
+.offer-grid{display:grid;gap:var(--sp-3);margin-bottom:var(--sp-6)}
+@media (min-width:700px){ .offer-grid{grid-template-columns:1fr 1fr} }
+.deliver{
+  display:flex;gap:var(--sp-3);align-items:flex-start;
+  padding:var(--sp-4);background:var(--c-bg);
+  border:var(--border);border-radius:var(--radius);
+  transition:border-color var(--dur) var(--ease);
+}
+.deliver:hover{border-color:var(--c-line-hi)}
+.deliver__tick{
+  flex:none;width:22px;height:22px;border-radius:50%;
+  background:var(--c-accent-glow);color:var(--c-accent);
+  display:grid;place-items:center;font-size:.72rem;font-weight:var(--fw-black);
+  margin-top:.2rem;
+}
+.deliver p{font-size:var(--fs-sm);line-height:1.6}
+
+.info-grid{display:grid;gap:var(--sp-4);margin-bottom:var(--sp-6)}
+@media (min-width:700px){ .info-grid{grid-template-columns:1fr 1fr} }
+.info{
+  padding:var(--sp-5);border-radius:var(--radius-lg);
+  background:var(--c-bg);border:var(--border);
+}
+.info h3{font-size:var(--fs-lg);margin-bottom:var(--sp-3);color:var(--c-accent)}
+.info p{color:var(--c-text-dim);font-size:var(--fs-sm)}
+.info p + p{margin-top:var(--sp-3)}
+.info__fine{
+  margin-top:var(--sp-4);padding-top:var(--sp-3);
+  border-top:1px dashed var(--c-line-hi);
+  font-size:var(--fs-xs);color:var(--c-text-faint);
+}
+
 /* ==========================  איך זה עובד  ========================== */
 .steps{counter-reset:step;display:grid;gap:var(--sp-5)}
-@media (min-width:820px){ .steps{grid-template-columns:repeat(4,1fr);gap:var(--sp-4)} }
-.step{position:relative;padding-top:var(--sp-5)}
+@media (min-width:820px){ .steps{grid-template-columns:repeat(4,1fr);gap:var(--sp-4);position:relative} }
+.step{position:relative;padding-top:44px}
 .step::before{
   counter-increment:step;content:counter(step);
   position:absolute;top:0;inset-inline-start:0;
-  font-family:var(--f-mono);font-size:var(--fs-sm);font-weight:var(--fw-bold);
+  font-family:var(--f-mono);font-size:var(--fs-sm);font-weight:var(--fw-black);
   color:var(--c-accent);
   width:30px;height:30px;border-radius:50%;
-  border:1px solid var(--c-line-hi);background:var(--c-bg);
+  border:1px solid var(--c-line-hi);background:var(--c-bg-alt);
   display:grid;place-items:center;
 }
-.step{padding-top:44px}
 .step h3{font-size:var(--fs-md);margin-bottom:var(--sp-2)}
 .step p{color:var(--c-text-dim);font-size:var(--fs-sm)}
 @media (min-width:820px){
-  .steps{position:relative}
   .steps::before{
     content:"";position:absolute;top:15px;inset-inline:8%;height:1px;
     background:linear-gradient(to left,transparent,var(--c-line-hi),transparent);
   }
 }
 
-/* ==========================  מה לא כלול  ========================== */
+/* ==========================  מגבלות  ========================== */
 .limits{display:grid;gap:var(--sp-3)}
 .limit{
   display:flex;gap:var(--sp-3);align-items:flex-start;
   padding:var(--sp-4);border-radius:var(--radius);
-  background:var(--c-bg);border:var(--border);
+  background:var(--c-surface);border:var(--border);
 }
 .limit__x{
   flex:none;width:22px;height:22px;border-radius:50%;
   background:rgba(255,255,255,.05);color:var(--c-text-faint);
-  display:grid;place-items:center;font-size:.72rem;font-weight:var(--fw-bold);margin-top:.2rem;
+  display:grid;place-items:center;font-size:.72rem;font-weight:var(--fw-black);margin-top:.2rem;
 }
 .limit p{font-size:var(--fs-sm);color:var(--c-text-dim)}
-.limit strong{color:var(--c-text);font-weight:var(--fw-bold)}
+.limit strong{color:var(--c-text)}
 
 /* ==========================  שאלות נפוצות  ========================== */
 .faq{display:grid;gap:var(--sp-2)}
 .faq details{
-  background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius);
   transition:border-color var(--dur) var(--ease);
 }
 .faq details[open]{border-color:var(--c-line-hi)}
@@ -380,7 +460,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary::after{
   content:"+";flex:none;color:var(--c-accent);
-  font-size:1.3rem;font-weight:var(--fw-normal);line-height:1;
+  font-size:1.35rem;font-weight:var(--fw-normal);line-height:1;
   transition:transform var(--dur) var(--ease);
 }
 .faq details[open] summary::after{transform:rotate(45deg)}
@@ -388,16 +468,13 @@ button,input,textarea,select{font:inherit;color:inherit}
 
 /* ==========================  אודות  ========================== */
 .about{display:grid;gap:var(--sp-6)}
-@media (min-width:820px){ .about{grid-template-columns:.85fr 1.15fr;align-items:start;gap:var(--sp-7)} }
+@media (min-width:820px){ .about{grid-template-columns:.8fr 1.2fr;align-items:start;gap:var(--sp-7)} }
 .about__media{
   aspect-ratio:1/1;border-radius:var(--radius-lg);
-  background:
-    linear-gradient(135deg,rgba(184,241,53,.10),transparent 60%),
-    var(--c-surface);
+  background:linear-gradient(135deg,rgba(184,241,53,.10),transparent 60%),var(--c-surface);
   border:1px dashed var(--c-line-hi);
   display:grid;place-items:center;text-align:center;padding:var(--sp-5);
-  color:var(--c-text-faint);font-size:var(--fs-sm);
-  max-width:340px;
+  color:var(--c-text-faint);font-size:var(--fs-sm);max-width:340px;
 }
 .about__body p{color:var(--c-text-dim);font-size:var(--fs-md)}
 .about__body p + p{margin-top:var(--sp-4)}
@@ -416,7 +493,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 
 .form{display:grid;gap:var(--sp-4)}
 .field{display:grid;gap:var(--sp-2)}
-.field label{font-size:var(--fs-sm);font-weight:var(--fw-med)}
+.field label{font-size:var(--fs-sm);font-weight:var(--fw-bold)}
 .field label .opt{color:var(--c-text-faint);font-weight:var(--fw-normal)}
 .field input,.field textarea{
   width:100%;padding:.85rem 1rem;
@@ -427,9 +504,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--c-accent);background:var(--c-bg-alt)}
 .field textarea{resize:vertical;min-height:110px;line-height:1.6}
 /* שדות לועזיים: כיוון כתיבה משמאל לימין, אבל יישור לימין כמו שאר הטופס */
-.field input[type="tel"],.field input[type="url"],.field input[type="email"]{
-  direction:ltr;text-align:right;
-}
+.field input[type="tel"],.field input[type="url"],.field input[type="email"]{direction:ltr;text-align:right}
 .form__note{font-size:var(--fs-xs);color:var(--c-text-faint)}
 .form__status{font-size:var(--fs-sm);color:var(--c-accent);min-height:1.2em}
 
@@ -452,8 +527,7 @@ button,input,textarea,select{font:inherit;color:inherit}
   transition:transform .35s var(--ease);
 }
 .wa-bar.is-on{transform:translateY(0)}
-@media (min-width:860px){ .wa-bar{display:none} }
-body{padding-bottom:0}
+@media (min-width:900px){ .wa-bar{display:none} }
 
 /* ==========================  אנימציית כניסה  ========================== */
 .rv{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease), transform .6s var(--ease)}
@@ -479,11 +553,11 @@ body{padding-bottom:0}
     </a>
 
     <nav class="hdr__nav" aria-label="ניווט ראשי">
-      <a href="#offer">ההצעה</a>
-      <a href="#proof">החנויות שלי</a>
-      <a href="#how">איך זה עובד</a>
-      <a href="#faq">שאלות</a>
-      <a href="#about">עליי</a>
+      <a href="#brand">המותג</a>
+      <a href="#ventures">המיזמים</a>
+      <a href="#services">שירותים</a>
+      <a href="#how">תהליך</a>
+      <a href="#contact">יצירת קשר</a>
     </nav>
 
     <a class="btn btn--wa btn--sm" data-wa data-wa-msg="היי, הגעתי מהאתר של BlackZ ואשמח לשמוע פרטים.">
@@ -499,13 +573,14 @@ body{padding-bottom:0}
 <!-- ==================== HERO ==================== -->
 <section class="hero">
   <div class="wrap hero__in">
-    <p class="kicker">בניית חנויות אונליין ופרסום</p>
+    <p class="kicker">חנויות אונליין · מותגים · תוכנה</p>
 
-    <h1>בונים לך חנות <bdi>Shopify</bdi> — <span class="hl">ומעלים את הקמפיין הראשון.</span></h1>
+    <h1>בונים מותגים באינטרנט. <span class="hl">שלנו — ושלכם.</span></h1>
 
     <p class="hero__sub">
-      אני מנהל חנויות ומותגים משלי באינטרנט, כל יום. את אותו הדבר אני בונה לעסק שלך:
-      חנות שעובדת, ופרסום שמביא אליה אנשים.
+      <bdi>BlackZ</bdi> הוא הבית של החנויות והמוצרים הדיגיטליים שאנחנו מקימים ומריצים בעצמנו.
+      את אותו הידע בדיוק אנחנו מביאים לעסקים שרוצים חנות <bdi>Shopify</bdi> שעובדת —
+      ופרסום שמביא אליה אנשים.
     </p>
 
     <ul class="chips">
@@ -517,9 +592,9 @@ body{padding-bottom:0}
     <div class="cta-row">
       <a class="btn btn--wa" data-wa data-wa-msg="היי, אני מעוניין בבניית חנות Shopify. אפשר פרטים?">
         <svg class="wa-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2"/></svg>
-        דברו איתי בוואטסאפ
+        דברו איתנו בוואטסאפ
       </a>
-      <a class="btn btn--ghost" href="#proof">קודם תראו מה אני מנהל ↓</a>
+      <a class="btn btn--ghost" href="#ventures">קודם תראו מה אנחנו מריצים ↓</a>
     </div>
 
     <p class="hero__note">
@@ -531,84 +606,66 @@ body{padding-bottom:0}
   </div>
 </section>
 
-<!-- ==================== ההצעה ==================== -->
-<section class="section section--alt" id="offer">
+
+<!-- ========================================================================
+     חלק 01 — המותג
+     ======================================================================== -->
+<div class="part" id="brand">
+  <div class="wrap part__in">
+    <span class="part__num" aria-hidden="true">01</span>
+    <div>
+      <h2 class="part__title">המותג</h2>
+      <p class="part__sub">
+        מי אנחנו, מה אנחנו מריצים בעצמנו, ומי עומד מאחורי זה.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- מה זה BlackZ ---------- -->
+<section class="section">
   <div class="wrap">
-    <p class="kicker rv">ההצעה</p>
-    <h2 class="sec-title rv">מה בדיוק אתם מקבלים</h2>
+    <p class="kicker rv">מה זה <bdi>BlackZ</bdi></p>
+    <h2 class="sec-title rv">לא סוכנות. בית של חנויות.</h2>
     <p class="sec-lead rv">
-      חבילה אחת, מקצה לקצה. אתם מביאים מוצר — אני מביא את כל השאר.
+      <bdi>BlackZ</bdi> הוא השם שמאגד את מה שאנחנו בונים ומריצים:
+      חנויות אונליין, מותגי אופנה ומוצרי תוכנה. אנחנו לא מוכרים ייעוץ על מסחר אלקטרוני —
+      אנחנו עוסקים בו בעצמנו, כל יום, עם הכסף שלנו.
     </p>
 
-    <ul class="offer-grid">
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p>חנות <bdi>Shopify</bdi> מלאה, מוקמת מאפס ורשומה על שמכם</p></li>
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p>עיצוב מותאם למותג שלכם — לא תבנית מהמדף</p></li>
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p>העלאת מוצרים, קטגוריות ותיאורים <span class="ph">[עד X מוצרים]</span></p></li>
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p>חיבור סליקה, חשבוניות ומשלוחים</p></li>
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p>דף מוצר שנבנה כדי למכור, לא רק כדי להיראות טוב</p></li>
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p>הקמת פיקסלים ומדידה — <bdi>Meta</bdi>, טיקטוק ו־<bdi>GA4</bdi></p></li>
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p><span class="ph">[X]</span> קריאייטיבים לפרסום <span class="ph">[וידאו / תמונה?]</span></p></li>
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p>העלאת הקמפיין הראשון ב־<bdi>Meta</bdi> ובטיקטוק</p></li>
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p><span class="ph">[X]</span> שבועות ליווי אחרי העלייה לאוויר</p></li>
-      <li class="deliver rv"><span class="deliver__tick" aria-hidden="true">✓</span>
-        <p><span class="ph">[סעיף נוסף שתרצה להוסיף — או מחק את השורה הזו]</span></p></li>
-    </ul>
-
-    <div class="info-grid">
-      <div class="info rv">
-        <h3>כמה זה עולה</h3>
+    <div class="pillars">
+      <div class="pillar rv">
+        <h3>בונים</h3>
         <p>
-          אין מחירון קבוע, ולא במקרה: חנות עם <span class="num">15</span> מוצרים וחנות עם
-          <span class="num">400</span> הן שתי עבודות שונות לגמרי.
-        </p>
-        <p>
-          אחרי שיחה קצרה תקבלו הצעת מחיר כתובה וסגורה — מה נכנס, כמה זה עולה, ומתי זה מסתיים.
-          בלי הפתעות באמצע.
-        </p>
-        <p class="info__fine">
-          התקציב הפרסומי משולם ישירות ל־<bdi>Meta</bdi> ולטיקטוק ואינו כלול במחיר העבודה.
+          כל חנות שאנחנו מקימים היא חנות שהיינו מוכנים להריץ בעצמנו.
+          אם משהו לא היה עובר אצלנו — הוא לא ייצא גם אצלכם.
         </p>
       </div>
-
-      <div class="info rv">
-        <h3>כמה זמן זה לוקח</h3>
+      <div class="pillar rv">
+        <h3>מריצים</h3>
         <p>
-          <span class="ph">[X]</span> שבועות מהרגע שקיבלתי מכם את החומרים.
-        </p>
-        <p>
-          עובדים מול איש קשר אחד, בלי ועדות ובלי שרשורי מיילים.
-          אתם רואים את החנות באמצע הדרך — לא רק ביום שהיא עולה.
-        </p>
-        <p class="info__fine">
-          לוחות זמנים תלויים בקצב שבו מגיעים החומרים מהצד שלכם.
+          מלאי, ספקים, משלוחים, שירות לקוחות ופרסום.
+          אנחנו בצד השני של הדלפק, לא רק מול המסך.
         </p>
       </div>
-    </div>
-
-    <div class="cta-row rv">
-      <a class="btn btn--primary" data-wa data-wa-msg="היי, ראיתי את ההצעה באתר. אשמח לקבוע שיחה קצרה.">
-        קבעו שיחה קצרה
-      </a>
+      <div class="pillar rv">
+        <h3>מודדים</h3>
+        <p>
+          כל החלטה נבחנת מול מספרים אמיתיים: מה נמכר, מה החזיר את התקציב, ומה פשוט לא עבד.
+          גם כשהתשובה לא נעימה.
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ==================== הוכחה ==================== -->
-<section class="section" id="proof">
+<!-- ---------- המיזמים ---------- -->
+<section class="section section--alt" id="ventures">
   <div class="wrap">
-    <p class="kicker rv">הוכחה</p>
-    <h2 class="sec-title rv">אלה החנויות שאני מנהל. תיכנסו ותבדקו.</h2>
+    <p class="kicker rv">המיזמים שלנו</p>
+    <h2 class="sec-title rv">אלה החנויות והמוצרים שאנחנו מריצים.</h2>
     <p class="sec-lead rv">
-      אני לא מציג לכם צילומי מסך של עבודות ישנות. אלה העסקים שלי — חיים באוויר, ברגע זה.
+      לא צילומי מסך של עבודות ישנות ולא תיק עבודות. אלה העסקים שלנו — חיים באוויר, ברגע זה.
     </p>
 
     <div class="proof-grid">
@@ -619,7 +676,8 @@ body{padding-bottom:0}
           <span class="venture__tag">חנות אונליין</span>
         </div>
         <p class="venture__desc">
-          חנות חולצות כדורגל. מלאי, ספקים, שירות לקוחות ופרסום — הכול עובר דרכי.
+          חולצות כדורגל — נבחרות, קבוצות, רטרו וגרסאות שחקן.
+          מלאי, ספקים, שירות לקוחות ופרסום, הכול אצלנו.
         </p>
         <a class="venture__link" href="https://hashofet.com" target="_blank" rel="noopener">
           <span class="arrow" aria-hidden="true">←</span><bdi>hashofet.com</bdi>
@@ -628,28 +686,15 @@ body{padding-bottom:0}
 
       <article class="venture rv">
         <div class="venture__head">
-          <h3 class="venture__name"><bdi>Label Daddy</bdi></h3>
-          <span class="venture__tag">מותג סטריטוור</span>
+          <h3 class="venture__name"><bdi>Clutch Store</bdi></h3>
+          <span class="venture__tag">חנות אונליין</span>
         </div>
         <p class="venture__desc">
-          מותג סטריטוור שאני מעצב עבורו.
-          <span class="ph">[לאמת: האם clutchstore.net הוא אכן Label Daddy? אם לא — תקן את השם או את הקישור]</span>
+          סטריטוור ומותגי יוקרה — חולצות, הודיז, מכנסיים, כובעים ואקססוריז.
+          חנות <bdi>Shopify</bdi> בעברית, מקצה לקצה.
         </p>
         <a class="venture__link" href="https://clutchstore.net" target="_blank" rel="noopener">
           <span class="arrow" aria-hidden="true">←</span><bdi>clutchstore.net</bdi>
-        </a>
-      </article>
-
-      <article class="venture rv">
-        <div class="venture__head">
-          <h3 class="venture__name">בריק דיל</h3>
-          <span class="venture__tag">פלטפורמת דילים</span>
-        </div>
-        <p class="venture__desc">
-          פלטפורמה שמרכזת דילים על אבני בנייה ומשווה מחירים בין חנויות.
-        </p>
-        <a class="venture__link" href="https://brickdeal.com" target="_blank" rel="noopener">
-          <span class="arrow" aria-hidden="true">←</span><bdi>brickdeal.com</bdi>
         </a>
       </article>
 
@@ -659,29 +704,209 @@ body{padding-bottom:0}
           <span class="venture__tag">מוצר תוכנה</span>
         </div>
         <p class="venture__desc">
-          אפליקציה לתכנון טיולים מבוססת בינה מלאכותית.
+          סוכן טיולים מבוסס בינה מלאכותית: אתם מספרים מה אתם מדמיינים,
+          והוא בונה מסלול יום־אחרי־יום על מפה.
         </p>
         <a class="venture__link" href="https://tiyulplus.com" target="_blank" rel="noopener">
           <span class="arrow" aria-hidden="true">←</span><bdi>tiyulplus.com</bdi>
         </a>
       </article>
 
+      <article class="venture rv">
+        <div class="venture__head">
+          <h3 class="venture__name"><bdi>Label Daddy</bdi></h3>
+          <span class="venture__tag">מותג סטריטוור</span>
+        </div>
+        <p class="venture__desc">
+          מותג סטריטוור שאנחנו מעצבים עבורו.
+        </p>
+        <!-- [חסר קישור ל-Label Daddy — עדכן את ה-href ואת הטקסט למטה] -->
+        <span class="venture__link" style="color:var(--c-ph)">
+          <span class="ph">[קישור ל-Label Daddy]</span>
+        </span>
+      </article>
+
+      <article class="venture rv">
+        <div class="venture__head">
+          <h3 class="venture__name">בריק דיל</h3>
+          <span class="venture__tag">פלטפורמת דילים</span>
+        </div>
+        <p class="venture__desc">
+          פלטפורמה לדילים על אבני בנייה.
+          <span class="ph">[שים לב: brickdeal.com הוא אתר הולנדי להשוואת מחירי לגו ואינו שלך. הכנס כאן את הכתובת הנכונה]</span>
+        </p>
+        <span class="venture__link" style="color:var(--c-ph)">
+          <span class="ph">[קישור לבריק דיל]</span>
+        </span>
+      </article>
+
+      <!-- [להוספת מיזם נוסף — שכפלו כרטיס אחד מלמעלה] -->
+
     </div>
 
     <p class="proof-note rv">
-      כל קישור בעמוד הזה חי. תיכנסו, תסתובבו, תזמינו משהו — ואז תחליטו אם אתם רוצים שאבנה לכם אחת כזו.
+      כל קישור פעיל בעמוד הזה מוביל לחנות אמיתית. תיכנסו, תסתובבו, תזמינו משהו —
+      ואז תחליטו אם אתם רוצים שנבנה לכם אחת כזו.
     </p>
+  </div>
+</section>
 
-    <div class="cta-row rv" style="margin-top:var(--sp-6)">
-      <a class="btn btn--wa" data-wa data-wa-msg="היי, ראיתי את החנויות שלך באתר. אשמח לדבר על חנות בשבילי.">
-        <svg class="wa-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2"/></svg>
-        אני רוצה חנות כזו
-      </a>
+<!-- ---------- מי עומד מאחורי ---------- -->
+<section class="section" id="about">
+  <div class="wrap">
+    <p class="kicker rv">מי עומד מאחורי</p>
+    <h2 class="sec-title rv">האנשים שמאחורי <bdi>BlackZ</bdi></h2>
+
+    <div class="about" style="margin-top:var(--sp-6)">
+      <div class="about__media rv">
+        <!-- [להחליף בתמונה אמיתית — היא מוכרת יותר מכל טקסט] -->
+        <span class="ph">[תמונה שלך — ריבועית, לפחות 600×600]</span>
+      </div>
+
+      <div class="about__body">
+        <p class="rv">
+          <bdi>BlackZ</bdi> הוקם על ידי <span class="ph">[שם מלא]</span>
+          <span class="ph">[אם יש עוד שותפים או אנשי צוות — הוסיפו אותם כאן]</span>.
+        </p>
+        <p class="rv">
+          התחלנו כי רצינו חנות משלנו, לא כי רצינו להיות ספקים.
+          זה אומר שכל טעות שעולה כסף כבר עשינו על הכסף שלנו:
+          <strong>מוצר שלא נמכר, קמפיין ששרף תקציב, דף מוצר שאנשים נטשו באמצע.</strong>
+          את הדרך הקצרה למדנו בדרך הארוכה.
+        </p>
+        <p class="rv">
+          אנחנו עובדים עם מעט לקוחות במקביל, כי במקביל אנחנו עדיין מריצים את החנויות שלנו.
+          אם לקחנו פרויקט — אנחנו בפנים.
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ==================== איך זה עובד ==================== -->
+
+<!-- ========================================================================
+     חלק 02 — השירותים
+     ======================================================================== -->
+<div class="part" id="services">
+  <div class="wrap part__in">
+    <span class="part__num" aria-hidden="true">02</span>
+    <div>
+      <h2 class="part__title">השירותים</h2>
+      <p class="part__sub">
+        מה אנחנו עושים לעסקים אחרים, כמה זמן זה לוקח, ואיך זה עובד בפועל.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- מה אנחנו עושים ---------- -->
+<section class="section">
+  <div class="wrap">
+    <p class="kicker rv">מה אנחנו עושים</p>
+    <h2 class="sec-title rv">שלושה דברים, ובהם אנחנו טובים.</h2>
+    <p class="sec-lead rv">
+      אפשר לקחת שירות אחד בנפרד, אבל רוב הלקוחות לוקחים את החבילה המלאה —
+      כי חנות בלי פרסום לא מוכרת, ופרסום לחנות שלא ממירה שורף כסף.
+    </p>
+
+    <div class="svc-grid">
+      <div class="svc rv">
+        <span class="svc__no">01</span>
+        <h3>בניית חנות <bdi>Shopify</bdi></h3>
+        <p>
+          הקמה מלאה מאפס: עיצוב מותאם למותג, העלאת מוצרים, חיבור סליקה, חשבוניות ומשלוחים,
+          ודף מוצר שנבנה כדי למכור ולא רק כדי להיראות טוב.
+        </p>
+      </div>
+
+      <div class="svc rv">
+        <span class="svc__no">02</span>
+        <h3>פרסום ממומן</h3>
+        <p>
+          הקמת פיקסלים ומדידה, בניית קריאייטיבים, והעלאת הקמפיין הראשון
+          ב־<bdi>Meta</bdi> ובטיקטוק — עם מבנה חשבון שאפשר להמשיך לעבוד איתו.
+        </p>
+      </div>
+
+      <div class="svc rv">
+        <span class="svc__no">03</span>
+        <h3><span class="ph">[שירות שלישי]</span></h3>
+        <p>
+          <span class="ph">[מה עוד אתם מוכרים? עיצוב מותג · צילומי מוצר · ניהול קמפיינים שוטף · תוכן. אם אין שירות שלישי — מחקו את הכרטיס הזה]</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- ---------- החבילה המלאה ---------- -->
+    <div class="pack rv" id="package">
+      <div class="pack__head">
+        <span class="pack__badge">החבילה המלאה</span>
+        <h3>חנות באוויר עם קמפיין שרץ</h3>
+        <p>אתם מביאים מוצר — אנחנו מביאים את כל השאר.</p>
+      </div>
+
+      <ul class="offer-grid">
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p>חנות <bdi>Shopify</bdi> מלאה, מוקמת מאפס ורשומה על שמכם</p></li>
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p>עיצוב מותאם למותג שלכם — לא תבנית מהמדף</p></li>
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p>העלאת מוצרים, קטגוריות ותיאורים <span class="ph">[עד X מוצרים]</span></p></li>
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p>חיבור סליקה, חשבוניות ומשלוחים</p></li>
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p>דף מוצר שנבנה כדי למכור, לא רק כדי להיראות טוב</p></li>
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p>הקמת פיקסלים ומדידה — <bdi>Meta</bdi>, טיקטוק ו־<bdi>GA4</bdi></p></li>
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p><span class="ph">[X]</span> קריאייטיבים לפרסום <span class="ph">[וידאו / תמונה?]</span></p></li>
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p>העלאת הקמפיין הראשון ב־<bdi>Meta</bdi> ובטיקטוק</p></li>
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p><span class="ph">[X]</span> שבועות ליווי אחרי העלייה לאוויר</p></li>
+        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+          <p><span class="ph">[סעיף נוסף — או מחקו את השורה]</span></p></li>
+      </ul>
+
+      <div class="info-grid">
+        <div class="info">
+          <h3>כמה זה עולה</h3>
+          <p>
+            אין מחירון קבוע, ולא במקרה: חנות עם <span class="num">15</span> מוצרים וחנות עם
+            <span class="num">400</span> הן שתי עבודות שונות לגמרי.
+          </p>
+          <p>
+            אחרי שיחה קצרה תקבלו הצעת מחיר כתובה וסגורה — מה נכנס, כמה זה עולה,
+            ומתי זה מסתיים. בלי הפתעות באמצע.
+          </p>
+          <p class="info__fine">
+            התקציב הפרסומי משולם ישירות ל־<bdi>Meta</bdi> ולטיקטוק ואינו כלול במחיר העבודה.
+          </p>
+        </div>
+
+        <div class="info">
+          <h3>כמה זמן זה לוקח</h3>
+          <p><span class="ph">[X]</span> שבועות מהרגע שקיבלנו מכם את החומרים.</p>
+          <p>
+            עובדים מול איש קשר אחד, בלי ועדות ובלי שרשורי מיילים.
+            אתם רואים את החנות באמצע הדרך — לא רק ביום שהיא עולה.
+          </p>
+          <p class="info__fine">
+            לוחות הזמנים תלויים בקצב שבו מגיעים החומרים מהצד שלכם.
+          </p>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <a class="btn btn--primary" data-wa data-wa-msg="היי, ראיתי את החבילה המלאה באתר. אשמח לקבוע שיחה קצרה.">
+          קבעו שיחה קצרה
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- איך זה עובד ---------- -->
 <section class="section section--alt" id="how">
   <div class="wrap">
     <p class="kicker rv">התהליך</p>
@@ -695,7 +920,7 @@ body{padding-bottom:0}
       </li>
       <li class="step rv">
         <h3>חומרים ואפיון</h3>
-        <p>אתם מקבלים רשימה מסודרת: מוצרים, מחירים, תמונות, לוגו וגישות. משם אני יוצא לדרך.</p>
+        <p>אתם מקבלים רשימה מסודרת: מוצרים, מחירים, תמונות, לוגו וגישות. משם אנחנו יוצאים לדרך.</p>
       </li>
       <li class="step rv">
         <h3>בנייה</h3>
@@ -709,36 +934,34 @@ body{padding-bottom:0}
   </div>
 </section>
 
-<!-- ==================== מה לא כלול ==================== -->
+<!-- ---------- מה לא כלול ---------- -->
 <section class="section" id="limits">
   <div class="wrap narrow">
     <p class="kicker rv">שקיפות</p>
-    <h2 class="sec-title rv">רגע לפני — מה שאני לא עושה</h2>
-    <p class="sec-lead rv">
-      עדיף שנדע את זה עכשיו ולא בעוד חודש.
-    </p>
+    <h2 class="sec-title rv">רגע לפני — מה שאנחנו לא עושים</h2>
+    <p class="sec-lead rv">עדיף שנדע את זה עכשיו ולא בעוד חודש.</p>
 
     <div class="limits">
       <div class="limit rv"><span class="limit__x" aria-hidden="true">✕</span>
-        <p><strong>לא מבטיח מכירות.</strong> אני מבטיח חנות שעובדת וקמפיין שמוקם נכון. מה שקורה אחר כך תלוי גם במוצר, במחיר ובשוק — ואף אחד שאומר לכם אחרת לא אומר אמת.</p></div>
+        <p><strong>לא מבטיחים מכירות.</strong> אנחנו מבטיחים חנות שעובדת וקמפיין שמוקם נכון. מה שקורה אחר כך תלוי גם במוצר, במחיר ובשוק — ומי שאומר לכם אחרת לא אומר אמת.</p></div>
 
       <div class="limit rv"><span class="limit__x" aria-hidden="true">✕</span>
-        <p><strong>לא לוקח פרויקט בלי תקציב פרסום.</strong> חנות בלי תנועה היא אתר תדמית יקר. אם אין תקציב לפרסום, עדיף שתחסכו את הכסף בשלב הזה.</p></div>
+        <p><strong>לא לוקחים פרויקט בלי תקציב פרסום.</strong> חנות בלי תנועה היא אתר תדמית יקר. אם אין תקציב לפרסום, עדיף שתחסכו את הכסף בשלב הזה.</p></div>
 
       <div class="limit rv"><span class="limit__x" aria-hidden="true">✕</span>
-        <p><strong>לא נעלם, אבל גם לא נשאר לנצח.</strong> הליווי הכלול הוא <span class="ph">[X]</span> שבועות. אחריו אפשר להאריך בתשלום, או שתמשיכו לבד — החנות שלכם ואתם יודעים להפעיל אותה.</p></div>
+        <p><strong>לא נעלמים, אבל גם לא נשארים לנצח.</strong> הליווי הכלול הוא <span class="ph">[X]</span> שבועות. אחריו אפשר להאריך בתשלום, או שתמשיכו לבד — החנות שלכם ואתם יודעים להפעיל אותה.</p></div>
 
       <div class="limit rv"><span class="limit__x" aria-hidden="true">✕</span>
-        <p><strong>לא עובד עם <span class="ph">[תחומים שאתה לא לוקח — למשל: הימורים, תוספי תזונה, הלוואות]</span>.</strong> <span class="ph">[סיבה קצרה — או מחק את כל השורה הזו]</span></p></div>
+        <p><strong>לא עובדים עם <span class="ph">[תחומים שאתם לא לוקחים — למשל: הימורים, תוספי תזונה, הלוואות]</span>.</strong> <span class="ph">[סיבה קצרה — או מחקו את כל השורה]</span></p></div>
     </div>
   </div>
 </section>
 
-<!-- ==================== שאלות נפוצות ==================== -->
+<!-- ---------- שאלות נפוצות ---------- -->
 <section class="section section--alt" id="faq">
   <div class="wrap narrow">
     <p class="kicker rv">שאלות נפוצות</p>
-    <h2 class="sec-title rv">מה שבדרך כלל שואלים אותי</h2>
+    <h2 class="sec-title rv">מה שבדרך כלל שואלים אותנו</h2>
 
     <div class="faq" style="margin-top:var(--sp-6)">
 
@@ -746,16 +969,16 @@ body{padding-bottom:0}
         <summary>החנות באמת תהיה שלי?</summary>
         <div class="faq__body">
           כן, וזה לא עניין של אמון. החשבון ב־<bdi>Shopify</bdi> נפתח על שמכם, עם המייל
-          והאמצעי תשלום שלכם. אני נכנס כמשתמש מוזמן, ובסוף הפרויקט אתם יכולים להסיר אותי
-          בלחיצה אחת. אותו דבר לגבי הדומיין וחשבונות הפרסום — הכול נשאר בבעלותכם.
+          ואמצעי התשלום שלכם. אנחנו נכנסים כמשתמש מוזמן, ובסוף הפרויקט אתם יכולים להסיר
+          אותנו בלחיצה אחת. אותו דבר לגבי הדומיין וחשבונות הפרסום — הכול נשאר בבעלותכם.
         </div>
       </details>
 
       <details class="rv">
         <summary>כמה תקציב פרסום צריך להתחיל איתו?</summary>
         <div class="faq__body">
-          <span class="ph">[הסכום המינימלי שאתה ממליץ עליו — למשל: ₪X ליום למשך X שבועות ראשונים]</span>.
-          התקציב הזה משולם ישירות ל־<bdi>Meta</bdi> ולטיקטוק, לא אליי, ואינו חלק ממחיר העבודה.
+          <span class="ph">[הסכום המינימלי שאתם ממליצים עליו — למשל: ₪X ליום למשך X שבועות ראשונים]</span>.
+          התקציב הזה משולם ישירות ל־<bdi>Meta</bdi> ולטיקטוק, לא אלינו, ואינו חלק ממחיר העבודה.
         </div>
       </details>
 
@@ -763,8 +986,16 @@ body{padding-bottom:0}
         <summary>כבר יש לי חנות. זה רלוונטי אליי?</summary>
         <div class="faq__body">
           לפעמים כן, לפעמים לא. יש חנויות שצריך לשפץ ויש כאלה שעדיף לבנות מחדש —
-          ולפעמים הבעיה היא בכלל בפרסום ולא בחנות. אחרי שאסתכל אגיד לכם מה נכון,
-          גם אם התשובה היא פחות עבודה בשבילי.
+          ולפעמים הבעיה היא בכלל בפרסום ולא בחנות. אחרי שנסתכל נגיד לכם מה נכון,
+          גם אם התשובה היא פחות עבודה בשבילנו.
+        </div>
+      </details>
+
+      <details class="rv">
+        <summary>אפשר לקחת רק חנות, או רק פרסום?</summary>
+        <div class="faq__body">
+          אפשר. פשוט כדאי לדעת שחנות בלי תנועה לא מוכרת, ופרסום לחנות שלא ממירה
+          שורף תקציב — ולכן רוב הלקוחות לוקחים את שני החלקים יחד.
         </div>
       </details>
 
@@ -772,7 +1003,7 @@ body{padding-bottom:0}
         <summary>מה אתם צריכים ממני כדי להתחיל?</summary>
         <div class="faq__body">
           רשימת מוצרים ומחירים, תמונות מוצר <span class="ph">[או שנצלם — בתוספת תשלום?]</span>,
-          לוגו אם יש, וגישה לדומיין. את כל השאר אני מביא.
+          לוגו אם יש, וגישה לדומיין. את כל השאר אנחנו מביאים.
         </div>
       </details>
 
@@ -780,7 +1011,7 @@ body{padding-bottom:0}
         <summary>איך מתבצע התשלום?</summary>
         <div class="faq__body">
           <span class="ph">[תנאי תשלום — למשל: X% מקדמה בתחילת העבודה, X% בעלייה לאוויר]</span>.
-          <span class="ph">[חשבונית מס / קבלה — עוסק מורשה/פטור?]</span>
+          <span class="ph">[חשבונית מס / קבלה — עוסק מורשה או פטור?]</span>
         </div>
       </details>
 
@@ -788,42 +1019,10 @@ body{padding-bottom:0}
   </div>
 </section>
 
-<!-- ==================== אודות ==================== -->
-<section class="section" id="about">
+<!-- ---------- צור קשר ---------- -->
+<section class="section" id="contact">
   <div class="wrap">
-    <p class="kicker rv">עליי</p>
-    <h2 class="sec-title rv">מי עומד מאחורי <bdi>BlackZ</bdi></h2>
-
-    <div class="about" style="margin-top:var(--sp-6)">
-      <div class="about__media rv">
-        <!-- [להחליף בתמונה שלך — עדיף תמונה אמיתית, היא מוכרת יותר מכל טקסט] -->
-        <span class="ph">[תמונה שלך — ריבועית, לפחות 600×600]</span>
-      </div>
-
-      <div class="about__body">
-        <p class="rv">
-          קוראים לי <span class="ph">[שם מלא]</span>.
-          <bdi>BlackZ</bdi> הוא השם שמאגד את מה שאני בונה ומריץ — חנויות אונליין, מותגים ותוכנה.
-        </p>
-        <p class="rv">
-          התחלתי כי רציתי חנות משלי, לא כי רציתי להיות ספק.
-          זה אומר שכל טעות שעולה כסף כבר עשיתי על הכסף שלי:
-          <strong>מוצר שלא נמכר, קמפיין ששרף תקציב, דף מוצר שאנשים נטשו באמצע.</strong>
-          את הדרך הקצרה למדתי בדרך הארוכה.
-        </p>
-        <p class="rv">
-          אני עובד עם מעט לקוחות במקביל, כי במקביל אני עדיין מנהל את החנויות שלי.
-          אם אני לוקח פרויקט — אני בפנים.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== צור קשר ==================== -->
-<section class="section section--alt" id="contact">
-  <div class="wrap">
-    <p class="kicker rv">צור קשר</p>
+    <p class="kicker rv">יצירת קשר</p>
     <h2 class="sec-title rv">בואו נדבר</h2>
     <p class="sec-lead rv">
       שיחה קצרה, בלי התחייבות. גם אם בסוף לא נעבוד יחד — תצאו ממנה עם תשובה ברורה.
@@ -834,7 +1033,7 @@ body{padding-bottom:0}
       <div class="contact__wa rv">
         <h3>הדרך המהירה</h3>
         <p>
-          וואטסאפ. אני עונה בדרך כלל תוך <span class="ph">[כמה שעות?]</span>,
+          וואטסאפ. אנחנו עונים בדרך כלל תוך <span class="ph">[כמה שעות?]</span>,
           בימים <span class="ph">[א׳–ה׳]</span>.
         </p>
         <a class="btn btn--wa btn--block" data-wa data-wa-msg="היי, הגעתי מהאתר של BlackZ ואשמח לשמוע פרטים.">
@@ -870,12 +1069,11 @@ body{padding-bottom:0}
         <button class="btn btn--primary btn--block" type="submit">שליחה</button>
         <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
         <p class="form__note">
-          הטופס פותח שיחת וואטסאפ עם הפרטים שמילאתם, כדי שהפנייה תגיע אליי מיד.
+          הטופס פותח שיחת וואטסאפ עם הפרטים שמילאתם, כדי שהפנייה תגיע אלינו מיד.
           <!--
-            [אם תרצה שהטופס ישלח מייל במקום זאת:]
+            [אם תרצו שהטופס ישלח מייל במקום זאת:]
             1. פתחו חשבון ב-Formspree / Getform / Web3Forms וקבלו כתובת endpoint.
-            2. הוסיפו לתגית <form> את המאפיינים:
-               action="ENDPOINT_URL" method="POST"
+            2. הוסיפו לתגית <form> את המאפיינים:  action="ENDPOINT_URL" method="POST"
             3. בקוד ה-JS למטה, שנו את USE_WHATSAPP_FORM ל-false.
           -->
         </p>
@@ -897,9 +1095,9 @@ body{padding-bottom:0}
 
     <nav class="ftr__links" aria-label="המיזמים שלנו">
       <a href="https://hashofet.com" target="_blank" rel="noopener">חנות השופט</a>
-      <a href="https://clutchstore.net" target="_blank" rel="noopener"><bdi>Label Daddy</bdi></a>
-      <a href="https://brickdeal.com" target="_blank" rel="noopener">בריק דיל</a>
+      <a href="https://clutchstore.net" target="_blank" rel="noopener"><bdi>Clutch Store</bdi></a>
       <a href="https://tiyulplus.com" target="_blank" rel="noopener"><bdi>Tiyul+</bdi></a>
+      <!-- [להוסיף קישורים ל-Label Daddy ולבריק דיל כשיהיו] -->
     </nav>
 
     <p class="ftr__copy">
@@ -912,23 +1110,23 @@ body{padding-bottom:0}
 <div class="wa-bar" id="wa-bar">
   <a class="btn btn--wa btn--block" data-wa data-wa-msg="היי, הגעתי מהאתר של BlackZ ואשמח לשמוע פרטים.">
     <svg class="wa-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2"/></svg>
-    דברו איתי בוואטסאפ
+    דברו איתנו בוואטסאפ
   </a>
 </div>
 
 <script>
 /* ==========================================================================
-   ⚙️  אזור העריכה — כל מה שצריך לשנות נמצא כאן
+   ⚙️  אזור העריכה — כל מה שצריך לשנות בקוד נמצא כאן
    ========================================================================== */
 
-/* [חובה — מספר הוואטסאפ שלך]
+/* [חובה — מספר הוואטסאפ שלכם]
    פורמט בינלאומי, בלי + ובלי מקפים או רווחים.
-   דוגמה למספר ישראלי 050-1234567  ←  '972501234567'
+   דוגמה: 050-1234567  ←  '972501234567'
    המספר הזה מזין את כל כפתורי הוואטסאפ בעמוד — עורכים במקום אחד בלבד. */
 const WA_NUMBER = '972500000000';   // ← [להחליף במספר האמיתי]
 
 /* true  = הטופס פותח וואטסאפ עם הפרטים (עובד מיד, בלי שרת)
-   false = הטופס נשלח ל-action שהגדרת בתגית <form> (Formspree וכו') */
+   false = הטופס נשלח ל-action שהוגדר בתגית <form> (Formspree וכו') */
 const USE_WHATSAPP_FORM = true;
 
 /* ========================================================================== */
@@ -966,7 +1164,7 @@ const USE_WHATSAPP_FORM = true;
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  /* --- אנימציית כניסה לאלמנטים --- */
+  /* --- אנימציית כניסה --- */
   var revealables = document.querySelectorAll('.rv');
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
@@ -982,23 +1180,21 @@ const USE_WHATSAPP_FORM = true;
     for (var f = 0; f < revealables.length; f++) revealables[f].classList.add('is-in');
   }
 
-  /* --- סרגל וואטסאפ צף: מופיע אחרי שעוברים את ה-Hero, נעלם באזור צור קשר --- */
+  /* --- סרגל וואטסאפ צף: מופיע אחרי ה-Hero, נעלם באזור יצירת הקשר --- */
   var bar = document.getElementById('wa-bar');
   var contact = document.getElementById('contact');
   var hero = document.querySelector('.hero');
   if (bar && 'IntersectionObserver' in window) {
     var pastHero = false, atContact = false;
-    function sync() { bar.classList.toggle('is-on', pastHero && !atContact); }
+    var sync = function () { bar.classList.toggle('is-on', pastHero && !atContact); };
 
     if (hero) {
-      new IntersectionObserver(function (e) {
-        pastHero = !e[0].isIntersecting; sync();
-      }, { threshold: 0 }).observe(hero);
+      new IntersectionObserver(function (e) { pastHero = !e[0].isIntersecting; sync(); },
+        { threshold: 0 }).observe(hero);
     }
     if (contact) {
-      new IntersectionObserver(function (e) {
-        atContact = e[0].isIntersecting; sync();
-      }, { threshold: 0 }).observe(contact);
+      new IntersectionObserver(function (e) { atContact = e[0].isIntersecting; sync(); },
+        { threshold: 0 }).observe(contact);
     }
   }
 
@@ -1007,8 +1203,8 @@ const USE_WHATSAPP_FORM = true;
   var status = document.getElementById('form-status');
 
   if (form) {
-    /* שימו לב: פונים לשדות דרך getElementById ולא דרך form.name —
-       ל-<form> יש כבר תכונה בשם name, והיא הייתה מסתירה את שדה השם. */
+    /* פונים לשדות דרך getElementById ולא דרך form.name —
+       ל-<form> יש כבר תכונה בשם name והיא הייתה מסתירה את שדה השם. */
     var elName  = document.getElementById('f-name');
     var elPhone = document.getElementById('f-phone');
     var elSite  = document.getElementById('f-site');
