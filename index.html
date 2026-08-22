@@ -295,6 +295,28 @@ strong{font-weight:var(--fw-bold)}
 }
 .hero__in{position:relative;z-index:1}
 
+/* Pointer-following spotlight, page wide.
+   Fixed and painted ABOVE the content, because every section has an opaque
+   background - a glow sitting behind them would only ever show in the hero.
+   mix-blend-mode:screen means it only ever adds light, never darkens what it
+   crosses. Sits below the header (100) and the mobile bar (90).
+   Pointer devices only: on touch there is no cursor and it would just park
+   wherever the last tap landed. */
+.spotlight{
+  position:fixed;left:0;top:0;z-index:80;
+  width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(184,241,53,.16),rgba(184,241,53,.05) 45%,transparent 70%);
+  filter:blur(50px);
+  mix-blend-mode:screen;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .5s var(--ease);
+  will-change:transform;
+}
+.spotlight.is-on{opacity:1}
+@media (hover:none),(pointer:coarse){ .spotlight{display:none} }
+@media (prefers-reduced-motion:reduce){ .spotlight{display:none} }
+
 /* Oversized watermark of the B mark, on the empty side opposite the copy.
    RTL: the text sits at the start (right), so the mark goes at the end (left). */
 .hero__mark{
@@ -468,6 +490,40 @@ strong{font-weight:var(--fw-bold)}
 .pack__head h3{font-size:var(--fs-lg);margin-bottom:var(--sp-2)}
 .pack__head p{color:var(--c-text-dim);font-size:var(--fs-sm)}
 
+/* --- tabbed deliverables --- */
+.tabs__list{
+  display:flex;flex-wrap:wrap;gap:var(--sp-2);
+  margin-bottom:var(--sp-5);padding-bottom:var(--sp-4);
+  border-bottom:1px solid var(--c-line);
+}
+.tab{
+  padding:.5rem 1rem;border-radius:var(--radius-pill);
+  background:var(--c-bg);border:var(--border);
+  color:var(--c-text-dim);font-size:var(--fs-sm);font-weight:var(--fw-bold);
+  cursor:pointer;
+  transition:background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.tab:hover{color:var(--c-text);border-color:var(--c-line-hi)}
+.tab.is-on{background:var(--c-accent);color:var(--c-accent-ink);border-color:var(--c-accent)}
+
+.tabs__viewport{position:relative;overflow:hidden;transition:height .28s var(--ease)}
+.tabs__panel{
+  position:absolute;inset-inline:0;top:0;
+  opacity:0;transform:translateY(-50px);filter:blur(4px);
+  transition:opacity .2s ease-in-out, transform .2s ease-in-out, filter .2s ease-in-out;
+  pointer-events:none;
+}
+.tabs__panel.is-on{opacity:1;transform:none;filter:blur(0px);pointer-events:auto}
+/* leaving panel drops downward, matching the exit variant */
+.tabs__panel.is-out{opacity:0;transform:translateY(50px);filter:blur(4px)}
+.tabs__note{
+  margin-top:var(--sp-4);font-size:var(--fs-sm);color:var(--c-text-faint);
+  padding-inline-start:var(--sp-4);border-inline-start:2px solid var(--c-line-hi);
+}
+@media (prefers-reduced-motion:reduce){
+  .tabs__viewport,.tabs__panel{transition:none}
+}
+
 .offer-grid{display:grid;gap:var(--sp-3);margin-bottom:var(--sp-6)}
 @media (min-width:700px){ .offer-grid{grid-template-columns:1fr 1fr} }
 .deliver{
@@ -559,20 +615,6 @@ strong{font-weight:var(--fw-bold)}
 .faq details[open] summary::after{transform:rotate(45deg)}
 .faq__body{padding:0 var(--sp-5) var(--sp-5);color:var(--c-text-dim);font-size:var(--fs-sm)}
 
-/* ==========================  ABOUT  ========================== */
-.about{display:grid;gap:var(--sp-6)}
-@media (min-width:820px){ .about{grid-template-columns:.8fr 1.2fr;align-items:start;gap:var(--sp-7)} }
-.about__media{
-  aspect-ratio:1/1;border-radius:var(--radius-lg);
-  background:linear-gradient(135deg,rgba(184,241,53,.10),transparent 60%),var(--c-surface);
-  border:1px dashed var(--c-line-hi);
-  display:grid;place-items:center;text-align:center;padding:var(--sp-5);
-  color:var(--c-text-faint);font-size:var(--fs-sm);max-width:340px;
-}
-.about__body p{color:var(--c-text-dim);font-size:var(--fs-md)}
-.about__body p + p{margin-top:var(--sp-4)}
-.about__body strong{color:var(--c-text)}
-
 /* ==========================  CONTACT  ========================== */
 .contact-grid{display:grid;gap:var(--sp-6)}
 @media (min-width:860px){ .contact-grid{grid-template-columns:1fr 1fr;gap:var(--sp-7)} }
@@ -623,8 +665,13 @@ strong{font-weight:var(--fw-bold)}
 @media (min-width:900px){ .wa-bar{display:none} }
 
 /* ==========================  SCROLL REVEAL  ========================== */
-.rv{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease), transform .6s var(--ease)}
-.rv.is-in{opacity:1;transform:none}
+.rv{
+  opacity:0;
+  transform:translateY(100px);
+  filter:blur(4px);
+  transition:opacity .3s ease-in-out, transform .3s ease-in-out, filter .3s ease-in-out;
+}
+.rv.is-in{opacity:1;transform:none;filter:blur(0px)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .rv{opacity:1;transform:none;transition:none}
@@ -635,6 +682,8 @@ strong{font-weight:var(--fw-bold)}
 
 <body>
 <a class="skip" href="#main">דילוג לתוכן הראשי</a>
+
+<div class="spotlight" aria-hidden="true"></div>
 
 <!-- Logo sprite. Defined once here, referenced by <use> in the header and footer.
      Source of truth is logo.svg - if you change one, change both. -->
@@ -843,39 +892,6 @@ strong{font-weight:var(--fw-bold)}
   </div>
 </section>
 
-<!-- ---------- Who is behind it ---------- -->
-<section class="section" id="about">
-  <div class="wrap">
-    <p class="kicker rv">מי עומד מאחורי</p>
-    <h2 class="sec-title rv">האנשים שמאחורי בלאקזי</h2>
-
-    <div class="about" style="margin-top:var(--sp-6)">
-      <div class="about__media rv">
-        <!-- [REPLACE with a real photo - it sells better than any copy] -->
-        <span class="ph">[תמונה שלך - ריבועית, לפחות 600×600]</span>
-      </div>
-
-      <div class="about__body">
-        <p class="rv">
-          בלאקזי הוקם על ידי <span class="ph">[שם מלא]</span>
-          <span class="ph">[אם יש עוד שותפים או אנשי צוות - הוסיפו אותם כאן]</span>.
-        </p>
-        <p class="rv">
-          התחלנו כי רצינו חנות משלנו, לא כי רצינו להיות ספקים.
-          זה אומר שכל טעות שעולה כסף כבר עשינו על הכסף שלנו:
-          <strong>מוצר שלא נמכר, קמפיין ששרף תקציב, דף מוצר שאנשים נטשו באמצע.</strong>
-          את הדרך הקצרה למדנו בדרך הארוכה.
-        </p>
-        <p class="rv">
-          אנחנו עובדים עם מעט לקוחות במקביל, כי במקביל אנחנו עדיין מריצים את החנויות שלנו.
-          אם לקחנו פרויקט - אנחנו בפנים.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
 <!-- ---------- What we do ---------- -->
 <section class="section" id="services">
   <div class="wrap">
@@ -917,33 +933,88 @@ strong{font-weight:var(--fw-bold)}
     <!-- ---------- The full package ---------- -->
     <div class="pack rv" id="package">
       <div class="pack__head">
-        <span class="pack__badge">החבילה המלאה</span>
-        <h3>חנות באוויר עם קמפיין שרץ</h3>
+        <span class="pack__badge">מה נכנס</span>
+        <h3>בחרו מה אתם צריכים</h3>
         <p>אתם מביאים מוצר - אנחנו מביאים את כל השאר.</p>
       </div>
 
-      <ul class="offer-grid">
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p>חנות שופיפיי מלאה, מוקמת מאפס ורשומה על שמכם</p></li>
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p>עיצוב מותאם למותג שלכם - לא תבנית מהמדף</p></li>
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p>העלאת מוצרים, קטגוריות ותיאורים <span class="ph">[עד X מוצרים]</span></p></li>
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p>חיבור סליקה, חשבוניות ומשלוחים</p></li>
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p>דף מוצר שנבנה כדי למכור, לא רק כדי להיראות טוב</p></li>
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p>הקמת פיקסלים ומדידה - מטא, טיקטוק וגוגל אנליטיקס</p></li>
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p><span class="ph">[X]</span> קריאייטיבים לפרסום <span class="ph">[וידאו / תמונה?]</span></p></li>
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p>העלאת הקמפיין הראשון במטא ובטיקטוק</p></li>
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p><span class="ph">[X]</span> שבועות ליווי אחרי העלייה לאוויר</p></li>
-        <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
-          <p><span class="ph">[סעיף נוסף - או מחקו את השורה]</span></p></li>
-      </ul>
+      <!-- Tabbed deliverables. Panels are absolutely positioned and the viewport
+           height is driven by JS, so switching tabs animates instead of jumping. -->
+      <div class="tabs">
+        <div class="tabs__list" role="tablist" aria-label="בחירת חבילה">
+          <button class="tab is-on" role="tab" type="button" id="tb-full"
+                  aria-controls="pn-full" aria-selected="true">חבילה מלאה</button>
+          <button class="tab" role="tab" type="button" id="tb-store"
+                  aria-controls="pn-store" aria-selected="false" tabindex="-1">רק חנות</button>
+          <button class="tab" role="tab" type="button" id="tb-ads"
+                  aria-controls="pn-ads" aria-selected="false" tabindex="-1">רק פרסום</button>
+        </div>
+
+        <div class="tabs__viewport">
+
+          <div class="tabs__panel is-on" role="tabpanel" id="pn-full" aria-labelledby="tb-full">
+            <ul class="offer-grid">
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>חנות שופיפיי מלאה, מוקמת מאפס ורשומה על שמכם</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>עיצוב מותאם למותג שלכם - לא תבנית מהמדף</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>העלאת מוצרים, קטגוריות ותיאורים <span class="ph">[עד X מוצרים]</span></p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>חיבור סליקה, חשבוניות ומשלוחים</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>דף מוצר שנבנה כדי למכור, לא רק כדי להיראות טוב</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>הקמת פיקסלים ומדידה - מטא, טיקטוק וגוגל אנליטיקס</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p><span class="ph">[X]</span> קריאייטיבים לפרסום <span class="ph">[וידאו / תמונה?]</span></p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>העלאת הקמפיין הראשון במטא ובטיקטוק</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p><span class="ph">[X]</span> שבועות ליווי אחרי העלייה לאוויר</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p><span class="ph">[סעיף נוסף - או מחקו את השורה]</span></p></li>
+            </ul>
+          </div>
+
+          <div class="tabs__panel" role="tabpanel" id="pn-store" aria-labelledby="tb-store" hidden>
+            <ul class="offer-grid">
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>חנות שופיפיי מלאה, מוקמת מאפס ורשומה על שמכם</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>עיצוב מותאם למותג שלכם - לא תבנית מהמדף</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>העלאת מוצרים, קטגוריות ותיאורים <span class="ph">[עד X מוצרים]</span></p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>חיבור סליקה, חשבוניות ומשלוחים</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>דף מוצר שנבנה כדי למכור, לא רק כדי להיראות טוב</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p><span class="ph">[X]</span> שבועות ליווי אחרי העלייה לאוויר</p></li>
+            </ul>
+            <p class="tabs__note">
+              בלי תנועה לחנות אין מכירות. אם אתם לוקחים רק חנות, כדאי שיהיה לכם מי שמפרסם אותה.
+            </p>
+          </div>
+
+          <div class="tabs__panel" role="tabpanel" id="pn-ads" aria-labelledby="tb-ads" hidden>
+            <ul class="offer-grid">
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>הקמת פיקסלים ומדידה - מטא, טיקטוק וגוגל אנליטיקס</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p><span class="ph">[X]</span> קריאייטיבים לפרסום <span class="ph">[וידאו / תמונה?]</span></p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>העלאת הקמפיין הראשון במטא ובטיקטוק</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p><span class="ph">[X]</span> שבועות ליווי אחרי העלייה לאוויר</p></li>
+            </ul>
+            <p class="tabs__note">
+              מתאים למי שכבר יש לו חנות שממירה. אם היא לא ממירה - נגיד לכם את זה לפני שנוציא שקל.
+            </p>
+          </div>
+
+        </div>
+      </div>
 
       <div class="info-grid">
         <div class="info">
@@ -1249,6 +1320,10 @@ const USE_WHATSAPP_FORM = true;
 
   /* --- scroll reveal --- */
   var revealables = document.querySelectorAll('.rv');
+  function revealAll() {
+    for (var i = 0; i < revealables.length; i++) revealables[i].classList.add('is-in');
+  }
+
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -1257,10 +1332,17 @@ const USE_WHATSAPP_FORM = true;
           io.unobserve(entry.target);
         }
       });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    }, { rootMargin: '0px 0px -200px 0px', threshold: 0 });
     for (var r = 0; r < revealables.length; r++) io.observe(revealables[r]);
+
+    /* The -200px bottom margin means anything sitting in the last 200px of the
+       document can never intersect, and would stay invisible forever. Reveal
+       whatever is left once the page is scrolled to the end. */
+    window.addEventListener('scroll', function () {
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) revealAll();
+    }, { passive: true });
   } else {
-    for (var f = 0; f < revealables.length; f++) revealables[f].classList.add('is-in');
+    revealAll();
   }
 
   /* --- sticky bar: appears past the hero, hides over the contact section --- */
@@ -1279,6 +1361,101 @@ const USE_WHATSAPP_FORM = true;
       new IntersectionObserver(function (e) { atContact = e[0].isIntersecting; sync(); },
         { threshold: 0 }).observe(contact);
     }
+  }
+
+  /* --- spotlight ---
+     Fixed element, so viewport coordinates are all it needs. Eased follow
+     rather than a hard snap: each frame closes a fraction of the remaining
+     distance, which reads like the spring in the original. */
+  var spot = document.querySelector('.spotlight');
+  var finePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  var stillMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  if (spot && finePointer && !stillMotion) {
+    var SPOT_R = 210;   /* half of the element size, to centre it on the cursor */
+    var tx = 0, ty = 0, cx = 0, cy = 0, running = false, seeded = false;
+
+    window.addEventListener('pointermove', function (e) {
+      tx = e.clientX;
+      ty = e.clientY;
+      if (!seeded) {
+        cx = tx; cy = ty; seeded = true;
+        spot.classList.add('is-on');
+      }
+      if (!running) { running = true; requestAnimationFrame(step); }
+    }, { passive: true });
+
+    window.addEventListener('pointerleave', function () { spot.classList.remove('is-on'); });
+    window.addEventListener('pointerenter', function () { if (seeded) spot.classList.add('is-on'); });
+
+    function step() {
+      cx += (tx - cx) * 0.18;
+      cy += (ty - cy) * 0.18;
+      spot.style.transform = 'translate3d(' + (cx - SPOT_R) + 'px,' + (cy - SPOT_R) + 'px,0)';
+      if (Math.abs(tx - cx) > 0.5 || Math.abs(ty - cy) > 0.5) {
+        requestAnimationFrame(step);
+      } else {
+        running = false;
+      }
+    }
+  }
+
+  /* --- tabbed deliverables --- */
+  var tabList = document.querySelector('.tabs__list');
+  if (tabList) {
+    var tabs = [].slice.call(tabList.querySelectorAll('.tab'));
+    var viewport = document.querySelector('.tabs__viewport');
+    var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute('aria-controls')); });
+    var current = 0;
+
+    /* Panels are absolutely positioned, so the viewport needs an explicit height. */
+    function sizeTo(i) { viewport.style.height = panels[i].offsetHeight + 'px'; }
+
+    function select(i) {
+      if (i === current) return;
+      var out = panels[current];
+      out.classList.remove('is-on');
+      out.classList.add('is-out');
+      setTimeout(function () {
+        out.classList.remove('is-out');
+        out.hidden = true;
+      }, 200);
+
+      panels[i].hidden = false;
+      /* force a reflow so the enter state is applied before the transition starts */
+      void panels[i].offsetWidth;
+      panels[i].classList.add('is-on');
+
+      tabs.forEach(function (t, idx) {
+        t.classList.toggle('is-on', idx === i);
+        t.setAttribute('aria-selected', idx === i ? 'true' : 'false');
+        t.tabIndex = idx === i ? 0 : -1;
+      });
+
+      current = i;
+      sizeTo(i);
+    }
+
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { select(i); });
+      t.addEventListener('keydown', function (e) {
+        var next = null;
+        /* RTL: ArrowLeft moves forward through the list, ArrowRight back */
+        if (e.key === 'ArrowLeft') next = (i + 1) % tabs.length;
+        else if (e.key === 'ArrowRight') next = (i - 1 + tabs.length) % tabs.length;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = tabs.length - 1;
+        if (next === null) return;
+        e.preventDefault();
+        select(next);
+        tabs[next].focus();
+      });
+    });
+
+    sizeTo(0);
+    window.addEventListener('resize', function () { sizeTo(current); }, { passive: true });
+    /* fonts and images settle after load and can change the panel height */
+    window.addEventListener('load', function () { sizeTo(current); });
   }
 
   /* --- contact form --- */
