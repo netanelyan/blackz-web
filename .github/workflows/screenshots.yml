@@ -1,0 +1,53 @@
+name: Refresh venture screenshots
+
+on:
+  schedule:
+    # Every Monday at 03:00 UTC (06:00 Israel time)
+    - cron: '0 3 * * 1'
+  # Manual run: Actions tab -> Refresh venture screenshots -> Run workflow
+  workflow_dispatch:
+  # Also run when the script or this workflow changes
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/shoot.js'
+      - '.github/workflows/screenshots.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: screenshots
+  cancel-in-progress: false
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.47.2
+          npx playwright install --with-deps chromium
+
+      - name: Capture screenshots
+        run: node scripts/shoot.js
+
+      - name: Commit if anything changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add shots/
+          if git diff --staged --quiet; then
+            echo "No visual changes on the sites - nothing to update."
+          else
+            git commit -m "chore: refresh venture screenshots"
+            git push
+          fi
