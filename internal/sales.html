@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>בלאקזי - דף מכירות פנימי</title>
+<meta name="theme-color" content="#0A0A0C" id="theme-color">
+<meta name="color-scheme" content="dark light">
+<script>
+  /* Runs before the stylesheet paints. Dark is the default: only an explicit
+     stored choice of "light" switches the theme. Same key as the public site. */
+  (function () {
+    try {
+      if (localStorage.getItem("blackz-theme") === "light") {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<style>
+/* ==========================================================================
+   BLACKZ - internal sales sheet. Private, not linked from anywhere.
+
+   Design tokens are copied from index.html so this matches the public site.
+   The embedded Arimo @font-face blocks are deliberately NOT copied: this file
+   is opened on a phone mid-call and needs to stay small, so it falls back to
+   the system stack.
+
+   Phone first throughout. Nothing depends on hover.
+   ========================================================================== */
+:root{
+
+  /* ---------- Colors ---------- */
+  --c-bg:          #0A0A0C;
+  --c-bg-alt:      #101015;
+  --c-surface:     #15151B;
+  --c-surface-hi:  #1D1D25;
+  --c-line:        #262630;
+  --c-line-hi:     #3A3A48;
+
+  --c-text:        #F6F6F9;
+  --c-text-dim:    #ADADBD;
+  --c-text-faint:  #74748C;
+
+  --c-accent:      #B8F135;
+  --c-accent-dim:  #94C420;
+  --c-accent-ink:  #0A0A0C;
+  --c-accent-glow: rgba(184,241,53,.14);
+  --c-accent-fill: #B8F135;
+
+  --c-hdr-bg:      rgba(10,10,12,.93);
+  --c-hover-wash:  rgba(255,255,255,.04);
+  --c-soft-wash:   rgba(255,255,255,.05);
+
+  --c-warn:        #FF7A6B;   /* red flag markers */
+  --c-warn-wash:   rgba(255,122,107,.10);
+
+  /* ---------- Typography ----------
+     System stack only. No embedded font in this file. */
+  --f-sans: "Arial Hebrew","Segoe UI",system-ui,-apple-system,"Noto Sans Hebrew",Arial,sans-serif;
+  --f-mono: ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+
+  --fs-xs:   .82rem;
+  --fs-sm:   .94rem;
+  --fs-base: 1.06rem;   /* bumped over the public site: read at arm's length */
+  --fs-md:   1.16rem;
+  --fs-lg:   1.35rem;
+  --fs-xl:   1.7rem;
+
+  --lh-tight: 1.15;
+  --lh-body:  1.65;
+
+  --fw-normal: 400;
+  --fw-med:    500;
+  --fw-bold:   600;
+  --fw-black:  700;
+
+  --tracking-wide: .14em;
+
+  /* ---------- Spacing ---------- */
+  --sp-1: .25rem;
+  --sp-2: .5rem;
+  --sp-3: .75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+
+  /* ---------- Layout ---------- */
+  --wrap:    780px;
+  --gutter:  clamp(.9rem, 4vw, 1.6rem);
+
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --border: 1px solid var(--c-line);
+  --shadow: 0 18px 50px -22px rgba(0,0,0,.9);
+
+  --tap: 48px;   /* minimum tap target */
+
+  --ease: cubic-bezier(.22,.68,.32,1);
+  --dur: .2s;
+}
+
+/* ==========================  LIGHT THEME  ========================== */
+:root[data-theme="light"]{
+  --c-bg:          #F4F7F5;
+  --c-bg-alt:      #FFFFFF;
+  --c-surface:     #FFFFFF;
+  --c-surface-hi:  #F4F7F5;
+  --c-line:        #E4EBE5;
+  --c-line-hi:     #CBD8CE;
+
+  --c-text:        #101014;
+  --c-text-dim:    #52525E;
+  --c-text-faint:  #7C7C8A;
+
+  --c-accent:      #4F7D0A;
+  --c-accent-dim:  #3F6408;
+  --c-accent-glow: rgba(79,125,10,.12);
+
+  --c-hdr-bg:      rgba(244,247,245,.95);
+  --c-hover-wash:  rgba(0,0,0,.04);
+  --c-soft-wash:   rgba(0,0,0,.05);
+
+  --c-warn:        #B3271A;
+  --c-warn-wash:   rgba(179,39,26,.08);
+
+  --shadow: 0 16px 40px -24px rgba(16,16,20,.35);
+  color-scheme: light;
+}
+
+/* ==========================  BASE  ========================== */
+*,*::before,*::after{box-sizing:border-box}
+html{
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:smooth;
+  scroll-padding-top:76px;   /* clears the sticky nav */
+}
+body{
+  margin:0;
+  background:var(--c-bg);
+  color:var(--c-text);
+  font-family:var(--f-sans);
+  font-size:var(--fs-base);
+  line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3{margin:0;line-height:var(--lh-tight);font-weight:var(--fw-black);text-wrap:balance}
+p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+
+/* Bidi isolation. Any Latin run or number at a line edge flips without it. */
+.ltr{direction:ltr;unicode-bidi:isolate}
+.num{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+
+:focus-visible{outline:2px solid var(--c-accent);outline-offset:2px;border-radius:4px}
+
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
+
+/* ==========================  HEADER  ========================== */
+.hdr{
+  padding-block:var(--sp-4);
+  border-bottom:var(--border);
+  background:var(--c-bg-alt);
+}
+.hdr__in{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.hdr__title{font-size:var(--fs-md)}
+.hdr__sub{
+  font-size:var(--fs-xs);color:var(--c-text-faint);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
+}
+
+.icon-btn{
+  width:var(--tap);height:var(--tap);flex:none;
+  display:grid;place-items:center;
+  border-radius:50%;border:var(--border);
+  background:var(--c-surface);color:var(--c-text-dim);
+  cursor:pointer;
+}
+.icon-btn svg{width:20px;height:20px}
+.ico-moon{display:none}
+:root[data-theme="light"] .ico-sun{display:none}
+:root[data-theme="light"] .ico-moon{display:block}
+
+/* ==========================  STICKY NAV  ========================== */
+.nav{
+  position:sticky;top:0;z-index:50;
+  background:var(--c-hdr-bg);
+  backdrop-filter:saturate(160%) blur(12px);
+  -webkit-backdrop-filter:saturate(160%) blur(12px);
+  border-bottom:var(--border);
+}
+.nav__in{
+  display:flex;gap:var(--sp-2);
+  overflow-x:auto;
+  padding-block:var(--sp-2);
+  scrollbar-width:none;
+}
+.nav__in::-webkit-scrollbar{display:none}
+.nav a{
+  flex:none;
+  min-height:var(--tap);
+  display:inline-flex;align-items:center;
+  padding-inline:var(--sp-4);
+  border-radius:var(--radius-pill);
+  border:var(--border);
+  background:var(--c-surface);
+  font-size:var(--fs-sm);font-weight:var(--fw-bold);
+  color:var(--c-text-dim);
+  white-space:nowrap;
+}
+.nav a.is-on{background:var(--c-accent-fill);color:var(--c-accent-ink);border-color:var(--c-accent-fill)}
+
+/* ==========================  SECTIONS  ========================== */
+.section{padding-block:var(--sp-6) var(--sp-7);border-bottom:var(--border)}
+.section:last-of-type{border-bottom:none}
+.sec-head{margin-bottom:var(--sp-5)}
+.kicker{
+  display:inline-block;
+  font-size:var(--fs-xs);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
+  color:var(--c-accent);margin-bottom:var(--sp-2);
+}
+.sec-title{font-size:var(--fs-xl)}
+
+/* ==========================  RATE TABLE  ========================== */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter)}
+table{width:100%;border-collapse:collapse;min-width:440px}
+thead th{
+  font-size:var(--fs-xs);font-weight:var(--fw-black);
+  letter-spacing:.05em;color:var(--c-text-faint);
+  text-align:start;padding:var(--sp-3);
+  border-bottom:1px solid var(--c-line-hi);
+  white-space:nowrap;
+}
+tbody td{
+  padding:var(--sp-4) var(--sp-3);
+  border-bottom:var(--border);
+  font-size:var(--fs-sm);
+  vertical-align:top;
+}
+tbody tr:last-child td{border-bottom:none}
+.t-pkg{font-weight:var(--fw-bold);color:var(--c-text)}
+.t-launch{color:var(--c-accent);font-weight:var(--fw-black);white-space:nowrap}
+.t-real{color:var(--c-text-dim)}
+
+.fine{margin-top:var(--sp-5);display:grid;gap:var(--sp-2)}
+.fine li{
+  font-size:var(--fs-xs);color:var(--c-text-faint);
+  padding-inline-start:var(--sp-4);position:relative;
+}
+.fine li::before{
+  content:"";position:absolute;inset-inline-start:0;top:.62em;
+  width:5px;height:5px;border-radius:50%;background:var(--c-line-hi);
+}
+
+.addons{margin-top:var(--sp-6)}
+.addons h3{font-size:var(--fs-md);margin-bottom:var(--sp-3)}
+.addons ul{display:grid;gap:var(--sp-2)}
+.addons li{
+  display:flex;justify-content:space-between;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-4);
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius-sm);
+  font-size:var(--fs-sm);
+}
+.addons b{color:var(--c-accent);font-weight:var(--fw-black);white-space:nowrap}
+
+/* ==========================  CALL CHECKLIST  ========================== */
+.note-box{
+  background:var(--c-surface);border:var(--border);
+  border-radius:var(--radius);padding:var(--sp-4);
+  margin-bottom:var(--sp-5);
+  display:grid;gap:var(--sp-2);
+}
+.note-box p{font-size:var(--fs-sm);color:var(--c-text-dim)}
+
+.q-group{margin-bottom:var(--sp-5)}
+.q-group > h3{
+  font-size:var(--fs-sm);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
+  color:var(--c-text-faint);margin-bottom:var(--sp-3);
+}
+.q-list{display:grid;gap:var(--sp-2)}
+
+/* whole row is the tap target, not just the box */
+.q{
+  display:flex;align-items:flex-start;gap:var(--sp-3);
+  min-height:var(--tap);
+  padding:var(--sp-3) var(--sp-4);
+  background:var(--c-surface);border:var(--border);
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  font-size:var(--fs-sm);line-height:1.5;
+}
+.q input{
+  flex:none;width:24px;height:24px;margin:0;
+  accent-color:var(--c-accent-fill);
+  cursor:pointer;
+}
+.q span{padding-top:1px}
+.q input:checked + span{color:var(--c-text-faint);text-decoration:line-through}
+.q--key{border-color:var(--c-accent);background:var(--c-accent-glow)}
+.q--key span{font-weight:var(--fw-bold)}
+
+.q-note{
+  margin-top:var(--sp-3);
+  font-size:var(--fs-xs);color:var(--c-warn);
+  background:var(--c-warn-wash);
+  border:1px solid var(--c-warn);
+  border-radius:var(--radius-sm);
+  padding:var(--sp-3);
+}
+.close-note{
+  margin-top:var(--sp-4);
+  padding:var(--sp-4);
+  border-inline-start:3px solid var(--c-accent);
+  background:var(--c-surface);
+  border-radius:var(--radius-sm);
+  font-size:var(--fs-sm);color:var(--c-text-dim);
+}
+
+/* ==========================  RED FLAGS  ========================== */
+/* same shape as .limit on the public site */
+.limits{display:grid;gap:var(--sp-3)}
+.limit{
+  display:flex;gap:var(--sp-3);align-items:flex-start;
+  padding:var(--sp-4);border-radius:var(--radius);
+  background:var(--c-surface);border:var(--border);
+}
+.limit__x{
+  flex:none;width:24px;height:24px;border-radius:50%;
+  background:var(--c-warn-wash);color:var(--c-warn);
+  display:grid;place-items:center;
+  font-size:.78rem;font-weight:var(--fw-black);margin-top:.1rem;
+}
+.limit p{font-size:var(--fs-sm);color:var(--c-text-dim)}
+
+/* ==========================  CALCULATOR  ========================== */
+.calc{display:grid;gap:var(--sp-5)}
+.field-group > h3{
+  font-size:var(--fs-sm);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
+  color:var(--c-text-faint);margin-bottom:var(--sp-3);
+}
+.opts{display:grid;gap:var(--sp-2)}
+.opt{
+  display:flex;align-items:center;gap:var(--sp-3);
+  min-height:var(--tap);
+  padding:var(--sp-3) var(--sp-4);
+  background:var(--c-surface);border:var(--border);
+  border-radius:var(--radius-sm);
+  cursor:pointer;font-size:var(--fs-sm);
+}
+.opt input{flex:none;width:22px;height:22px;margin:0;accent-color:var(--c-accent-fill);cursor:pointer}
+.opt:has(input:checked){border-color:var(--c-accent);background:var(--c-accent-glow)}
+.opt__price{margin-inline-start:auto;color:var(--c-text-faint);font-size:var(--fs-xs);white-space:nowrap}
+
+.rows{display:grid;gap:var(--sp-2)}
+.row{
+  display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-4);
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius-sm);
+}
+.row__label{flex:1;font-size:var(--fs-sm);min-width:0}
+.row__label small{display:block;color:var(--c-text-faint);font-size:var(--fs-xs)}
+.row input[type="number"]{
+  flex:none;width:88px;
+  min-height:var(--tap);
+  padding:var(--sp-2) var(--sp-3);
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius-sm);
+  font-size:var(--fs-base);font-weight:var(--fw-bold);
+  direction:ltr;text-align:center;
+}
+.row input[type="number"]:focus{outline:none;border-color:var(--c-accent)}
+
+.total-card{
+  background:var(--c-surface);border:1px solid var(--c-accent);
+  border-radius:var(--radius-lg);
+  padding:var(--sp-5);
+  display:grid;gap:var(--sp-3);
+}
+.total-line{display:flex;justify-content:space-between;gap:var(--sp-3);font-size:var(--fs-sm);color:var(--c-text-dim)}
+.total-line b{color:var(--c-text);font-weight:var(--fw-bold)}
+.total-line--sum{
+  border-top:1px solid var(--c-line-hi);
+  padding-top:var(--sp-3);margin-top:var(--sp-1);
+  font-size:var(--fs-lg);color:var(--c-text);
+}
+.total-line--sum b{color:var(--c-accent);font-weight:var(--fw-black)}
+.total-line--muted{font-size:var(--fs-xs);color:var(--c-text-faint)}
+
+.retainer-card{
+  background:var(--c-bg-alt);border:var(--border);
+  border-radius:var(--radius);padding:var(--sp-4);
+  display:grid;gap:var(--sp-2);
+}
+.retainer-card h4{margin:0;font-size:var(--fs-sm);color:var(--c-text-faint);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:var(--fw-black)}
+
+.btn{
+  width:100%;min-height:56px;
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  border-radius:var(--radius-pill);border:1px solid transparent;
+  font-size:var(--fs-base);font-weight:var(--fw-black);
+  cursor:pointer;
+}
+.btn--primary{background:var(--c-accent-fill);color:var(--c-accent-ink)}
+.btn--ghost{background:var(--c-surface);color:var(--c-text);border-color:var(--c-line-hi)}
+.btn:active{transform:translateY(1px)}
+
+.copy-status{
+  min-height:1.4em;text-align:center;
+  font-size:var(--fs-sm);color:var(--c-accent);
+}
+
+.ftr{padding-block:var(--sp-6);text-align:center}
+.ftr p{font-size:var(--fs-xs);color:var(--c-text-faint)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none !important}
+}
+</style>
+</head>
+
+<body>
+
+<header class="hdr">
+  <div class="wrap hdr__in">
+    <div>
+      <p class="hdr__sub">פנימי</p>
+      <h1 class="hdr__title">בלאקזי - דף מכירות</h1>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="מעבר למצב בהיר" aria-pressed="false">
+      <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2z"/></svg>
+    </button>
+  </div>
+</header>
+
+<nav class="nav" aria-label="ניווט בדף">
+  <div class="wrap nav__in">
+    <a href="#rates">תעריפים</a>
+    <a href="#questions">שאלות</a>
+    <a href="#flags">דגלים אדומים</a>
+    <a href="#calc">מחשבון</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ---------- 1. rates ---------- -->
+<section class="section" id="rates">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">תעריפים</span>
+      <h2 class="sec-title">מחירון</h2>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">חבילה</th>
+            <th scope="col">מחיר השקה</th>
+            <th scope="col">מחיר אמיתי</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="t-pkg">רק חנות</td>
+            <td class="t-launch"><span class="num">4,500</span></td>
+            <td class="t-real"><span class="num">7,000</span></td>
+          </tr>
+          <tr>
+            <td class="t-pkg">חבילה מלאה</td>
+            <td class="t-launch"><span class="num">7,500</span></td>
+            <td class="t-real"><span class="num">11,500</span></td>
+          </tr>
+          <tr>
+            <td class="t-pkg">רק פרסום (הקמה)</td>
+            <td class="t-launch"><span class="num">2,500</span></td>
+            <td class="t-real"><span class="num">3,500</span></td>
+          </tr>
+          <tr>
+            <td class="t-pkg">ריטיינר חודשי</td>
+            <td class="t-launch"><span class="num">2,000</span></td>
+            <td class="t-real"><span class="num">2,500</span> או <span class="num">12%</span> מהתקציב, הגבוה מביניהם</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ul class="fine">
+      <li>כל המחירים לפני מע״מ.</li>
+      <li>מחיר השקה תקף ל־<span class="num">3</span> הלקוחות הראשונים בלבד, בתמורה לצילומי מסך, ציטוט והמלצה.</li>
+      <li>מינימום <span class="num">3</span> חודשים לריטיינר.</li>
+      <li>שופיפיי, אפליקציות, דומיין ותקציב פרסום על הלקוח.</li>
+    </ul>
+
+    <div class="addons">
+      <h3>תוספות</h3>
+      <ul>
+        <li><span>מוצר מעבר ל־<span class="num">15</span></span><b><span class="num">50</span></b></li>
+        <li><span>קריאטיב נוסף</span><b><span class="num">250</span></b></li>
+        <li><span>שבוע ליווי נוסף</span><b><span class="num">800</span></b></li>
+        <li><span>אקספרס פחות מ־<span class="num">4</span> שבועות</span><b>+<span class="num">25%</span></b></li>
+        <li><span>העברה מוויקס או ווקומרס</span><b><span class="num">1,500</span></b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- 2. call checklist ---------- -->
+<section class="section" id="questions">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">שאלות</span>
+      <h2 class="sec-title">שאלות לשיחה</h2>
+    </div>
+
+    <div class="note-box">
+      <p>רבע שעה. אני שואל, ובסוף אתה יודע אם זה מתאים וכמה זה עולה.</p>
+      <p>לפני שמתקשרים: להסתכל על האינסטגרם שלו.</p>
+    </div>
+
+    <div class="q-group">
+      <h3>מוצר</h3>
+      <div class="q-list">
+        <label class="q"><input type="checkbox"><span><span class="num">1</span>. מה אתה מוכר, וכמה מוצרים?</span></label>
+        <label class="q"><input type="checkbox"><span><span class="num">2</span>. מלאי שלך או ספק/דרופשיפינג?</span></label>
+        <label class="q"><input type="checkbox"><span><span class="num">3</span>. מה מחיר המוצר הממוצע?</span></label>
+        <label class="q"><input type="checkbox"><span><span class="num">4</span>. יש תמונות מוצר? מי צילם?</span></label>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <h3>איפה הוא היום</h3>
+      <div class="q-list">
+        <label class="q"><input type="checkbox"><span><span class="num">5</span>. איפה אתה מוכר היום? כמה מכירות בחודש?</span></label>
+        <label class="q q--key"><input type="checkbox"><span><span class="num">6</span>. מה כבר ניסית? עבדת עם מישהו לפני?</span></label>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <h3>כסף</h3>
+      <div class="q-list">
+        <label class="q q--key"><input type="checkbox"><span><span class="num">7</span>. כמה תקציב פרסום בחודש?</span></label>
+        <label class="q q--key"><input type="checkbox"><span><span class="num">8</span>. מה התקציב שחשבת עליו לפרויקט?</span></label>
+        <label class="q"><input type="checkbox"><span><span class="num">9</span>. יש עוסק וחשבון סליקה?</span></label>
+      </div>
+      <p class="q-note">פחות מ־<span class="num">3,000</span> ש״ח תקציב פרסום בחודש = לא רלוונטי.</p>
+    </div>
+
+    <div class="q-group">
+      <h3>החלטה</h3>
+      <div class="q-list">
+        <label class="q"><input type="checkbox"><span><span class="num">10</span>. למה עכשיו? מה השתנה?</span></label>
+        <label class="q"><input type="checkbox"><span><span class="num">11</span>. מי עוד מחליט חוץ ממך?</span></label>
+        <label class="q"><input type="checkbox"><span><span class="num">12</span>. תוך כמה זמן תעביר מוצרים, מחירים ותמונות?</span></label>
+      </div>
+    </div>
+
+    <p class="close-note">
+      סגירה: לחזור על מה ששמעת, לתת טווח בעל־פה, הצעה כתובה תוך <span class="num">24</span> שעות.
+    </p>
+
+    <button class="btn btn--ghost" id="reset-checks" type="button" style="margin-top:var(--sp-5)">
+      איפוס
+    </button>
+  </div>
+</section>
+
+<!-- ---------- 3. red flags ---------- -->
+<section class="section" id="flags">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">דגלים אדומים</span>
+      <h2 class="sec-title">מתי לא לקחת</h2>
+    </div>
+
+    <div class="limits">
+      <div class="limit"><span class="limit__x" aria-hidden="true">✕</span>
+        <p>אין תקציב פרסום, או "אני עוד לא יודע"</p></div>
+      <div class="limit"><span class="limit__x" aria-hidden="true">✕</span>
+        <p>מחיר מוצר ממוצע מתחת ל־<span class="num">80</span> ש״ח</p></div>
+      <div class="limit"><span class="limit__x" aria-hidden="true">✕</span>
+        <p>רוצה לשלם אחוזים מהמכירות או "נשלם מהרווחים"</p></div>
+      <div class="limit"><span class="limit__x" aria-hidden="true">✕</span>
+        <p>מבקש התחייבות למכירות</p></div>
+      <div class="limit"><span class="limit__x" aria-hidden="true">✕</span>
+        <p>כבר פוצץ שני פרילנסרים</p></div>
+      <div class="limit"><span class="limit__x" aria-hidden="true">✕</span>
+        <p>"אני רק בודק מחירים"</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- 4. quote calculator ---------- -->
+<section class="section" id="calc">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">מחשבון</span>
+      <h2 class="sec-title">מחשבון הצעה</h2>
+    </div>
+
+    <div class="calc">
+
+      <div class="field-group">
+        <h3>חבילה</h3>
+        <div class="opts" id="pkg-opts">
+          <label class="opt"><input type="radio" name="pkg" value="store"><span>רק חנות</span><span class="opt__price" data-price-for="store"></span></label>
+          <label class="opt"><input type="radio" name="pkg" value="full" checked><span>חבילה מלאה</span><span class="opt__price" data-price-for="full"></span></label>
+          <label class="opt"><input type="radio" name="pkg" value="ads"><span>רק פרסום (הקמה)</span><span class="opt__price" data-price-for="ads"></span></label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <h3>תמחור</h3>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="mode" value="launch" checked><span>מחיר השקה</span></label>
+          <label class="opt"><input type="radio" name="mode" value="real"><span>מחיר אמיתי</span></label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <h3>תוספות</h3>
+        <div class="rows">
+          <div class="row">
+            <label class="row__label" for="a-products">מוצרים מעבר ל־<span class="num">15</span><small><span class="num">50</span> ש״ח ליחידה</small></label>
+            <input type="number" id="a-products" min="0" step="1" value="0" inputmode="numeric">
+          </div>
+          <div class="row">
+            <label class="row__label" for="a-creatives">קריאטיבים נוספים<small><span class="num">250</span> ש״ח ליחידה</small></label>
+            <input type="number" id="a-creatives" min="0" step="1" value="0" inputmode="numeric">
+          </div>
+          <div class="row">
+            <label class="row__label" for="a-weeks">שבועות ליווי נוספים<small><span class="num">800</span> ש״ח ליחידה</small></label>
+            <input type="number" id="a-weeks" min="0" step="1" value="0" inputmode="numeric">
+          </div>
+          <div class="row">
+            <label class="row__label" for="a-migration">העברה מוויקס או ווקומרס<small><span class="num">1,500</span> ש״ח ליחידה</small></label>
+            <input type="number" id="a-migration" min="0" step="1" value="0" inputmode="numeric">
+          </div>
+        </div>
+        <div class="opts" style="margin-top:var(--sp-2)">
+          <label class="opt"><input type="checkbox" id="a-rush"><span>אקספרס פחות מ־<span class="num">4</span> שבועות</span><span class="opt__price">+<span class="num">25%</span></span></label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <h3>ריטיינר חודשי</h3>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" id="r-on"><span>לכלול ריטיינר בהצעה</span></label>
+        </div>
+        <div class="rows" id="r-budget-row" style="margin-top:var(--sp-2);display:none">
+          <div class="row">
+            <label class="row__label" for="r-budget">תקציב פרסום חודשי<small>נדרש רק למחיר אמיתי: <span class="num">12%</span> מהתקציב</small></label>
+            <input type="number" id="r-budget" min="0" step="100" value="0" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <div class="total-card">
+        <div class="total-line"><span>חבילה</span><b id="o-base">-</b></div>
+        <div class="total-line"><span>תוספות</span><b id="o-addons">-</b></div>
+        <div class="total-line" id="o-rush-line" style="display:none"><span>אקספרס <span class="num">25%</span></span><b id="o-rush">-</b></div>
+        <div class="total-line"><span>סכום ביניים</span><b id="o-subtotal">-</b></div>
+        <div class="total-line"><span>מע״מ <span class="num" id="o-vat-rate"></span></span><b id="o-vat">-</b></div>
+        <div class="total-line total-line--sum"><span>סה״כ</span><b id="o-total">-</b></div>
+        <p class="total-line--muted"><span class="num">50%</span> מקדמה, <span class="num">50%</span> לפני עלייה לאוויר. <span class="num">4</span> שבועות.</p>
+      </div>
+
+      <div class="retainer-card" id="r-card" style="display:none">
+        <h4>ריטיינר חודשי, בנפרד</h4>
+        <div class="total-line"><span>לפני מע״מ</span><b id="o-r-base">-</b></div>
+        <div class="total-line"><span>מע״מ</span><b id="o-r-vat">-</b></div>
+        <div class="total-line"><span>לחודש כולל מע״מ</span><b id="o-r-total">-</b></div>
+        <p class="total-line--muted">מינימום <span class="num">3</span> חודשים.</p>
+      </div>
+
+      <button class="btn btn--primary" id="copy-btn" type="button">העתק סיכום</button>
+      <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <p>מסמך פנימי. לא לשיתוף.</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   EDIT ZONE
+   ========================================================================== */
+
+/* Israeli VAT. Change here and every figure on the page follows. */
+const VAT_RATE = 0.18;
+
+/* ========================================================================== */
+
+(function () {
+  'use strict';
+
+  /* ---- pricing data. These are the owner's figures, not defaults ---- */
+  var PACKAGES = {
+    store: { label: 'רק חנות',          launch: 4500, real: 7000 },
+    full:  { label: 'חבילה מלאה',        launch: 7500, real: 11500 },
+    ads:   { label: 'רק פרסום (הקמה)',   launch: 2500, real: 3500 }
+  };
+
+  var ADDONS = [
+    { id: 'a-products',  unit: 50,   label: 'מוצרים מעבר ל־15' },
+    { id: 'a-creatives', unit: 250,  label: 'קריאטיבים נוספים' },
+    { id: 'a-weeks',     unit: 800,  label: 'שבועות ליווי נוספים' },
+    { id: 'a-migration', unit: 1500, label: 'העברה מוויקס או ווקומרס' }
+  ];
+
+  var RUSH_RATE = 0.25;
+  var RETAINER = { launch: 2000, realMin: 2500, realPct: 0.12 };
+
+  /* ---- helpers ---- */
+  function money(n) {
+    return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ש״ח';
+  }
+  function qty(id) {
+    var v = parseInt(document.getElementById(id).value, 10);
+    return isNaN(v) || v < 0 ? 0 : v;
+  }
+  function el(id) { return document.getElementById(id); }
+
+  /* ---- theme ---- */
+  var themeBtn = el('theme-toggle');
+  var themeMeta = el('theme-color');
+
+  function applyTheme(theme) {
+    var light = theme === 'light';
+    if (light) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    if (themeMeta) themeMeta.setAttribute('content', light ? '#F4F7F5' : '#0A0A0C');
+    themeBtn.setAttribute('aria-pressed', light ? 'true' : 'false');
+    themeBtn.setAttribute('aria-label', light ? 'מעבר למצב כהה' : 'מעבר למצב בהיר');
+  }
+
+  var storedTheme = null;
+  try { storedTheme = localStorage.getItem('blackz-theme'); } catch (e) {}
+  applyTheme(storedTheme === 'light' ? 'light' : 'dark');
+
+  themeBtn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem('blackz-theme', next); } catch (e) {}
+  });
+
+  /* ---- sticky nav: mark the section currently on screen ---- */
+  var navLinks = [].slice.call(document.querySelectorAll('.nav a'));
+  var sections = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+
+  if ('IntersectionObserver' in window) {
+    var navIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var i = sections.indexOf(entry.target);
+        navLinks.forEach(function (a, j) { a.classList.toggle('is-on', i === j); });
+      });
+    }, { rootMargin: '-76px 0px -65% 0px' });
+    sections.forEach(function (s) { if (s) navIo.observe(s); });
+  }
+
+  /* ---- checklist reset. No storage on purpose: every call starts clean ---- */
+  el('reset-checks').addEventListener('click', function () {
+    var boxes = document.querySelectorAll('#questions input[type="checkbox"]');
+    for (var i = 0; i < boxes.length; i++) boxes[i].checked = false;
+  });
+
+  /* ---- calculator ---- */
+  var lastQuote = null;
+
+  function selected(name) {
+    var node = document.querySelector('input[name="' + name + '"]:checked');
+    return node ? node.value : null;
+  }
+
+  function compute() {
+    var pkgKey = selected('pkg');
+    var mode = selected('mode');
+    var pkg = PACKAGES[pkgKey];
+
+    var base = pkg[mode];
+
+    var lines = [];
+    var addonsTotal = 0;
+    ADDONS.forEach(function (a) {
+      var n = qty(a.id);
+      if (!n) return;
+      var sum = n * a.unit;
+      addonsTotal += sum;
+      lines.push({ label: a.label, count: n, sum: sum });
+    });
+
+    var beforeRush = base + addonsTotal;
+    var rushOn = el('a-rush').checked;
+    var rush = rushOn ? beforeRush * RUSH_RATE : 0;
+
+    var subtotal = beforeRush + rush;
+    var vat = subtotal * VAT_RATE;
+    var total = subtotal + vat;
+
+    /* retainer is quoted separately, never folded into the one-off total */
+    var retainerOn = el('r-on').checked;
+    var retainer = 0;
+    if (retainerOn) {
+      if (mode === 'launch') {
+        retainer = RETAINER.launch;
+      } else {
+        retainer = Math.max(RETAINER.realMin, qty('r-budget') * RETAINER.realPct);
+      }
+    }
+
+    return {
+      pkgLabel: pkg.label, mode: mode, base: base,
+      lines: lines, addonsTotal: addonsTotal,
+      rushOn: rushOn, rush: rush,
+      subtotal: subtotal, vat: vat, total: total,
+      retainerOn: retainerOn, retainer: retainer,
+      retainerVat: retainer * VAT_RATE,
+      retainerTotal: retainer * (1 + VAT_RATE)
+    };
+  }
+
+  function render() {
+    var q = compute();
+    lastQuote = q;
+
+    el('o-base').textContent = money(q.base);
+    el('o-addons').textContent = money(q.addonsTotal);
+    el('o-rush-line').style.display = q.rushOn ? '' : 'none';
+    el('o-rush').textContent = money(q.rush);
+    el('o-subtotal').textContent = money(q.subtotal);
+    el('o-vat').textContent = money(q.vat);
+    el('o-total').textContent = money(q.total);
+
+    el('r-card').style.display = q.retainerOn ? '' : 'none';
+    el('r-budget-row').style.display = (q.retainerOn && q.mode === 'real') ? '' : 'none';
+    el('o-r-base').textContent = money(q.retainer);
+    el('o-r-vat').textContent = money(q.retainerVat);
+    el('o-r-total').textContent = money(q.retainerTotal);
+
+    /* live price hints next to each package radio */
+    var mode = q.mode;
+    var hints = document.querySelectorAll('[data-price-for]');
+    for (var i = 0; i < hints.length; i++) {
+      hints[i].textContent = money(PACKAGES[hints[i].getAttribute('data-price-for')][mode]);
+    }
+  }
+
+  el('o-vat-rate').textContent = Math.round(VAT_RATE * 100) + '%';
+
+  var inputs = document.querySelectorAll('#calc input');
+  for (var k = 0; k < inputs.length; k++) {
+    inputs[k].addEventListener('change', render);
+    inputs[k].addEventListener('input', render);
+  }
+  render();
+
+  /* ---- summary, formatted to paste straight into WhatsApp ---- */
+  function summaryText() {
+    var q = lastQuote;
+    var out = [];
+    out.push('הצעת מחיר - בלאקזי');
+    out.push('');
+    out.push(q.pkgLabel + ': ' + money(q.base));
+
+    if (q.lines.length) {
+      out.push('');
+      out.push('תוספות:');
+      q.lines.forEach(function (l) {
+        out.push('- ' + l.label + ' x' + l.count + ': ' + money(l.sum));
+      });
+    }
+    if (q.rushOn) {
+      out.push('- אקספרס פחות מ־4 שבועות (25%): ' + money(q.rush));
+    }
+
+    out.push('');
+    out.push('סכום ביניים: ' + money(q.subtotal));
+    out.push('מע״מ ' + Math.round(VAT_RATE * 100) + '%: ' + money(q.vat));
+    out.push('סה״כ לתשלום: ' + money(q.total));
+
+    if (q.retainerOn) {
+      out.push('');
+      out.push('ריטיינר חודשי: ' + money(q.retainerTotal) + ' כולל מע״מ, מינימום 3 חודשים.');
+    }
+
+    out.push('');
+    out.push('תנאי תשלום: 50% מקדמה, 50% לפני עלייה לאוויר.');
+    out.push('זמן אספקה: 4 שבועות מקבלת החומרים.');
+    return out.join('\n');
+  }
+
+  var copyStatus = el('copy-status');
+
+  function flash(msg) {
+    copyStatus.textContent = msg;
+    setTimeout(function () { copyStatus.textContent = ''; }, 2500);
+  }
+
+  el('copy-btn').addEventListener('click', function () {
+    var text = summaryText();
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        flash('הסיכום הועתק');
+      }, function () {
+        legacyCopy(text);
+      });
+    } else {
+      legacyCopy(text);
+    }
+  });
+
+  /* clipboard API needs a secure context; file:// and plain http do not have one */
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.insetInlineStart = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    flash(ok ? 'הסיכום הועתק' : 'ההעתקה נכשלה, סמן והעתק ידנית');
+  }
+})();
+</script>
+</body>
+</html>
