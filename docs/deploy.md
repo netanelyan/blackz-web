@@ -157,6 +157,36 @@ WhatsApp link preview comes out half empty.
 
 ---
 
+### 6b. The remaining migrations and the create-client function
+
+Two more SQL files, run once each in the SQL editor:
+
+- `supabase/002_objections.sql` - the editable objection answers
+- `supabase/003_quote_items.sql` - the quote catalogue
+
+Then deploy the function that creates client accounts:
+
+```bash
+npx supabase login
+npx supabase link --project-ref yaeralfvkrqlxhwavczz
+npx supabase functions deploy create-client
+```
+
+Nothing to configure: Supabase injects the service_role key into the function
+environment by itself.
+
+**Why an account needs a function at all.** Creating a login requires the
+service_role key, which bypasses every policy. That key can never sit in a page,
+so the work has to run somewhere it stays secret. The function verifies the
+caller is a logged-in admin before creating anything, and deletes the new
+account again if the project insert fails, so a login never exists without a
+project behind it.
+
+Until it is deployed the new-client tab says exactly that instead of failing
+silently.
+
+---
+
 ## Part 3 - Check it works
 
 1. Open `https://<your-domain>/app/dashboard.html`

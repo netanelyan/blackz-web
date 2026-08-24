@@ -405,6 +405,22 @@ button,input,select{font:inherit;color:inherit}
 .opt:has(input:checked){border-color:var(--c-accent);background:var(--c-accent-glow)}
 .opt__price{margin-inline-start:auto;font-size:var(--fs-xs);color:var(--c-text-faint);white-space:nowrap}
 
+/* ---------- new client form ---------- */
+.newc{display:grid;gap:var(--sp-3)}
+.newc__pass{display:flex;gap:var(--sp-2);align-items:center}
+.newc__pass input{flex:1;min-width:0}
+.newc__hint{font-size:var(--fs-xs);color:var(--c-text-faint)}
+.newc__done{
+  padding:var(--sp-5);border-radius:var(--radius);
+  background:var(--c-ok-wash);border:1px solid var(--c-ok);display:grid;gap:var(--sp-3);
+}
+.newc__done h3{font-size:var(--fs-md);color:var(--c-ok)}
+.newc__creds{
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-4);font-family:var(--f-mono);font-size:var(--fs-sm);
+  direction:ltr;text-align:start;word-break:break-all;
+}
+
 /* ---------- catalogue picker ---------- */
 .qcat{background:var(--c-surface);border:var(--border);border-radius:var(--radius);margin-bottom:var(--sp-2)}
 .qcat summary{
@@ -940,6 +956,7 @@ button,input,select{font:inherit;color:inherit}
   /* ---------------- admin tabs ---------------- */
   var TABS = [
     ['projects',   'פרויקטים'],
+    ['newclient',  'לקוח חדש'],
     ['quote',      'הצעת מחיר'],
     ['objections', 'התנגדויות'],
     ['questions',  'שאלות לשיחה']
@@ -962,15 +979,154 @@ button,input,select{font:inherit;color:inherit}
       b.classList.toggle('is-on', b.getAttribute('data-tab') === name);
     });
     if (name === 'projects') return renderAdminList();
+    if (name === 'newclient') return renderNewClient();
     if (name === 'quote') return renderQuote();
     if (name === 'objections') return renderObjections();
     if (name === 'questions') return renderQuestions();
   }
 
+  /* ---------------- new client ----------------
+     Creating a login account needs the service_role key, which bypasses RLS
+     and can never be shipped in a page. The work happens in the create-client
+     Edge Function, which holds that key as a secret and checks the caller is
+     an admin before it does anything. */
+  var DEFAULT_MATERIALS = [
+    'רשימת מוצרים ומחירים',
+    'תמונות מוצר',
+    'לוגו',
+    'גישה לדומיין'
+  ];
+
+  function randomPassword() {
+    /* readable on a phone call: no characters that look alike */
+    var abc = 'abcdefghjkmnpqrstuvwxyz23456789';
+    var out = '';
+    var bytes = new Uint8Array(12);
+    (window.crypto || window.msCrypto).getRandomValues(bytes);
+    for (var i = 0; i < bytes.length; i++) out += abc[bytes[i] % abc.length];
+    return out;
+  }
+
+  function renderNewClient() {
+    $('view').innerHTML =
+      '<section class="section"><h2 class="sec-title">לקוח חדש</h2>' +
+      '<p class="newc__hint" style="margin-bottom:var(--sp-4)">נוצרים יחד: חשבון כניסה ללקוח ופרויקט משויך אליו, עם ארבעת השלבים ורשימת החומרים.</p>' +
+      '<div class="card newc">' +
+        ncField('nc-client', 'שם הלקוח', 'text') +
+        ncField('nc-brand', 'שם המותג', 'text') +
+        ncField('nc-email', 'אימייל לכניסה', 'email') +
+        '<div class="row"><span class="row__label">סיסמה זמנית</span>' +
+          '<span class="newc__pass">' +
+            '<input type="text" id="nc-pass" value="' + randomPassword() + '">' +
+            '<button class="btn btn--ghost btn--sm" id="nc-regen" type="button">חדשה</button>' +
+          '</span></div>' +
+        ncField('nc-start', 'תאריך התחלה', 'text') +
+        ncField('nc-launch', 'תאריך יעד לעלייה לאוויר', 'text') +
+        ncField('nc-upload', 'קישור להעלאת קבצים', 'url') +
+        ncField('nc-wa', 'וואטסאפ של הלקוח', 'tel') +
+      '</div>' +
+
+      '<h2 class="sec-title" style="margin-top:var(--sp-5)">חומרים שמחכים לו</h2>' +
+      '<div class="card newc" id="nc-mats">' +
+        DEFAULT_MATERIALS.map(function (m, i) {
+          return '<label class="opt"><input type="checkbox" data-mat value="' + esc(m) + '"' +
+            (i < 3 ? ' checked' : '') + '><span>' + esc(m) + '</span></label>';
+        }).join('') +
+      '</div>' +
+
+      '<button class="btn btn--primary btn--block" id="nc-create" style="margin-top:var(--sp-5)">יצירת לקוח</button>' +
+      '<p class="msg" id="nc-msg" role="status" aria-live="polite"></p>' +
+      '<div id="nc-done"></div>' +
+      '</section>';
+
+    $('nc-regen').addEventListener('click', function () {
+      $('nc-pass').value = randomPassword();
+    });
+    $('nc-create').addEventListener('click', createClient);
+  }
+
+  function ncField(id, label, type) {
+    return '<div class="row"><span class="row__label">' + label + '</span>' +
+      '<input type="' + type + '" id="' + id + '"></div>';
+  }
+
+  function createClient() {
+    var btn = $('nc-create');
+    var msg = $('nc-msg');
+    var payload = {
+      email: $('nc-email').value.trim(),
+      password: $('nc-pass').value,
+      client_name: $('nc-client').value.trim(),
+      brand_name: $('nc-brand').value.trim(),
+      start_date: $('nc-start').value.trim(),
+      target_launch_date: $('nc-launch').value.trim(),
+      upload_url: $('nc-upload').value.trim(),
+      wa_number: $('nc-wa').value.trim(),
+      materials: [].slice.call(document.querySelectorAll('[data-mat]:checked'))
+        .map(function (c) { return c.value; })
+    };
+
+    if (!payload.email || !payload.password) {
+      msg.className = 'msg msg--err';
+      msg.textContent = 'צריך אימייל וסיסמה.';
+      return;
+    }
+
+    btn.disabled = true;
+    msg.className = 'msg';
+    msg.textContent = 'יוצר...';
+
+    fetch(SUPABASE_URL + '/functions/v1/create-client', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + (session ? session.access_token : ''),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      return r.json().then(function (b) {
+        if (!r.ok) throw new Error(b.error || ('HTTP ' + r.status));
+        return b;
+      });
+    }).then(function () {
+      msg.textContent = '';
+      /* the password is not stored anywhere, so this is the only chance to
+         hand it over. Show it until the owner navigates away. */
+      $('nc-done').innerHTML =
+        '<div class="newc__done"><h3>הלקוח נוצר</h3>' +
+          '<p class="newc__hint">אלה פרטי הכניסה. הם לא נשמרים בשום מקום, אז שלחו אותם עכשיו.</p>' +
+          '<div class="newc__creds">' + esc(payload.email) + '<br>' + esc(payload.password) + '</div>' +
+          '<button class="btn btn--ghost btn--block" id="nc-copy">העתקת פרטי הכניסה</button>' +
+        '</div>';
+      $('nc-copy').addEventListener('click', function () {
+        var text = [
+          'פרטי כניסה לעמוד הסטטוס של הפרויקט:',
+          'אימייל: ' + payload.email,
+          'סיסמה: ' + payload.password,
+          '',
+          'אפשר לשנות סיסמה אחרי הכניסה הראשונה.'
+        ].join('\n');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            $('nc-copy').textContent = 'הועתק';
+          }, function () { legacyCopy(text, function () {}); });
+        } else { legacyCopy(text, function () {}); }
+      });
+      $('nc-create').textContent = 'יצירת לקוח נוסף';
+    }).catch(function (err) {
+      msg.className = 'msg msg--err';
+      var m = String(err.message || err);
+      msg.textContent = /Failed to fetch|NetworkError/i.test(m)
+        ? 'הפונקציה create-client עוד לא פרוסה. ראו docs/deploy.md.'
+        : m;
+    }).then(function () { btn.disabled = false; });
+  }
+
   /* ---------------- quote builder ----------------
      Line items from public.quote_items, not fixed packages: a website quote
      has to describe the scope that was actually agreed. Prices live in the
-     table and are edited in the מחירון mode, never hardcoded here. */
+     table and are edited in the price-list mode, never hardcoded here. */
   var catalog = [];
   var qty = {};        /* item id -> quantity, kept across redraws */
   var priceEditing = false;
@@ -1031,7 +1187,8 @@ button,input,select{font:inherit;color:inherit}
       '<section class="section no-print"><div class="card">' +
         qText('q-client', 'שם הלקוח') +
         qText('q-brand', 'שם המותג') +
-        qText('q-valid', 'תוקף ההצעה', '14 יום') +
+        qDate('q-date', 'תאריך ההצעה', 0) +
+        qDate('q-until', 'בתוקף עד', 14) +
       '</div></section>' +
 
       '<section class="section no-print">' + groups + '</section>' +
@@ -1071,6 +1228,26 @@ button,input,select{font:inherit;color:inherit}
     '</div>';
   }
 
+  /* An <input type="date"> gives a native picker on a phone and hands back
+     an unambiguous YYYY-MM-DD, which beats asking for a typed Hebrew date.
+     Defaults are only a starting point and stay editable. */
+  function qDate(id, label, plusDays) {
+    var d = new Date();
+    d.setDate(d.getDate() + plusDays);
+    var iso = d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+    return '<div class="row"><span class="row__label">' + label + '</span>' +
+      '<input type="date" id="' + id + '" value="' + iso + '"></div>';
+  }
+
+  /* dd/mm/yyyy: the order Israeli invoices use, and never ambiguous */
+  function niceDate(iso) {
+    if (!iso) return '';
+    var p = iso.split('-');
+    return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
+  }
+
   function qText(id, label, val) {
     return '<div class="row"><span class="row__label">' + label + '</span>' +
       '<input type="text" id="' + id + '" value="' + (val || '') + '"></div>';
@@ -1093,7 +1270,7 @@ button,input,select{font:inherit;color:inherit}
       });
     });
 
-    ['q-client', 'q-brand', 'q-valid', 'q-disc'].forEach(function (id) {
+    ['q-client', 'q-brand', 'q-date', 'q-until', 'q-disc'].forEach(function (id) {
       var e = $(id);
       if (e) e.addEventListener('input', drawDoc);
     });
@@ -1166,7 +1343,8 @@ button,input,select{font:inherit;color:inherit}
       monthlySum: monthlySum, monthlyTotal: monthlySum * (1 + VAT_RATE), monthlyTerm: monthlyTerm,
       client: ($('q-client') || {}).value || '',
       brand: ($('q-brand') || {}).value || '',
-      valid: ($('q-valid') || {}).value || '',
+      date: ($('q-date') || {}).value || '',
+      until: ($('q-until') || {}).value || '',
       unpriced: oneOff.concat(monthly).filter(function (l) { return !l.price; }).length
     };
   }
@@ -1192,11 +1370,12 @@ button,input,select{font:inherit;color:inherit}
       '<div class="qdoc">' +
         '<div class="qdoc__head">' +
           '<div class="qdoc__brand">' +
-            '<svg class="qdoc__logo" viewBox="222 310 630 468" aria-hidden="true"><use href="#bz-mark"/></svg>' +
+            '<svg class="qdoc__logo" viewBox="0 0 630 468" aria-hidden="true"><use href="#bz-mark"/></svg>' +
             '<div><h3>הצעת מחיר</h3><p>בלאקזי</p></div>' +
           '</div>' +
           '<div class="qdoc__meta">'
-            + (q.valid ? 'בתוקף ל־' + esc(q.valid) + '<br>' : '')
+            + (q.date ? 'תאריך: <span class="num">' + niceDate(q.date) + '</span><br>' : '')
+            + (q.until ? 'בתוקף עד: <span class="num">' + niceDate(q.until) + '</span><br>' : '')
             + 'תנאי תשלום <span class="num">50%</span> / <span class="num">50%</span>' +
           '</div>' +
         '</div>' +
@@ -1246,6 +1425,8 @@ button,input,select{font:inherit;color:inherit}
     var q = lastQuote, out = [];
     out.push('הצעת מחיר - בלאקזי');
     if (q.client || q.brand) out.push('לכבוד: ' + (q.client || q.brand));
+    if (q.date) out.push('תאריך: ' + niceDate(q.date));
+    if (q.until) out.push('בתוקף עד: ' + niceDate(q.until));
     out.push('');
     q.oneOff.forEach(function (l) {
       out.push('- ' + l.name + (l.count > 1 ? ' x' + l.count : '') + ': ' + (l.price ? money(l.sum) : 'ללא מחיר'));
