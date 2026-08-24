@@ -23,7 +23,7 @@ by an actual request.
 
 ## Pricing
 
-- [x] **All 60 items priced.** Filled in via [pricing.md](pricing.md).
+- [x] **All items priced.** 55 in the catalogue: 49 with a number, 6 always included.
 - [ ] **Run `supabase/004_prices.sql`** to write them to the database. Until
       then the dashboard still shows the seeded zeros.
 

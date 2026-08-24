@@ -32,11 +32,6 @@ update public.quote_items set price = 750, default_included = false where positi
 update public.quote_items set price = 1500, default_included = false where position = 24;  -- ספריית רכיבים ומערכת עיצוב
 update public.quote_items set price = 1800, default_included = false where position = 25;  -- עיצוב מותג: לוגו, צבעים, טיפוגרפיה
 update public.quote_items set price = 350, default_included = false where position = 26;  -- באנרים ותמונות ראשיות
-update public.quote_items set price = 450, default_included = false where position = 30;  -- כתיבת תוכן שיווקי לעמוד
-update public.quote_items set price = 35, default_included = false where position = 31;  -- כתיבת תיאורי מוצר
-update public.quote_items set price = 150, default_included = false where position = 32;  -- צילומי מוצר
-update public.quote_items set price = 15, default_included = false where position = 33;  -- עריכת תמונות והסרת רקע
-update public.quote_items set price = 350, default_included = false where position = 34;  -- תרגום לשפה נוספת
 update public.quote_items set price = 2800, default_included = false where position = 40;  -- הקמת אתר או חנות, בסיס
 update public.quote_items set price = 50, default_included = false where position = 42;  -- מוצר מעבר ל־15
 update public.quote_items set price = 900, default_included = false where position = 43;  -- דף מוצר מותאם
@@ -76,3 +71,15 @@ update public.quote_items set price = 300, default_included = false where positi
 update public.quote_items set price = 300, default_included = false where position = 103;  -- תעודת אבטחה וגיבויים
 update public.quote_items set price = 800, default_included = false where position = 111;  -- שבוע ליווי נוסף
 update public.quote_items set price = 2000, default_included = false where position = 112;  -- ריטיינר חודשי
+
+-- =============================================================================
+-- CONTENT CATEGORY REMOVED
+--
+-- Deactivated rather than deleted, so the rows and their prices survive if the
+-- category is ever wanted again. The dashboard only reads active items.
+--
+-- To bring it back:
+--   update public.quote_items set active = true where position between 30 and 34;
+-- =============================================================================
+
+update public.quote_items set active = false where position between 30 and 34;
