@@ -1,0 +1,17 @@
+# Kept off the deployment.
+#
+# internal/sales.html has no authentication. Deployed, it is a public URL that
+# exposes the launch-vs-real pricing, the qualification script and the red
+# flags. A prospect who sees it knows the floor before negotiating.
+# Safe default: it does not ship. See the note in README about moving it behind
+# the dashboard login instead.
+internal/
+
+# Server-side SQL. Nothing to serve, and no reason to publish the schema.
+supabase/
+
+# Repo tooling, not part of the site.
+scripts/
+.github/
+CLAUDE.md
+translations.txt

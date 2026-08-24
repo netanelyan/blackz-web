@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+
+<!--
+  ==========================================================================
+  CLIENT STATUS PAGE - TEMPLATE
+
+  This file is a template. Do not send it to anyone as-is.
+
+  Per client:
+    1. Copy it to  c/<brand>-<random>.html
+       The random suffix is the only thing keeping the page private, so make it
+       long and not guessable. Example: c/clutch-7f3a91c4.html
+    2. Fill the EDIT ZONE below. Nothing outside that block needs touching.
+    3. Send the client the URL over WhatsApp.
+
+  The page renders entirely from the CONFIG object. Empty fields hide their
+  section rather than showing a blank or a placeholder.
+
+  No analytics, no external requests, no tracking. noindex + nofollow above.
+  ==========================================================================
+-->
+
+<!-- ==========================================================================
+     EDIT ZONE - everything client-specific lives between here and END EDIT ZONE
+
+     The three tags directly below have to carry the brand name literally.
+     WhatsApp's link preview crawler does not run JavaScript, so it reads these
+     from the raw HTML. Setting them from CONFIG would leave the preview blank.
+     ========================================================================== -->
+
+<title>קלאץ׳ סטור - סטטוס פרויקט</title>
+<meta property="og:title" content="קלאץ׳ סטור - סטטוס פרויקט">
+<meta property="og:description" content="עמוד הסטטוס של הפרויקט שלך.">
+
+<script>
+const CONFIG = {
+
+  /* ---- who ---- */
+  clientName:  'ישראל ישראלי',
+  brandName:   'קלאץ׳ סטור',
+
+  /* ---- dates. Plain Hebrew strings, written by hand ---- */
+  startDate:         '12 בינואר',
+  targetLaunchDate:  '9 בפברואר',
+
+  /* Typed by hand on purpose. Never generated from the clock: an automatic
+     date would claim the page is current on a day nothing was reviewed. */
+  lastUpdated: '24 בינואר',
+
+  /* ---- progress. state: 'done' | 'active' | 'waiting' | 'todo' ---- */
+  stages: [
+    { name: 'שיחה',            state: 'done'    },
+    { name: 'חומרים ואפיון',   state: 'waiting' },
+    { name: 'בנייה',           state: 'todo'    },
+    { name: 'עולים לאוויר',    state: 'todo'    }
+  ],
+
+  /* ---- what we need from the client ----
+     state: 'received' | 'missing' | 'skip'
+     'skip' rows are not rendered at all.
+     'since' is the date it was first asked for. Shown only on missing rows. */
+  materials: [
+    { item: 'רשימת מוצרים ומחירים', state: 'received', since: '12 בינואר' },
+    { item: 'תמונות מוצר',           state: 'missing',  since: '12 בינואר' },
+    { item: 'לוגו',                  state: 'missing',  since: '18 בינואר' },
+    { item: 'גישה לדומיין',          state: 'skip',     since: ''          }
+  ],
+
+  /* ---- links ---- */
+  uploadUrl:  'https://www.dropbox.com/request/REPLACE_ME',
+  previewUrl: '',   /* empty until there is something to show. Fills the top card. */
+
+  /* ---- payment. Status only, no amounts ---- */
+  payment: {
+    depositPaid: true,
+    balanceDue:  'לפני עלייה לאוויר'
+  },
+
+  /* ---- contact ---- */
+  waNumber: '972515310498'
+};
+</script>
+
+<!-- ====================== END EDIT ZONE ====================== -->
+
+<style>
+/* ==========================================================================
+   Design tokens copied from index.html so this matches the public site.
+   The embedded Arimo @font-face blocks are deliberately NOT copied: every
+   client gets their own copy of this file, so it stays on the system stack.
+
+   Dark by default, light through prefers-color-scheme. No toggle: the client
+   sees whatever their phone is set to.
+   ========================================================================== */
+:root{
+  --c-bg:          #0A0A0C;
+  --c-bg-alt:      #101015;
+  --c-surface:     #15151B;
+  --c-line:        #262630;
+  --c-line-hi:     #3A3A48;
+
+  --c-text:        #F6F6F9;
+  --c-text-dim:    #ADADBD;
+  --c-text-faint:  #74748C;
+
+  --c-accent:      #B8F135;
+  --c-accent-ink:  #0A0A0C;
+  --c-accent-fill: #B8F135;
+  --c-accent-glow: rgba(184,241,53,.14);
+
+  --c-ok:          #28C840;   /* received / done */
+  --c-ok-wash:     rgba(40,200,64,.12);
+
+  --c-ph:          #FFC53D;   /* waiting on the client */
+  --c-ph-wash:     rgba(255,197,61,.10);
+  --c-ph-line:     rgba(255,197,61,.45);
+
+  --c-bar-bg:      rgba(10,10,12,.9);
+  --c-soft-wash:   rgba(255,255,255,.05);
+
+  --c-wa:          #25D366;
+  --c-wa-ink:      #04240F;
+
+  --f-sans: "Arial Hebrew","Segoe UI",system-ui,-apple-system,"Noto Sans Hebrew",Arial,sans-serif;
+  --f-mono: ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+
+  --fs-xs:   .82rem;
+  --fs-sm:   .94rem;
+  --fs-base: 1.06rem;
+  --fs-md:   1.16rem;
+  --fs-lg:   1.35rem;
+  --fs-xl:   1.72rem;
+
+  --lh-tight: 1.15;
+  --lh-body:  1.65;
+
+  --fw-normal: 400;
+  --fw-med:    500;
+  --fw-bold:   600;
+  --fw-black:  700;
+
+  --tracking-wide: .14em;
+
+  --sp-1: .25rem;
+  --sp-2: .5rem;
+  --sp-3: .75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+
+  --wrap:   680px;
+  --gutter: clamp(1rem, 4vw, 1.6rem);
+
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --border: 1px solid var(--c-line);
+  --tap: 48px;
+
+  --ease: cubic-bezier(.22,.68,.32,1);
+  --dur: .25s;
+}
+
+@media (prefers-color-scheme: light){
+  :root{
+    --c-bg:          #F4F7F5;
+    --c-bg-alt:      #FFFFFF;
+    --c-surface:     #FFFFFF;
+    --c-line:        #E4EBE5;
+    --c-line-hi:     #CBD8CE;
+
+    --c-text:        #101014;
+    --c-text-dim:    #52525E;
+    --c-text-faint:  #7C7C8A;
+
+    /* lime on white is about 1.4:1, so accent text darkens while fills stay lime */
+    --c-accent:      #4F7D0A;
+    --c-accent-glow: rgba(79,125,10,.12);
+
+    --c-ok:          #1B7F2E;
+    --c-ok-wash:     rgba(27,127,46,.10);
+
+    --c-ph:          #8A5D00;
+    --c-ph-wash:     rgba(138,93,0,.10);
+    --c-ph-line:     rgba(138,93,0,.40);
+
+    --c-bar-bg:      rgba(244,247,245,.94);
+    --c-soft-wash:   rgba(0,0,0,.05);
+
+    color-scheme: light;
+  }
+}
+
+/* ==========================  BASE  ========================== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--c-bg);
+  color:var(--c-text);
+  font-family:var(--f-sans);
+  font-size:var(--fs-base);
+  line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  /* room for the sticky WhatsApp bar */
+  padding-bottom:calc(96px + env(safe-area-inset-bottom));
+}
+h1,h2,h3{margin:0;line-height:var(--lh-tight);font-weight:var(--fw-black);text-wrap:balance}
+p{margin:0}
+/* ol included: the stage list is an <ol>, and its default markers would sit
+   next to the numbered circles the .step component already draws */
+ul,ol{margin:0;padding:0;list-style:none}
+a{color:inherit;text-decoration:none}
+
+/* Bidi isolation. Latin runs and numbers flip at a line edge without it. */
+.ltr{direction:ltr;unicode-bidi:isolate}
+.num{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+
+:focus-visible{outline:2px solid var(--c-accent);outline-offset:2px;border-radius:4px}
+
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
+.section{padding-block:var(--sp-6)}
+.section + .section{border-top:var(--border)}
+.sec-title{
+  font-size:var(--fs-sm);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
+  color:var(--c-text-faint);margin-bottom:var(--sp-4);
+}
+
+/* ==========================  HEADER  ========================== */
+.head{padding-block:var(--sp-6) var(--sp-5);background:var(--c-bg-alt);border-bottom:var(--border)}
+.head h1{font-size:var(--fs-xl);margin-bottom:var(--sp-2)}
+.head__launch{font-size:var(--fs-md);color:var(--c-text-dim)}
+.head__updated{margin-top:var(--sp-3);font-size:var(--fs-xs);color:var(--c-text-faint)}
+
+/* ==========================  PREVIEW CARD  ========================== */
+/* Hidden until previewUrl is set. When set it is the first thing on the page. */
+.preview{
+  display:block;
+  margin-block:var(--sp-5) 0;
+  padding:var(--sp-5);
+  border-radius:var(--radius-lg);
+  background:var(--c-accent-glow);
+  border:1px solid var(--c-accent);
+}
+.preview h2{font-size:var(--fs-lg);margin-bottom:var(--sp-2);color:var(--c-text)}
+.preview p{font-size:var(--fs-sm);color:var(--c-text-dim)}
+.preview__cta{
+  margin-top:var(--sp-4);
+  display:flex;align-items:center;justify-content:center;
+  min-height:var(--tap);
+  border-radius:var(--radius-pill);
+  background:var(--c-accent-fill);color:var(--c-accent-ink);
+  font-weight:var(--fw-black);
+}
+
+/* ==========================  WAITING ON YOU  ========================== */
+.waiting{
+  margin-block:var(--sp-5) 0;
+  padding:var(--sp-5);
+  border-radius:var(--radius-lg);
+  background:var(--c-ph-wash);
+  border:2px solid var(--c-ph-line);
+}
+.waiting h2{font-size:var(--fs-lg);color:var(--c-ph);margin-bottom:var(--sp-4)}
+.waiting ul{display:grid;gap:var(--sp-3)}
+.waiting li{
+  display:flex;justify-content:space-between;gap:var(--sp-3);
+  align-items:baseline;flex-wrap:wrap;
+  padding-bottom:var(--sp-3);
+  border-bottom:1px solid var(--c-ph-line);
+}
+.waiting li:last-child{border-bottom:none;padding-bottom:0}
+.waiting__item{font-size:var(--fs-md);font-weight:var(--fw-bold);color:var(--c-text)}
+.waiting__since{font-size:var(--fs-xs);color:var(--c-ph);white-space:nowrap}
+
+.all-clear{
+  margin-block:var(--sp-5) 0;
+  padding:var(--sp-4) var(--sp-5);
+  border-radius:var(--radius);
+  background:var(--c-surface);border:var(--border);
+  font-size:var(--fs-md);color:var(--c-text-dim);
+}
+
+/* ==========================  PROGRESS  ==========================
+   Same shape as .steps on the public site, extended with per-stage states. */
+.steps{counter-reset:step;display:grid;gap:var(--sp-5)}
+.step{position:relative;padding-inline-start:44px;min-height:32px}
+.step::before{
+  counter-increment:step;content:counter(step);
+  position:absolute;top:0;inset-inline-start:0;
+  font-family:var(--f-mono);font-size:var(--fs-sm);font-weight:var(--fw-black);
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--c-line-hi);background:var(--c-bg-alt);
+  color:var(--c-text-faint);
+  display:grid;place-items:center;
+}
+.step h3{font-size:var(--fs-md);font-weight:var(--fw-bold)}
+.step small{display:block;font-size:var(--fs-xs);color:var(--c-text-faint)}
+
+/* done: the number is replaced by a tick */
+.step--done::before{
+  content:"✓";
+  color:var(--c-ok);border-color:var(--c-ok);background:var(--c-ok-wash);
+}
+.step--done h3{color:var(--c-text-dim)}
+
+.step--active::before{
+  color:var(--c-accent-ink);
+  background:var(--c-accent-fill);border-color:var(--c-accent-fill);
+  animation:pulse 2s ease-in-out infinite;
+}
+.step--active h3{color:var(--c-accent)}
+
+.step--waiting::before{color:var(--c-ph);border-color:var(--c-ph-line);background:var(--c-ph-wash)}
+.step--waiting h3{color:var(--c-ph)}
+
+.step--todo h3{color:var(--c-text-faint)}
+
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 var(--c-accent-glow)}
+  50%    {box-shadow:0 0 0 8px transparent}
+}
+@media (prefers-reduced-motion:reduce){
+  .step--active::before{animation:none}
+}
+
+/* ==========================  MATERIALS  ========================== */
+.mats{display:grid;gap:var(--sp-2)}
+.mat{
+  display:flex;align-items:flex-start;gap:var(--sp-3);
+  min-height:var(--tap);
+  padding:var(--sp-3) var(--sp-4);
+  background:var(--c-surface);border:var(--border);
+  border-radius:var(--radius-sm);
+}
+.mat__mark{
+  flex:none;width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;
+  font-size:.78rem;font-weight:var(--fw-black);
+  margin-top:.15rem;
+}
+.mat--received .mat__mark{background:var(--c-ok-wash);color:var(--c-ok)}
+.mat--received .mat__label{color:var(--c-text-faint)}
+.mat--missing{border-color:var(--c-ph-line)}
+.mat--missing .mat__mark{background:var(--c-ph-wash);color:var(--c-ph)}
+.mat__label{font-size:var(--fs-sm);padding-top:.2rem}
+.mat__since{display:block;font-size:var(--fs-xs);color:var(--c-ph)}
+
+.secrets-note{
+  margin-top:var(--sp-4);
+  padding:var(--sp-4);
+  border:var(--border);
+  border-inline-start:3px solid var(--c-accent);
+  border-radius:var(--radius-sm);
+  background:var(--c-surface);
+  font-size:var(--fs-sm);color:var(--c-text-dim);
+}
+
+/* ==========================  UPLOAD  ========================== */
+.upload-btn{
+  width:100%;min-height:60px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-pill);
+  background:var(--c-accent-fill);color:var(--c-accent-ink);
+  font-size:var(--fs-md);font-weight:var(--fw-black);
+}
+.upload-note{margin-top:var(--sp-3);font-size:var(--fs-xs);color:var(--c-text-faint);text-align:center}
+
+/* ==========================  PAYMENT  ========================== */
+.pay{display:grid;gap:var(--sp-2)}
+.pay__row{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  padding:var(--sp-4);
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius-sm);
+  font-size:var(--fs-sm);
+}
+.pay__state{font-size:var(--fs-xs);color:var(--c-text-faint);white-space:nowrap}
+.pay__state--paid{color:var(--c-ok)}
+
+/* ==========================  STICKY WHATSAPP  ========================== */
+/* same shape as .wa-bar on the public site, minus the reveal-on-scroll */
+.wa-bar{
+  position:fixed;inset-inline:0;bottom:0;z-index:90;
+  padding:var(--sp-3) var(--gutter);
+  padding-bottom:calc(var(--sp-3) + env(safe-area-inset-bottom));
+  background:var(--c-bar-bg);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--c-line);
+}
+.wa-bar__note{
+  text-align:center;font-size:var(--fs-xs);color:var(--c-text-faint);
+  margin-bottom:var(--sp-2);
+}
+.wa-bar__btn{
+  width:100%;min-height:54px;
+  display:flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  border-radius:var(--radius-pill);
+  background:var(--c-wa);color:var(--c-wa-ink);
+  font-size:var(--fs-base);font-weight:var(--fw-black);
+}
+.wa-ico{width:1.15em;height:1.15em;flex:none;fill:currentColor}
+
+[hidden]{display:none !important}
+</style>
+</head>
+
+<body>
+
+<!-- Every section below is rendered from CONFIG. Empty markup is intentional. -->
+<header class="head" id="head" hidden>
+  <div class="wrap">
+    <h1 id="head-brand"></h1>
+    <p class="head__launch" id="head-launch"></p>
+    <p class="head__updated" id="head-updated"></p>
+  </div>
+</header>
+
+<main class="wrap">
+  <a class="preview" id="preview" hidden></a>
+  <section class="waiting" id="waiting" hidden></section>
+  <p class="all-clear" id="all-clear" hidden>הכל אצלנו. אנחנו עובדים.</p>
+
+  <section class="section" id="progress-sec" hidden>
+    <h2 class="sec-title">מפת התקדמות</h2>
+    <ol class="steps" id="steps"></ol>
+  </section>
+
+  <section class="section" id="materials-sec" hidden>
+    <h2 class="sec-title">מה צריך ממך</h2>
+    <ul class="mats" id="mats"></ul>
+    <p class="secrets-note">
+      סיסמאות וגישות לא נשלחות בעמוד הזה ולא בוואטסאפ.
+      אני שולח לך קישור מאובטח נפרד לכל גישה.
+    </p>
+  </section>
+
+  <section class="section" id="upload-sec" hidden>
+    <a class="upload-btn" id="upload-btn" target="_blank" rel="noopener">העלאת קבצים</a>
+    <p class="upload-note">אפשר להעלות ישירות מהטלפון. בלי הרשמה ובלי דחיסת תמונות.</p>
+  </section>
+
+  <section class="section" id="payment-sec" hidden>
+    <h2 class="sec-title">תשלום</h2>
+    <div class="pay" id="pay"></div>
+  </section>
+</main>
+
+<div class="wa-bar" id="wa-bar" hidden>
+  <p class="wa-bar__note">לכל שאלה, וואטסאפ. לקבצים, הכפתור למעלה.</p>
+  <a class="wa-bar__btn" id="wa-btn" target="_blank" rel="noopener">
+    <svg class="wa-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2"/></svg>
+    <span id="wa-label">וואטסאפ</span>
+  </a>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* CONFIG is declared with const in the head script. Top-level const does not
+     become a window property, so it has to be referenced by name. */
+  var C = (typeof CONFIG !== 'undefined' && CONFIG) ? CONFIG : {};
+
+  function el(id) { return document.getElementById(id); }
+  function has(v) { return typeof v === 'string' && v.trim() !== ''; }
+  function show(node) { if (node) node.hidden = false; }
+
+  /* Config values are trusted (the owner types them) but they land in innerHTML
+     in a few places, so escape anyway. A stray < would break the layout. */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* Latin runs and digits need isolation inside an RTL line. */
+  function bdi(s) { return '<bdi>' + esc(s) + '</bdi>'; }
+
+  /* ---- 1. header ---- */
+  if (has(C.brandName)) {
+    el('head-brand').innerHTML = bdi(C.brandName);
+    show(el('head'));
+  }
+  if (has(C.targetLaunchDate)) {
+    el('head-launch').innerHTML = 'עולים לאוויר בתאריך ' + bdi(C.targetLaunchDate);
+  } else {
+    el('head-launch').hidden = true;
+  }
+  if (has(C.lastUpdated)) {
+    el('head-updated').innerHTML = 'עודכן לאחרונה: ' + bdi(C.lastUpdated);
+  } else {
+    el('head-updated').hidden = true;
+  }
+
+  /* ---- 2. preview card. Sits above everything once there is a link ---- */
+  if (has(C.previewUrl)) {
+    var pv = el('preview');
+    pv.setAttribute('href', C.previewUrl);
+    pv.setAttribute('target', '_blank');
+    pv.setAttribute('rel', 'noopener');
+    pv.innerHTML =
+      '<h2>החנות שלך מוכנה לצפייה</h2>' +
+      '<p>אפשר להיכנס, להסתובב, ולכתוב לי מה לשנות.</p>' +
+      '<span class="preview__cta">לצפייה בחנות</span>';
+    show(pv);
+  }
+
+  /* ---- 3. waiting on the client, built from the missing materials ---- */
+  var mats = Array.isArray(C.materials) ? C.materials : [];
+  var missing = mats.filter(function (m) { return m && m.state === 'missing'; });
+
+  if (missing.length) {
+    var rows = missing.map(function (m) {
+      var since = has(m.since)
+        ? '<span class="waiting__since">מחכים מאז ' + esc(m.since) + '</span>'
+        : '';
+      return '<li><span class="waiting__item">' + esc(m.item) + '</span>' + since + '</li>';
+    }).join('');
+    el('waiting').innerHTML = '<h2>מחכים לך</h2><ul>' + rows + '</ul>';
+    show(el('waiting'));
+  } else {
+    show(el('all-clear'));
+  }
+
+  /* ---- 4. progress map ---- */
+  var stages = Array.isArray(C.stages) ? C.stages : [];
+  var STAGE_LABEL = {
+    done:    'הושלם',
+    active:  'בעבודה',
+    waiting: 'מחכים לך',
+    todo:    ''
+  };
+  if (stages.length) {
+    el('steps').innerHTML = stages.map(function (s) {
+      var state = STAGE_LABEL.hasOwnProperty(s.state) ? s.state : 'todo';
+      var note = STAGE_LABEL[state] ? '<small>' + STAGE_LABEL[state] + '</small>' : '';
+      return '<li class="step step--' + state + '"><h3>' + esc(s.name) + '</h3>' + note + '</li>';
+    }).join('');
+    show(el('progress-sec'));
+  }
+
+  /* ---- 5. materials checklist. 'skip' rows are never rendered ---- */
+  var visible = mats.filter(function (m) { return m && m.state !== 'skip'; });
+  if (visible.length) {
+    el('mats').innerHTML = visible.map(function (m) {
+      var received = m.state === 'received';
+      var mark = received ? '✓' : '!';
+      var since = (!received && has(m.since))
+        ? '<span class="mat__since">מחכים מאז ' + esc(m.since) + '</span>'
+        : '';
+      return '<li class="mat mat--' + (received ? 'received' : 'missing') + '">' +
+             '<span class="mat__mark" aria-hidden="true">' + mark + '</span>' +
+             '<span class="mat__label">' + esc(m.item) + since + '</span></li>';
+    }).join('');
+    show(el('materials-sec'));
+  }
+
+  /* ---- 6. upload ---- */
+  if (has(C.uploadUrl)) {
+    el('upload-btn').setAttribute('href', C.uploadUrl);
+    show(el('upload-sec'));
+  }
+
+  /* ---- 7. payment. Status only, never amounts ---- */
+  var pay = C.payment || {};
+  var payRows = [];
+  payRows.push(
+    '<div class="pay__row"><span>מקדמה <span class="num">50%</span></span>' +
+    '<span class="pay__state' + (pay.depositPaid ? ' pay__state--paid' : '') + '">' +
+    (pay.depositPaid ? 'שולם' : 'ממתין לתשלום') + '</span></div>'
+  );
+  if (has(pay.balanceDue)) {
+    payRows.push(
+      '<div class="pay__row"><span>יתרה <span class="num">50%</span></span>' +
+      '<span class="pay__state">' + esc(pay.balanceDue) + '</span></div>'
+    );
+  }
+  el('pay').innerHTML = payRows.join('');
+  show(el('payment-sec'));
+
+  /* ---- 8. sticky WhatsApp ---- */
+  if (has(C.waNumber)) {
+    var msg = 'היי, זה ' + (has(C.brandName) ? C.brandName : '') + ', לגבי הפרויקט';
+    el('wa-btn').setAttribute('href',
+      'https://wa.me/' + encodeURIComponent(C.waNumber) + '?text=' + encodeURIComponent(msg));
+    show(el('wa-bar'));
+  } else {
+    /* no number means no bar, so the padding reserved for it is not needed */
+    document.body.style.paddingBottom = '0';
+  }
+})();
+</script>
+</body>
+</html>

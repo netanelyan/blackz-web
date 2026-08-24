@@ -1,0 +1,1241 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>בלאקזי - לוח בקרה</title>
+<meta name="theme-color" content="#0A0A0C">
+<meta name="color-scheme" content="dark light">
+
+<!--
+  ==========================================================================
+  BLACKZ DASHBOARD
+
+  One page, two roles. The role comes from public.profiles.role and the
+  database decides what each account may read: see supabase/schema.sql.
+
+    admin   sees every project, edits status, can open any client's view
+    client  sees their own project, read only
+
+  Nothing here is a security boundary. The page only draws what the API
+  returns, and the API is behind Row Level Security. Deleting the "admin"
+  checks in this file would change the layout and nothing else.
+
+  Supabase is called over plain fetch rather than their CDN library, so this
+  stays one self-contained file with no third-party script on a page that
+  handles passwords.
+  ==========================================================================
+-->
+
+<script>
+/* ==========================================================================
+   EDIT ZONE
+
+   SUPABASE_URL   Settings -> Data API -> Project URL
+   SUPABASE_KEY   Settings -> API Keys -> Publishable key (sb_publishable_...)
+
+   The publishable key replaced what used to be called the anon key. It is meant
+   to be public and grants nothing on its own, because every table is behind RLS.
+   On an older project the equivalent sits under a Legacy API keys tab as `anon`.
+
+   Never paste the Secret key (sb_secret_..., formerly service_role). It bypasses
+   RLS completely.
+   ========================================================================== */
+
+const SUPABASE_URL = 'https://yaeralfvkrqlxhwavczz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_AycovibF816InaICdWOr1Q_hz9A5iXZ';
+
+/* Israeli VAT, used by the quote builder. Change here only. */
+const VAT_RATE = 0.18;
+
+/* ========================================================================== */
+</script>
+
+<style>
+/* Design tokens copied from index.html. The embedded Arimo is deliberately not
+   copied: this is a tool, it should load instantly on a phone. */
+:root{
+  --c-bg:#0A0A0C; --c-bg-alt:#101015; --c-surface:#15151B; --c-surface-hi:#1D1D25;
+  --c-line:#262630; --c-line-hi:#3A3A48;
+  --c-text:#F6F6F9; --c-text-dim:#ADADBD; --c-text-faint:#74748C;
+  --c-accent:#B8F135; --c-accent-ink:#0A0A0C; --c-accent-fill:#B8F135;
+  --c-accent-glow:rgba(184,241,53,.14);
+  --c-ok:#28C840; --c-ok-wash:rgba(40,200,64,.12);
+  --c-ph:#FFC53D; --c-ph-wash:rgba(255,197,61,.10); --c-ph-line:rgba(255,197,61,.45);
+  --c-warn:#FF7A6B; --c-warn-wash:rgba(255,122,107,.10);
+  --c-wa:#25D366; --c-wa-ink:#04240F;
+  --c-soft-wash:rgba(255,255,255,.05);
+  --c-hdr-bg:rgba(10,10,12,.93);
+
+  --f-sans:"Arial Hebrew","Segoe UI",system-ui,-apple-system,"Noto Sans Hebrew",Arial,sans-serif;
+  --f-mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+
+  --fs-xs:.82rem; --fs-sm:.94rem; --fs-base:1.02rem; --fs-md:1.14rem;
+  --fs-lg:1.32rem; --fs-xl:1.6rem;
+  --lh-body:1.6;
+  --fw-normal:400; --fw-med:500; --fw-bold:600; --fw-black:700;
+  --tracking-wide:.14em;
+
+  --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem;
+  --sp-5:1.5rem; --sp-6:2rem; --sp-7:3rem;
+
+  --wrap:880px; --gutter:clamp(1rem,4vw,1.6rem);
+  --radius-sm:8px; --radius:14px; --radius-lg:20px; --radius-pill:999px;
+  --border:1px solid var(--c-line);
+  --tap:48px;
+  --ease:cubic-bezier(.22,.68,.32,1); --dur:.2s;
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --c-bg:#F4F7F5; --c-bg-alt:#FFFFFF; --c-surface:#FFFFFF; --c-surface-hi:#F4F7F5;
+    --c-line:#E4EBE5; --c-line-hi:#CBD8CE;
+    --c-text:#101014; --c-text-dim:#52525E; --c-text-faint:#7C7C8A;
+    --c-accent:#4F7D0A; --c-accent-glow:rgba(79,125,10,.12);
+    --c-ok:#1B7F2E; --c-ok-wash:rgba(27,127,46,.10);
+    --c-ph:#8A5D00; --c-ph-wash:rgba(138,93,0,.10); --c-ph-line:rgba(138,93,0,.40);
+    --c-warn:#B3271A; --c-warn-wash:rgba(179,39,26,.08);
+    --c-soft-wash:rgba(0,0,0,.05);
+    --c-hdr-bg:rgba(244,247,245,.95);
+    color-scheme:light;
+  }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--c-bg);color:var(--c-text);
+  font-family:var(--f-sans);font-size:var(--fs-base);line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+h1,h2,h3{margin:0;line-height:1.2;font-weight:var(--fw-black)}
+p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+.ltr{direction:ltr;unicode-bidi:isolate}
+.num{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--c-accent);outline-offset:2px;border-radius:4px}
+[hidden]{display:none !important}
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
+
+/* ---------- app bar ---------- */
+.bar{
+  position:sticky;top:0;z-index:40;
+  background:var(--c-hdr-bg);
+  backdrop-filter:saturate(160%) blur(12px);-webkit-backdrop-filter:saturate(160%) blur(12px);
+  border-bottom:var(--border);
+}
+.bar__in{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:58px}
+.bar__brand{display:flex;align-items:center;gap:var(--sp-2);font-weight:var(--fw-black)}
+.bar__dot{width:9px;height:9px;border-radius:50%;background:var(--c-accent);flex:none}
+.bar__who{font-size:var(--fs-xs);color:var(--c-text-faint)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  min-height:var(--tap);padding-inline:var(--sp-4);
+  border-radius:var(--radius-pill);border:1px solid transparent;
+  font-size:var(--fs-sm);font-weight:var(--fw-black);cursor:pointer;
+}
+.btn--primary{background:var(--c-accent-fill);color:var(--c-accent-ink)}
+.btn--ghost{background:var(--c-surface);color:var(--c-text);border-color:var(--c-line-hi)}
+.btn--wa{background:var(--c-wa);color:var(--c-wa-ink)}
+.btn--sm{min-height:38px;font-size:var(--fs-xs);padding-inline:var(--sp-3)}
+.btn--block{width:100%}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:active{transform:translateY(1px)}
+
+/* ---------- login ---------- */
+.login{min-height:100svh;display:grid;place-items:center;padding:var(--gutter)}
+.login__card{
+  width:100%;max-width:380px;
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius-lg);
+  padding:var(--sp-6);display:grid;gap:var(--sp-4);
+}
+.login__card h1{font-size:var(--fs-xl)}
+.login__card p{font-size:var(--fs-sm);color:var(--c-text-dim)}
+.field{display:grid;gap:var(--sp-2)}
+.field label{font-size:var(--fs-sm);font-weight:var(--fw-bold)}
+.field input,.field select{
+  width:100%;min-height:var(--tap);padding:var(--sp-3) var(--sp-4);
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius-sm);
+  font-size:1rem;
+}
+.field input:focus,.field select:focus{outline:none;border-color:var(--c-accent)}
+/* Latin-only fields type left to right but stay aligned with the RTL form */
+.field input[type="email"],.field input[type="password"],.field input[type="url"],.field input[type="tel"]{
+  direction:ltr;text-align:right;
+}
+.msg{font-size:var(--fs-sm);min-height:1.3em}
+.msg--err{color:var(--c-warn)}
+.msg--ok{color:var(--c-ok)}
+
+/* ---------- setup notice ---------- */
+.setup{
+  margin:var(--sp-5) 0;padding:var(--sp-5);
+  border-radius:var(--radius);background:var(--c-ph-wash);
+  border:2px solid var(--c-ph-line);
+}
+.setup h2{font-size:var(--fs-md);color:var(--c-ph);margin-bottom:var(--sp-2)}
+.setup p{font-size:var(--fs-sm);color:var(--c-text-dim)}
+.setup code{font-family:var(--f-mono);font-size:var(--fs-xs);direction:ltr;unicode-bidi:isolate}
+
+/* ---------- stat strip ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);margin-block:var(--sp-5)}
+.stat{
+  padding:var(--sp-4) var(--sp-3);text-align:center;
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+}
+.stat b{display:block;font-size:var(--fs-xl);font-weight:var(--fw-black);line-height:1.1}
+.stat span{font-size:var(--fs-xs);color:var(--c-text-faint)}
+.stat--blocked b{color:var(--c-ph)}
+.stat--live b{color:var(--c-ok)}
+
+/* ---------- project list ---------- */
+.section{padding-block:var(--sp-5)}
+.sec-title{
+  font-size:var(--fs-sm);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
+  color:var(--c-text-faint);margin-bottom:var(--sp-3);
+}
+.plist{display:grid;gap:var(--sp-2)}
+.pcard{
+  width:100%;text-align:start;
+  display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-4);min-height:var(--tap);
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+  cursor:pointer;
+}
+.pcard:active{background:var(--c-surface-hi)}
+.pcard--blocked{border-color:var(--c-ph-line)}
+.pcard__main{flex:1;min-width:0}
+.pcard__brand{font-size:var(--fs-md);font-weight:var(--fw-bold);display:block}
+.pcard__meta{font-size:var(--fs-xs);color:var(--c-text-faint)}
+.pill{
+  flex:none;font-size:var(--fs-xs);font-weight:var(--fw-black);
+  padding:.25rem .6rem;border-radius:var(--radius-pill);white-space:nowrap;
+}
+.pill--waiting{background:var(--c-ph-wash);color:var(--c-ph)}
+.pill--active{background:var(--c-accent-glow);color:var(--c-accent)}
+.pill--done{background:var(--c-ok-wash);color:var(--c-ok)}
+.pill--todo{background:var(--c-soft-wash);color:var(--c-text-faint)}
+
+/* ---------- detail ---------- */
+.detail{padding-bottom:var(--sp-7)}
+.detail__head{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:var(--sp-3);padding-block:var(--sp-5);flex-wrap:wrap;
+}
+.detail__head h2{font-size:var(--fs-xl)}
+.detail__head p{font-size:var(--fs-sm);color:var(--c-text-faint)}
+
+.card{
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+  padding:var(--sp-4);display:grid;gap:var(--sp-3);
+}
+.card + .card{margin-top:var(--sp-3)}
+
+.row{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
+.row__label{flex:1;min-width:120px;font-size:var(--fs-sm)}
+.row__label small{display:block;color:var(--c-text-faint);font-size:var(--fs-xs)}
+.row select,.row input{
+  min-height:44px;padding:var(--sp-2) var(--sp-3);
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius-sm);
+  font-size:var(--fs-sm);
+}
+.row select{min-width:130px}
+.row input[type="text"],.row input[type="url"]{flex:1;min-width:160px}
+
+.seg{display:flex;gap:var(--sp-1);background:var(--c-bg);padding:4px;border-radius:var(--radius-pill);border:var(--border)}
+.seg button{
+  flex:1;min-height:40px;border:none;background:none;border-radius:var(--radius-pill);
+  font-size:var(--fs-xs);font-weight:var(--fw-bold);color:var(--c-text-faint);cursor:pointer;
+}
+.seg button.is-on{background:var(--c-accent-fill);color:var(--c-accent-ink)}
+
+/* ---------- client-facing view ---------- */
+.waiting{
+  padding:var(--sp-5);border-radius:var(--radius-lg);
+  background:var(--c-ph-wash);border:2px solid var(--c-ph-line);margin-bottom:var(--sp-4);
+}
+.waiting h3{font-size:var(--fs-lg);color:var(--c-ph);margin-bottom:var(--sp-3)}
+.waiting li{
+  display:flex;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap;
+  padding-bottom:var(--sp-2);border-bottom:1px solid var(--c-ph-line);margin-bottom:var(--sp-2);
+}
+.waiting li:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.waiting__since{font-size:var(--fs-xs);color:var(--c-ph);white-space:nowrap}
+.all-clear{
+  padding:var(--sp-4);border-radius:var(--radius);
+  background:var(--c-surface);border:var(--border);
+  font-size:var(--fs-md);color:var(--c-text-dim);margin-bottom:var(--sp-4);
+}
+
+.steps{counter-reset:step;display:grid;gap:var(--sp-4)}
+.step{position:relative;padding-inline-start:44px;min-height:32px}
+.step::before{
+  counter-increment:step;content:counter(step);
+  position:absolute;top:0;inset-inline-start:0;
+  font-family:var(--f-mono);font-size:var(--fs-sm);font-weight:var(--fw-black);
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--c-line-hi);background:var(--c-bg-alt);color:var(--c-text-faint);
+  display:grid;place-items:center;
+}
+.step h4{margin:0;font-size:var(--fs-md);font-weight:var(--fw-bold)}
+.step small{display:block;font-size:var(--fs-xs);color:var(--c-text-faint)}
+.step--done::before{content:"✓";color:var(--c-ok);border-color:var(--c-ok);background:var(--c-ok-wash)}
+.step--done h4{color:var(--c-text-dim)}
+.step--active::before{color:var(--c-accent-ink);background:var(--c-accent-fill);border-color:var(--c-accent-fill)}
+.step--active h4{color:var(--c-accent)}
+.step--waiting::before{color:var(--c-ph);border-color:var(--c-ph-line);background:var(--c-ph-wash)}
+.step--waiting h4{color:var(--c-ph)}
+.step--todo h4{color:var(--c-text-faint)}
+
+.mats{display:grid;gap:var(--sp-2)}
+.mat{
+  display:flex;align-items:flex-start;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-4);
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius-sm);
+}
+.mat__mark{
+  flex:none;width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;font-size:.78rem;font-weight:var(--fw-black);margin-top:.1rem;
+}
+.mat--received .mat__mark{background:var(--c-ok-wash);color:var(--c-ok)}
+.mat--received .mat__label{color:var(--c-text-faint)}
+.mat--missing{border-color:var(--c-ph-line)}
+.mat--missing .mat__mark{background:var(--c-ph-wash);color:var(--c-ph)}
+.mat__label{font-size:var(--fs-sm)}
+.mat__since{display:block;font-size:var(--fs-xs);color:var(--c-ph)}
+
+.pay__row{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  padding:var(--sp-3) var(--sp-4);
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius-sm);
+  font-size:var(--fs-sm);
+}
+.pay__state{font-size:var(--fs-xs);color:var(--c-text-faint)}
+.pay__state--paid{color:var(--c-ok)}
+
+.savebar{
+  position:sticky;bottom:0;z-index:30;
+  padding-block:var(--sp-3);
+  padding-bottom:calc(var(--sp-3) + env(safe-area-inset-bottom));
+  background:var(--c-hdr-bg);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:var(--border);
+  display:flex;gap:var(--sp-2);align-items:center;
+}
+.savebar .msg{flex:1;font-size:var(--fs-xs)}
+
+.spinner{padding:var(--sp-7) 0;text-align:center;color:var(--c-text-faint);font-size:var(--fs-sm)}
+
+/* ---------- tab bar ---------- */
+.tabbar{position:sticky;top:58px;z-index:35;background:var(--c-hdr-bg);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:var(--border)}
+.tabbar__in{display:flex;gap:var(--sp-2);overflow-x:auto;padding-block:var(--sp-2);scrollbar-width:none}
+.tabbar__in::-webkit-scrollbar{display:none}
+.tabbar button{
+  flex:none;min-height:42px;padding-inline:var(--sp-4);
+  border-radius:var(--radius-pill);border:var(--border);background:var(--c-surface);
+  font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--c-text-dim);
+  white-space:nowrap;cursor:pointer;
+}
+.tabbar button.is-on{background:var(--c-accent-fill);color:var(--c-accent-ink);border-color:var(--c-accent-fill)}
+
+/* ---------- objections ---------- */
+.obj{display:grid;gap:var(--sp-2)}
+.obj details{background:var(--c-surface);border:var(--border);border-radius:var(--radius)}
+.obj details[open]{border-color:var(--c-line-hi)}
+.obj summary{
+  cursor:pointer;list-style:none;padding:var(--sp-4);
+  font-weight:var(--fw-bold);font-size:var(--fs-sm);
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:var(--tap);
+}
+.obj summary::-webkit-details-marker{display:none}
+.obj summary::after{content:"+";flex:none;color:var(--c-accent);font-size:1.3rem;line-height:1}
+.obj details[open] summary::after{content:"-"}
+.obj__body{padding:0 var(--sp-4) var(--sp-4);display:grid;gap:var(--sp-3)}
+.obj__block small{
+  display:block;font-size:var(--fs-xs);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--c-text-faint);margin-bottom:var(--sp-1);
+}
+.obj__block p{font-size:var(--fs-sm);color:var(--c-text-dim)}
+.obj__say{border-inline-start:3px solid var(--c-accent);padding-inline-start:var(--sp-3)}
+.obj__say p{color:var(--c-text)}
+.obj__avoid{border-inline-start:3px solid var(--c-warn);padding-inline-start:var(--sp-3)}
+
+/* ---------- call checklist ---------- */
+.q-group{margin-bottom:var(--sp-5)}
+.q-group > h3{font-size:var(--fs-xs);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--c-text-faint);margin-bottom:var(--sp-2)}
+.q{display:flex;align-items:flex-start;gap:var(--sp-3);min-height:var(--tap);
+  padding:var(--sp-3) var(--sp-4);background:var(--c-surface);border:var(--border);
+  border-radius:var(--radius-sm);cursor:pointer;font-size:var(--fs-sm);margin-bottom:var(--sp-2)}
+.q input{flex:none;width:24px;height:24px;margin:0;accent-color:var(--c-accent-fill);cursor:pointer}
+.q input:checked + span{color:var(--c-text-faint);text-decoration:line-through}
+.q--key{border-color:var(--c-accent);background:var(--c-accent-glow)}
+.q-note{font-size:var(--fs-xs);color:var(--c-warn);background:var(--c-warn-wash);
+  border:1px solid var(--c-warn);border-radius:var(--radius-sm);padding:var(--sp-3);margin-top:var(--sp-2)}
+
+/* ---------- quote builder ---------- */
+.opts{display:grid;gap:var(--sp-2)}
+.opt{display:flex;align-items:center;gap:var(--sp-3);min-height:var(--tap);
+  padding:var(--sp-3) var(--sp-4);background:var(--c-surface);border:var(--border);
+  border-radius:var(--radius-sm);cursor:pointer;font-size:var(--fs-sm)}
+.opt input{flex:none;width:22px;height:22px;margin:0;accent-color:var(--c-accent-fill)}
+.opt:has(input:checked){border-color:var(--c-accent);background:var(--c-accent-glow)}
+.opt__price{margin-inline-start:auto;font-size:var(--fs-xs);color:var(--c-text-faint);white-space:nowrap}
+
+/* ---------- the printable quote ---------- */
+.qdoc{background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+  padding:var(--sp-5);margin-top:var(--sp-4)}
+.qdoc__head{display:flex;justify-content:space-between;gap:var(--sp-4);
+  align-items:flex-start;flex-wrap:wrap;border-bottom:2px solid var(--c-line-hi);padding-bottom:var(--sp-4)}
+.qdoc__head h3{font-size:var(--fs-lg)}
+.qdoc__head p{font-size:var(--fs-xs);color:var(--c-text-faint)}
+.qdoc__to{margin-block:var(--sp-4);font-size:var(--fs-sm)}
+.qdoc__to b{font-size:var(--fs-md)}
+.qdoc table{width:100%;border-collapse:collapse;margin-top:var(--sp-3)}
+.qdoc th{text-align:start;font-size:var(--fs-xs);color:var(--c-text-faint);
+  padding:var(--sp-2) 0;border-bottom:1px solid var(--c-line-hi);font-weight:var(--fw-black)}
+.qdoc td{padding:var(--sp-3) 0;border-bottom:1px solid var(--c-line);font-size:var(--fs-sm);vertical-align:top}
+.qdoc td:last-child{text-align:end;white-space:nowrap}
+.qdoc__sum{margin-top:var(--sp-4);display:grid;gap:var(--sp-2)}
+.qdoc__line{display:flex;justify-content:space-between;gap:var(--sp-3);font-size:var(--fs-sm);color:var(--c-text-dim)}
+.qdoc__line b{color:var(--c-text)}
+.qdoc__total{border-top:2px solid var(--c-line-hi);padding-top:var(--sp-3);font-size:var(--fs-md);color:var(--c-text)}
+.qdoc__total b{color:var(--c-accent);font-weight:var(--fw-black)}
+.qdoc__terms{margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:1px solid var(--c-line);
+  display:grid;gap:var(--sp-1)}
+.qdoc__terms li{font-size:var(--fs-xs);color:var(--c-text-faint)}
+
+/* Print to PDF. Chrome does the bidi shaping and font embedding, which is
+   why this beats a JS PDF library: those need a font blob and still reorder
+   mixed Hebrew and Latin runs incorrectly. */
+@media print{
+  .bar,.tabbar,.savebar,.no-print{display:none !important}
+  body{background:#fff;color:#000;padding:0;font-size:11pt}
+  .wrap{max-width:none;padding:0}
+  /* .qdoc lives inside the #q-doc wrapper, so target the wrapper: matching
+     on .qdoc hid its own container and printed a blank page. */
+  #view > *:not(#q-doc){display:none !important}
+  .qdoc{background:#fff;border:none;border-radius:0;padding:0;margin:0;color:#000}
+  .qdoc__head{border-bottom:2px solid #000}
+  .qdoc__head h3,.qdoc__line b,.qdoc__total,.qdoc__to b{color:#000}
+  .qdoc__head p,.qdoc th,.qdoc__terms li,.qdoc__line{color:#333}
+  .qdoc td{border-bottom:1px solid #ccc}
+  .qdoc__total{border-top:2px solid #000}
+  .qdoc__total b{color:#000}
+  .qdoc__terms{border-top:1px solid #ccc}
+  @page{size:A4;margin:16mm}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ---------- login ---------- -->
+<div class="login" id="login">
+  <form class="login__card" id="login-form">
+    <h1>לוח בקרה</h1>
+    <p>התחברות עם המייל שקיבלת.</p>
+    <div class="field">
+      <label for="email">אימייל</label>
+      <input id="email" type="email" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="password">סיסמה</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+    </div>
+    <button class="btn btn--primary btn--block" type="submit" id="login-btn">כניסה</button>
+    <p class="msg" id="login-msg" role="status" aria-live="polite"></p>
+  </form>
+</div>
+
+<!-- ---------- app ---------- -->
+<div id="app" hidden>
+  <div class="bar">
+    <div class="wrap bar__in">
+      <div class="bar__brand">
+        <span class="bar__dot" aria-hidden="true"></span>
+        <span>בלאקזי</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--sp-3)">
+        <span class="bar__who" id="who"></span>
+        <button class="btn btn--ghost btn--sm" id="signout" type="button">יציאה</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbar" id="tabbar" hidden>
+    <div class="wrap tabbar__in" id="tabbar-in"></div>
+  </div>
+
+  <!-- Everything renders into #view. The print rule isolates the quote by
+       hiding #view's other direct children, so nothing else may live here. -->
+  <main class="wrap" id="main">
+    <div id="view"><div class="spinner">טוען...</div></div>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------------- tiny helpers ---------------- */
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function bdi(s) { return '<bdi>' + esc(s) + '</bdi>'; }
+  function has(v) { return typeof v === 'string' && v.trim() !== ''; }
+
+  var STAGE_LABEL = { done: 'הושלם', active: 'בעבודה', waiting: 'מחכים לך', todo: '' };
+  var STAGE_OPTS  = [['done','הושלם'],['active','בעבודה'],['waiting','מחכים ללקוח'],['todo','טרם התחיל']];
+  var MAT_OPTS    = [['received','התקבל'],['missing','חסר'],['skip','לא רלוונטי']];
+
+  /* ---------------- session ---------------- */
+  var SESSION_KEY = 'blackz-session';
+  var session = null;
+  var profile = null;
+
+  function loadSession() {
+    try { session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (e) { session = null; }
+  }
+  function saveSession(s) {
+    session = s;
+    try { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) {}
+  }
+  function clearSession() {
+    session = null; profile = null;
+    try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+  }
+
+  var configured = SUPABASE_URL.indexOf('REPLACE_ME') === -1 && SUPABASE_KEY.indexOf('REPLACE_ME') === -1;
+
+  /* ---------------- Supabase REST ---------------- */
+  function headers(auth) {
+    var h = { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' };
+    if (auth && session) h['Authorization'] = 'Bearer ' + session.access_token;
+    return h;
+  }
+
+  function signIn(email, password) {
+    return fetch(SUPABASE_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST', headers: headers(false),
+      body: JSON.stringify({ email: email, password: password })
+    }).then(function (r) {
+      return r.json().then(function (body) {
+        if (!r.ok) throw new Error(body.error_description || body.msg || body.error || 'שגיאת התחברות');
+        return body;
+      });
+    });
+  }
+
+  /* One retry path: an expired access token is refreshed once, then the call
+     is replayed. Anything else surfaces to the caller. */
+  function refresh() {
+    if (!session || !session.refresh_token) return Promise.reject(new Error('no session'));
+    return fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST', headers: headers(false),
+      body: JSON.stringify({ refresh_token: session.refresh_token })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('refresh failed');
+      return r.json();
+    }).then(function (s) { saveSession(s); return s; });
+  }
+
+  function api(path, opts, isRetry) {
+    opts = opts || {};
+    return fetch(SUPABASE_URL + '/rest/v1/' + path, {
+      method: opts.method || 'GET',
+      headers: Object.assign(headers(true), opts.headers || {}),
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function (r) {
+      if (r.status === 401 && !isRetry) {
+        return refresh().then(function () { return api(path, opts, true); });
+      }
+      if (!r.ok) {
+        return r.text().then(function (t) { throw new Error(t || ('HTTP ' + r.status)); });
+      }
+      return r.status === 204 ? null : r.json();
+    });
+  }
+
+  /* ---------------- login screen ---------------- */
+  $('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!configured) {
+      $('login-msg').className = 'msg msg--err';
+      $('login-msg').textContent = 'צריך למלא כתובת ומפתח בראש הקובץ.';
+      return;
+    }
+    var btn = $('login-btn');
+    btn.disabled = true;
+    $('login-msg').className = 'msg';
+    $('login-msg').textContent = 'מתחבר...';
+
+    signIn($('email').value.trim(), $('password').value).then(function (s) {
+      saveSession(s);
+      return boot();
+    }).catch(function (err) {
+      $('login-msg').className = 'msg msg--err';
+      $('login-msg').textContent = err.message === 'Invalid login credentials'
+        ? 'אימייל או סיסמה שגויים.' : err.message;
+    }).then(function () { btn.disabled = false; });
+  });
+
+  $('signout').addEventListener('click', function () {
+    clearSession();
+    $('app').hidden = true;
+    $('login').hidden = false;
+    $('login-msg').textContent = '';
+    $('password').value = '';
+  });
+
+  /* ---------------- boot ---------------- */
+  function boot() {
+    if (!session) return Promise.resolve();
+    $('login').hidden = true;
+    $('app').hidden = false;
+    $('view').innerHTML = '<div class="spinner">טוען...</div>';
+
+    return api('profiles?select=id,role,full_name')
+      .then(function (rows) {
+        profile = (rows && rows[0]) || { role: 'client', full_name: '' };
+        $('who').textContent = profile.role === 'admin' ? 'מנהל' : '';
+        if (profile.role === 'admin') {
+          renderTabs();
+          return goTab('projects');
+        }
+        return renderClientOwn();
+      })
+      .catch(function (err) {
+        /* a dead refresh token lands here: drop back to the login screen */
+        clearSession();
+        $('app').hidden = true;
+        $('login').hidden = false;
+        $('login-msg').className = 'msg msg--err';
+        $('login-msg').textContent = 'צריך להתחבר מחדש.';
+      });
+  }
+
+  /* ---------------- admin: project list ---------------- */
+  var SELECT_FULL =
+    'select=*,stages(id,position,name,state),materials(id,position,item,state,since)' +
+    '&stages.order=position&materials.order=position';
+
+  function currentStage(p) {
+    var st = (p.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
+    var active = st.filter(function (s) { return s.state === 'active'; })[0];
+    var waiting = st.filter(function (s) { return s.state === 'waiting'; })[0];
+    return waiting || active || st.filter(function (s) { return s.state !== 'done'; })[0] || st[st.length - 1] || null;
+  }
+  function missingOf(p) {
+    return (p.materials || []).filter(function (m) { return m.state === 'missing'; });
+  }
+
+  function renderAdminList() {
+    return api('projects?' + SELECT_FULL + '&archived=eq.false&order=created_at.desc').then(function (rows) {
+      var projects = rows || [];
+      var blocked = projects.filter(function (p) { return missingOf(p).length > 0; });
+      var live = projects.filter(function (p) {
+        return (p.stages || []).some(function (s) { return s.name === 'עולים לאוויר' && s.state === 'done'; });
+      });
+
+      var cards = projects.map(function (p) {
+        var stage = currentStage(p);
+        var miss = missingOf(p).length;
+        var state = stage ? stage.state : 'todo';
+        return '<button class="pcard' + (miss ? ' pcard--blocked' : '') + '" data-id="' + esc(p.id) + '">' +
+          '<span class="pcard__main">' +
+            '<span class="pcard__brand">' + bdi(p.brand_name || p.client_name) + '</span>' +
+            '<span class="pcard__meta">' +
+              (stage ? esc(stage.name) : 'ללא שלבים') +
+              (miss ? ' · חסרים ' + '<span class="num">' + miss + '</span>' + ' פריטים' : '') +
+            '</span>' +
+          '</span>' +
+          '<span class="pill pill--' + state + '">' + (STAGE_LABEL[state] || 'טרם') + '</span>' +
+        '</button>';
+      }).join('');
+
+      $('view').innerHTML =
+        (configured ? '' : setupNotice()) +
+        '<div class="stats">' +
+          '<div class="stat"><b class="num">' + projects.length + '</b><span>פרויקטים</span></div>' +
+          '<div class="stat stat--blocked"><b class="num">' + blocked.length + '</b><span>תקועים</span></div>' +
+          '<div class="stat stat--live"><b class="num">' + live.length + '</b><span>באוויר</span></div>' +
+        '</div>' +
+        '<section class="section">' +
+          '<h2 class="sec-title">פרויקטים</h2>' +
+          '<div class="plist">' + (cards || '<p class="all-clear">אין פרויקטים עדיין.</p>') + '</div>' +
+        '</section>';
+
+      [].forEach.call($('main').querySelectorAll('.pcard'), function (b) {
+        b.addEventListener('click', function () { openProject(b.getAttribute('data-id'), projects); });
+      });
+    });
+  }
+
+  function setupNotice() {
+    return '<div class="setup"><h2>עוד לא מחובר</h2>' +
+      '<p>צריך למלא <code>SUPABASE_URL</code> ו־<code>SUPABASE_KEY</code> בראש הקובץ.</p></div>';
+  }
+
+  /* ---------------- admin: one project ---------------- */
+  function openProject(id, cache) {
+    var p = (cache || []).filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    renderDetail(p, true);
+  }
+
+  function renderDetail(p, editable) {
+    var stages = (p.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
+    var mats = (p.materials || []).slice().sort(function (a, b) { return a.position - b.position; });
+
+    var html = '<div class="detail">';
+
+    html += '<div class="detail__head"><div>' +
+      '<h2>' + bdi(p.brand_name || p.client_name) + '</h2>' +
+      '<p>' + esc(p.client_name) + (has(p.target_launch_date) ? ' · עולים לאוויר ' + esc(p.target_launch_date) : '') + '</p>' +
+      '</div>' +
+      (editable ? '<button class="btn btn--ghost btn--sm" id="back">חזרה</button>' : '') +
+      '</div>';
+
+    /* the client-facing view, shown to both roles so admin sees exactly what
+       the client sees */
+    var missing = mats.filter(function (m) { return m.state === 'missing'; });
+    if (missing.length) {
+      html += '<div class="waiting"><h3>מחכים לך</h3><ul>' + missing.map(function (m) {
+        return '<li><span>' + esc(m.item) + '</span>' +
+          (has(m.since) ? '<span class="waiting__since">מחכים מאז ' + esc(m.since) + '</span>' : '') + '</li>';
+      }).join('') + '</ul></div>';
+    } else {
+      html += '<p class="all-clear">הכל אצלנו. אנחנו עובדים.</p>';
+    }
+
+    if (has(p.preview_url)) {
+      html += '<a class="btn btn--primary btn--block" style="margin-bottom:var(--sp-4)" target="_blank" rel="noopener" href="' +
+        esc(p.preview_url) + '">החנות מוכנה לצפייה</a>';
+    }
+
+    html += '<section class="section"><h2 class="sec-title">מפת התקדמות</h2><ol class="steps">' +
+      stages.map(function (s) {
+        var note = STAGE_LABEL[s.state] ? '<small>' + STAGE_LABEL[s.state] + '</small>' : '';
+        return '<li class="step step--' + esc(s.state) + '"><h4>' + esc(s.name) + '</h4>' + note + '</li>';
+      }).join('') + '</ol></section>';
+
+    var shown = mats.filter(function (m) { return m.state !== 'skip'; });
+    if (shown.length) {
+      html += '<section class="section"><h2 class="sec-title">מה צריך מהלקוח</h2><ul class="mats">' +
+        shown.map(function (m) {
+          var ok = m.state === 'received';
+          return '<li class="mat mat--' + (ok ? 'received' : 'missing') + '">' +
+            '<span class="mat__mark" aria-hidden="true">' + (ok ? '✓' : '!') + '</span>' +
+            '<span class="mat__label">' + esc(m.item) +
+            (!ok && has(m.since) ? '<span class="mat__since">מחכים מאז ' + esc(m.since) + '</span>' : '') +
+            '</span></li>';
+        }).join('') + '</ul></section>';
+    }
+
+    html += '<section class="section"><h2 class="sec-title">תשלום</h2>' +
+      '<div class="pay__row"><span>מקדמה <span class="num">50%</span></span>' +
+      '<span class="pay__state' + (p.deposit_paid ? ' pay__state--paid' : '') + '">' +
+      (p.deposit_paid ? 'שולם' : 'ממתין') + '</span></div>' +
+      (has(p.balance_due) ? '<div class="pay__row" style="margin-top:var(--sp-2)"><span>יתרה <span class="num">50%</span></span>' +
+        '<span class="pay__state">' + esc(p.balance_due) + '</span></div>' : '') +
+      '</section>';
+
+    /* ---- admin-only editor ---- */
+    if (editable) {
+      html += '<section class="section"><h2 class="sec-title">עריכה</h2>';
+
+      html += '<div class="card">' + stages.map(function (s) {
+        return '<div class="row"><span class="row__label">' + esc(s.name) + '</span>' +
+          '<select data-stage="' + esc(s.id) + '">' + STAGE_OPTS.map(function (o) {
+            return '<option value="' + o[0] + '"' + (s.state === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+          }).join('') + '</select></div>';
+      }).join('') + '</div>';
+
+      html += '<div class="card">' + mats.map(function (m) {
+        return '<div class="row"><span class="row__label">' + esc(m.item) +
+          '<small>נתבקש: ' + (has(m.since) ? esc(m.since) : 'לא צוין') + '</small></span>' +
+          '<select data-mat="' + esc(m.id) + '">' + MAT_OPTS.map(function (o) {
+            return '<option value="' + o[0] + '"' + (m.state === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+          }).join('') + '</select></div>';
+      }).join('') + '</div>';
+
+      html += '<div class="card">' +
+        field('last_updated', 'עודכן לאחרונה', p.last_updated, 'text') +
+        field('target_launch_date', 'תאריך עלייה לאוויר', p.target_launch_date, 'text') +
+        field('preview_url', 'קישור לתצוגה', p.preview_url, 'url') +
+        field('upload_url', 'קישור להעלאת קבצים', p.upload_url, 'url') +
+        '<div class="row"><span class="row__label">מקדמה שולמה</span>' +
+          '<div class="seg" id="deposit-seg">' +
+            '<button type="button" data-dep="1"' + (p.deposit_paid ? ' class="is-on"' : '') + '>שולם</button>' +
+            '<button type="button" data-dep="0"' + (!p.deposit_paid ? ' class="is-on"' : '') + '>ממתין</button>' +
+          '</div></div>' +
+        '</div>';
+
+      html += '</section>';
+      html += '<div class="savebar"><span class="msg" id="save-msg"></span>' +
+        '<button class="btn btn--primary" id="save">שמירה</button></div>';
+    }
+
+    html += '</div>';
+    $('view').innerHTML = html;
+
+    if (editable) wireEditor(p);
+  }
+
+  function field(key, label, value, type) {
+    return '<div class="row"><span class="row__label">' + esc(label) + '</span>' +
+      '<input type="' + type + '" data-field="' + key + '" value="' + esc(value || '') + '"></div>';
+  }
+
+  function wireEditor(p) {
+    var back = $('back');
+    if (back) back.addEventListener('click', function () { goTab('projects'); });
+
+    var depositPaid = p.deposit_paid;
+    var seg = $('deposit-seg');
+    if (seg) {
+      [].forEach.call(seg.querySelectorAll('button'), function (b) {
+        b.addEventListener('click', function () {
+          depositPaid = b.getAttribute('data-dep') === '1';
+          [].forEach.call(seg.querySelectorAll('button'), function (x) { x.classList.remove('is-on'); });
+          b.classList.add('is-on');
+        });
+      });
+    }
+
+    $('save').addEventListener('click', function () {
+      var btn = $('save'), msg = $('save-msg');
+      btn.disabled = true;
+      msg.className = 'msg';
+      msg.textContent = 'שומר...';
+
+      var patch = {};
+      [].forEach.call(document.querySelectorAll('[data-field]'), function (i) {
+        patch[i.getAttribute('data-field')] = i.value.trim();
+      });
+      patch.deposit_paid = depositPaid;
+
+      var jobs = [api('projects?id=eq.' + encodeURIComponent(p.id), { method: 'PATCH', body: patch })];
+
+      [].forEach.call(document.querySelectorAll('[data-stage]'), function (sel) {
+        jobs.push(api('stages?id=eq.' + encodeURIComponent(sel.getAttribute('data-stage')),
+          { method: 'PATCH', body: { state: sel.value } }));
+      });
+      [].forEach.call(document.querySelectorAll('[data-mat]'), function (sel) {
+        jobs.push(api('materials?id=eq.' + encodeURIComponent(sel.getAttribute('data-mat')),
+          { method: 'PATCH', body: { state: sel.value } }));
+      });
+
+      Promise.all(jobs).then(function () {
+        return api('projects?id=eq.' + encodeURIComponent(p.id) + '&' + SELECT_FULL);
+      }).then(function (rows) {
+        if (rows && rows[0]) renderDetail(rows[0], true);
+        /* renderDetail rebuilds the DOM, so the confirmation has to be written
+           to the new element. Setting it before the re-render loses it. */
+        var fresh = $('save-msg');
+        if (fresh) { fresh.className = 'msg msg--ok'; fresh.textContent = 'נשמר'; }
+      }).catch(function (err) {
+        msg.className = 'msg msg--err';
+        msg.textContent = 'שגיאה בשמירה';
+        if (window.console) console.error('save failed', err);
+      }).then(function () { btn.disabled = false; });
+    });
+  }
+
+  /* ---------------- admin tabs ---------------- */
+  var TABS = [
+    ['projects',   'פרויקטים'],
+    ['quote',      'הצעת מחיר'],
+    ['objections', 'התנגדויות'],
+    ['questions',  'שאלות לשיחה']
+  ];
+  var activeTab = null;
+
+  function renderTabs() {
+    $('tabbar').hidden = false;
+    $('tabbar-in').innerHTML = TABS.map(function (t) {
+      return '<button type="button" data-tab="' + t[0] + '">' + t[1] + '</button>';
+    }).join('');
+    [].forEach.call($('tabbar-in').querySelectorAll('button'), function (b) {
+      b.addEventListener('click', function () { goTab(b.getAttribute('data-tab')); });
+    });
+  }
+
+  function goTab(name) {
+    activeTab = name;
+    [].forEach.call($('tabbar-in').querySelectorAll('button'), function (b) {
+      b.classList.toggle('is-on', b.getAttribute('data-tab') === name);
+    });
+    if (name === 'projects') return renderAdminList();
+    if (name === 'quote') return renderQuote();
+    if (name === 'objections') return renderObjections();
+    if (name === 'questions') return renderQuestions();
+  }
+
+  /* ---------------- quote builder ---------------- */
+  /* Owner figures. Same numbers as the internal rate sheet. */
+  var PACKAGES = {
+    store: { label: 'רק חנות',        launch: 4500, real: 7000 },
+    full:  { label: 'חבילה מלאה',      launch: 7500, real: 11500 },
+    ads:   { label: 'רק פרסום (הקמה)', launch: 2500, real: 3500 }
+  };
+  var ADDONS = [
+    { id: 'q-products',  unit: 50,   label: 'מוצרים מעבר ל־15' },
+    { id: 'q-creatives', unit: 250,  label: 'קריאטיבים נוספים' },
+    { id: 'q-weeks',     unit: 800,  label: 'שבועות ליווי נוספים' },
+    { id: 'q-migration', unit: 1500, label: 'העברה מוויקס או ווקומרס' }
+  ];
+  var RUSH_RATE = 0.25;
+  var RETAINER = { launch: 2000, realMin: 2500, realPct: 0.12 };
+
+  function money(n) {
+    return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ש״ח';
+  }
+  function qnum(id) {
+    var el2 = $(id); if (!el2) return 0;
+    var v = parseInt(el2.value, 10);
+    return isNaN(v) || v < 0 ? 0 : v;
+  }
+  function qval(id) { var e = $(id); return e ? e.value.trim() : ''; }
+  function qsel(name) {
+    var n = document.querySelector('input[name="' + name + '"]:checked');
+    return n ? n.value : null;
+  }
+
+  function renderQuote() {
+    $('view').innerHTML =
+      '<section class="section no-print">' +
+        '<h2 class="sec-title">פרטי הלקוח</h2>' +
+        '<div class="card">' +
+          qfield('q-client', 'שם הלקוח', 'text') +
+          qfield('q-brand', 'שם המותג', 'text') +
+          qfield('q-valid', 'תוקף ההצעה', 'text', '14 יום') +
+        '</div>' +
+      '</section>' +
+
+      '<section class="section no-print">' +
+        '<h2 class="sec-title">חבילה</h2>' +
+        '<div class="opts">' +
+          qradio('pkg', 'store', 'רק חנות') +
+          qradio('pkg', 'full', 'חבילה מלאה', true) +
+          qradio('pkg', 'ads', 'רק פרסום (הקמה)') +
+        '</div>' +
+        '<div class="opts" style="margin-top:var(--sp-3)">' +
+          qradio('mode', 'launch', 'מחיר השקה', true) +
+          qradio('mode', 'real', 'מחיר אמיתי') +
+        '</div>' +
+      '</section>' +
+
+      '<section class="section no-print">' +
+        '<h2 class="sec-title">תוספות</h2><div class="card">' +
+          ADDONS.map(function (a) {
+            return qrow(a.id, a.label, money(a.unit) + ' ליחידה');
+          }).join('') +
+        '</div>' +
+        '<div class="opts" style="margin-top:var(--sp-3)">' +
+          '<label class="opt"><input type="checkbox" id="q-rush"><span>אקספרס פחות מ־<span class="num">4</span> שבועות</span><span class="opt__price">+<span class="num">25%</span></span></label>' +
+          '<label class="opt"><input type="checkbox" id="q-ret"><span>לכלול ריטיינר חודשי</span></label>' +
+        '</div>' +
+        '<div class="card" id="q-budget-row" style="display:none;margin-top:var(--sp-3)">' +
+          qrow('q-budget', 'תקציב פרסום חודשי', '12% מהתקציב או 2,500, הגבוה מביניהם') +
+        '</div>' +
+      '</section>' +
+
+      '<div id="q-doc"></div>' +
+
+      '<div class="section no-print" style="display:grid;gap:var(--sp-2)">' +
+        '<button class="btn btn--primary btn--block" id="q-print">ייצוא ל־PDF</button>' +
+        '<button class="btn btn--ghost btn--block" id="q-copy">העתק לוואטסאפ</button>' +
+        '<p class="msg" id="q-msg" role="status" aria-live="polite"></p>' +
+      '</div>';
+
+    [].forEach.call($('view').querySelectorAll('input'), function (i) {
+      i.addEventListener('input', drawQuote);
+      i.addEventListener('change', drawQuote);
+    });
+    $('q-print').addEventListener('click', function () { window.print(); });
+    $('q-copy').addEventListener('click', copyQuote);
+    drawQuote();
+  }
+
+  function qfield(id, label, type, val) {
+    return '<div class="row"><span class="row__label">' + label + '</span>' +
+      '<input type="' + type + '" id="' + id + '" value="' + (val || '') + '"></div>';
+  }
+  function qrow(id, label, hint) {
+    return '<div class="row"><span class="row__label">' + label +
+      '<small>' + hint + '</small></span>' +
+      '<input type="number" id="' + id + '" min="0" step="1" value="0" inputmode="numeric"></div>';
+  }
+  function qradio(name, val, label, checked) {
+    /* Only package radios get a live price hint. Putting data-price on the mode
+       radios too made the hint loop look up PACKAGES['launch'], which is not a
+       package, and it threw on every keystroke. */
+    var hint = name === 'pkg'
+      ? '<span class="opt__price" data-price="' + val + '"></span>' : '';
+    return '<label class="opt"><input type="radio" name="' + name + '" value="' + val + '"' +
+      (checked ? ' checked' : '') + '><span>' + label + '</span>' + hint + '</label>';
+  }
+
+  var lastQuote = null;
+
+  function computeQuote() {
+    var pkgKey = qsel('pkg') || 'full';
+    var mode = qsel('mode') || 'launch';
+    var base = PACKAGES[pkgKey][mode];
+
+    var lines = [], addons = 0;
+    ADDONS.forEach(function (a) {
+      var n = qnum(a.id);
+      if (!n) return;
+      var sum = n * a.unit;
+      addons += sum;
+      lines.push({ label: a.label, count: n, sum: sum });
+    });
+
+    var beforeRush = base + addons;
+    var rushOn = $('q-rush') && $('q-rush').checked;
+    var rush = rushOn ? beforeRush * RUSH_RATE : 0;
+    var subtotal = beforeRush + rush;
+    var vat = subtotal * VAT_RATE;
+
+    var retOn = $('q-ret') && $('q-ret').checked;
+    var ret = 0;
+    if (retOn) {
+      ret = mode === 'launch' ? RETAINER.launch
+        : Math.max(RETAINER.realMin, qnum('q-budget') * RETAINER.realPct);
+    }
+
+    return {
+      pkg: PACKAGES[pkgKey].label, mode: mode, base: base,
+      lines: lines, addons: addons, rushOn: rushOn, rush: rush,
+      subtotal: subtotal, vat: vat, total: subtotal + vat,
+      retOn: retOn, ret: ret, retTotal: ret * (1 + VAT_RATE),
+      client: qval('q-client'), brand: qval('q-brand'), valid: qval('q-valid')
+    };
+  }
+
+  function drawQuote() {
+    var q = computeQuote();
+    lastQuote = q;
+
+    var hints = document.querySelectorAll('[data-price]');
+    for (var i = 0; i < hints.length; i++) {
+      hints[i].textContent = money(PACKAGES[hints[i].getAttribute('data-price')][q.mode]);
+    }
+    var br = $('q-budget-row');
+    if (br) br.style.display = (q.retOn && q.mode === 'real') ? '' : 'none';
+
+    var rows = '<tr><td>' + esc(q.pkg) + '</td><td>' + money(q.base) + '</td></tr>';
+    q.lines.forEach(function (l) {
+      rows += '<tr><td>' + esc(l.label) + ' <span class="num">x' + l.count + '</span></td><td>' + money(l.sum) + '</td></tr>';
+    });
+    if (q.rushOn) rows += '<tr><td>תוספת אקספרס <span class="num">25%</span></td><td>' + money(q.rush) + '</td></tr>';
+
+    $('q-doc').innerHTML =
+      '<div class="qdoc">' +
+        '<div class="qdoc__head"><div><h3>הצעת מחיר</h3>' +
+          '<p>בלאקזי</p></div>' +
+          (q.valid ? '<p>בתוקף ל־' + esc(q.valid) + '</p>' : '') +
+        '</div>' +
+        (q.client || q.brand ? '<p class="qdoc__to">לכבוד <b>' + esc(q.client || q.brand) + '</b>' +
+          (q.brand && q.client ? ' · ' + esc(q.brand) : '') + '</p>' : '') +
+        '<table><thead><tr><th>סעיף</th><th>מחיר</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<div class="qdoc__sum">' +
+          '<div class="qdoc__line"><span>סכום ביניים</span><b>' + money(q.subtotal) + '</b></div>' +
+          '<div class="qdoc__line"><span>מע״מ <span class="num">' + Math.round(VAT_RATE * 100) + '%</span></span><b>' + money(q.vat) + '</b></div>' +
+          '<div class="qdoc__line qdoc__total"><span>סה״כ לתשלום</span><b>' + money(q.total) + '</b></div>' +
+          (q.retOn ? '<div class="qdoc__line"><span>ריטיינר חודשי, בנפרד</span><b>' + money(q.retTotal) + ' כולל מע״מ</b></div>' : '') +
+        '</div>' +
+        '<ul class="qdoc__terms">' +
+          '<li>תנאי תשלום: <span class="num">50%</span> מקדמה, <span class="num">50%</span> לפני עלייה לאוויר.</li>' +
+          '<li>זמן אספקה: <span class="num">4</span> שבועות מקבלת החומרים.</li>' +
+          '<li>המחירים אינם כוללים שופיפיי, אפליקציות, דומיין ותקציב פרסום.</li>' +
+          (q.retOn ? '<li>מינימום <span class="num">3</span> חודשים לריטיינר.</li>' : '') +
+        '</ul>' +
+      '</div>';
+  }
+
+  function copyQuote() {
+    var q = lastQuote, out = [];
+    out.push('הצעת מחיר - בלאקזי');
+    if (q.client || q.brand) out.push('לכבוד: ' + (q.client || q.brand));
+    out.push('');
+    out.push(q.pkg + ': ' + money(q.base));
+    q.lines.forEach(function (l) { out.push('- ' + l.label + ' x' + l.count + ': ' + money(l.sum)); });
+    if (q.rushOn) out.push('- תוספת אקספרס 25%: ' + money(q.rush));
+    out.push('');
+    out.push('סכום ביניים: ' + money(q.subtotal));
+    out.push('מע״מ ' + Math.round(VAT_RATE * 100) + '%: ' + money(q.vat));
+    out.push('סה״כ לתשלום: ' + money(q.total));
+    if (q.retOn) out.push('ריטיינר חודשי: ' + money(q.retTotal) + ' כולל מע״מ, מינימום 3 חודשים.');
+    out.push('');
+    out.push('תנאי תשלום: 50% מקדמה, 50% לפני עלייה לאוויר.');
+    out.push('זמן אספקה: 4 שבועות מקבלת החומרים.');
+    var text = out.join('\n');
+
+    function done(ok) {
+      var m = $('q-msg');
+      m.className = ok ? 'msg msg--ok' : 'msg msg--err';
+      m.textContent = ok ? 'הועתק' : 'ההעתקה נכשלה';
+      setTimeout(function () { m.textContent = ''; }, 2500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { legacyCopy(text, done); });
+    } else { legacyCopy(text, done); }
+  }
+
+  /* the clipboard API needs a secure context, which file:// is not */
+  function legacyCopy(text, cb) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.insetInlineStart = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    cb(ok);
+  }
+
+  /* ---------------- objections ---------------- */
+  /* Every answer here is grounded in a policy already stated on the public
+     site or the rate sheet: 50/50 terms, four weeks, no sales guarantee,
+     a minimum ad budget, and the client owning every account. */
+  var OBJECTIONS = [
+    { q: 'יקר לי', mean: 'לרוב זה לא המחיר, זה שהוא לא יודע מה הוא מקבל תמורתו.',
+      say: 'מה השוויתם אליו? אם קיבלתם הצעה זולה יותר, תשלחו לי אותה ואני אגיד לכם מה חסר בה. בדרך כלל חסר שם פרסום, מדידה, או בעלות על החשבונות.',
+      avoid: 'לא להוריד מחיר במקום. הנחה מיידית אומרת שהמחיר הראשון היה מנופח.' },
+
+    { q: 'קיבלתי הצעה בחצי מחיר', mean: 'בדרך כלל מול פרילנסר שמוכר שעות, לא תוצאה.',
+      say: 'יכול להיות שזו הצעה טובה. תבדקו שלושה דברים: על שם מי נפתחים החשבונות, מי מעלה את הקמפיין הראשון, ומה קורה שבועיים אחרי העלייה לאוויר. אם התשובות טובות, קחו אותה.',
+      avoid: 'לא להשמיץ את המתחרה. זה מוריד אותך לרמה שלו.' },
+
+    { q: 'כמה מכירות אני אעשה?', mean: 'רוצה ביטחון. לא באמת מצפה למספר.',
+      say: 'אני לא יודע, ומי שנותן לכם מספר ממציא אותו. אני מתחייב לחנות שעובדת ולקמפיין שמוקם נכון. מה שקורה אחר כך תלוי גם במוצר, במחיר ובשוק.',
+      avoid: 'לא לתת טווח כדי להרגיע. כל מספר שתיתן ייזכר כהבטחה.' },
+
+    { q: 'בוא נעבוד באחוזים מהמכירות', mean: 'רוצה להעביר אליך את כל הסיכון.',
+      say: 'אני לא עובד ככה. אני שולט בחנות ובקמפיין, אבל לא במוצר, במחיר, במלאי ובשירות. אחוזים אומרים שאני נושא בסיכון על דברים שאין לי שליטה עליהם.',
+      avoid: 'לא להסכים לגרסה מרוככת של זה. זה דגל אדום, לא נקודת מיקוח.' },
+
+    { q: 'אין לי עכשיו תקציב פרסום', mean: 'או שאין כסף, או שהוא לא מבין שצריך.',
+      say: 'אז עדיף שנחכה. חנות בלי תנועה היא אתר תדמית יקר. כשיהיה תקציב, נדבר. אני לא רוצה שתשלמו לי על משהו שלא יביא לכם כלום.',
+      avoid: 'לא לקחת את הפרויקט בכל זאת. זה נגמר בלקוח מאוכזב ובלי המלצה.' },
+
+    { q: 'אני צריך לחשוב על זה', mean: 'יש התנגדות שלא נאמרה. בדרך כלל מחיר, זמן, או שותף להחלטה.',
+      say: 'ברור. רק תגידו לי על מה אתם חושבים, כדי שאדע אם יש משהו שלא הסברתי טוב. זה המחיר, העיתוי, או שיש עוד מישהו שצריך לאשר?',
+      avoid: 'לא לסיים את השיחה בלי לדעת מה באמת עוצר. אחרת אין לך למה לחזור.' },
+
+    { q: 'אני יכול לבנות לבד בוויקס', mean: 'נכון שהוא יכול. השאלה אם הוא רוצה.',
+      say: 'אתם באמת יכולים. השאלה כמה זמן זה ייקח לכם, ומה שווה הזמן הזה לעומת למכור. ואם תגיעו לנקודה שהתבנית לא מספיקה, אנחנו גם מעבירים אתרים משם.',
+      avoid: 'לא לזלזל בוויקס. לחלק מהעסקים הוא באמת מספיק.' },
+
+    { q: 'מה אם לא אהיה מרוצה?', mean: 'פחד מלשלם מראש לספק שלא מכיר.',
+      say: 'לכן התשלום מתחלק: חצי בהתחלה וחצי רק לפני העלייה לאוויר. אתם רואים את האתר באמצע הדרך ומעירים, לא רק ביום שהוא עולה.',
+      avoid: 'לא להבטיח החזר כספי. לא הבטחת את זה בשום מקום.' },
+
+    { q: 'אפשר יותר מהר מארבעה שבועות?', mean: 'יש דדליין אמיתי, או חוסר סבלנות.',
+      say: 'אפשר, בתוספת 25%. זה לא כי אני מייקר, זה כי אני דוחה עבודות אחרות. חשוב לדעת שהשעון מתחיל מרגע שקיבלתי את החומרים, לא מרגע החתימה.',
+      avoid: 'לא להתחייב לתאריך קצר בלי התוספת. זה מה שהורס פרויקטים.' },
+
+    { q: 'של מי החנות בסוף?', mean: 'שאלה טובה. שווה לענות עליה גם אם לא נשאלת.',
+      say: 'שלכם. כל החשבונות נפתחים על שמכם, עם המייל ואמצעי התשלום שלכם. אני נכנס כמשתמש מוזמן, ובסוף אתם מסירים אותי בלחיצה. אותו דבר לגבי הדומיין וחשבונות הפרסום.',
+      avoid: 'אין מה להימנע. זו התשובה הכי חזקה שיש לך.' },
+
+    { q: 'עבדתי עם מישהו וזה נכשל', mean: 'הזדמנות. הוא מספר לך בדיוק ממה הוא מפחד.',
+      say: 'ספרו לי מה קרה. מה הוא הבטיח, מה הוא סיפק, ואיפה זה נתקע. אני רוצה לדעת שאני לא חוזר על אותה טעות.',
+      avoid: 'לא לקפוץ להבטיח שאצלך יהיה אחרת. קודם להקשיב עד הסוף.' },
+
+    { q: 'אפשר לשלם הכל בסוף?', mean: 'רוצה שאתה תממן את הפרויקט.',
+      say: 'לא. חצי בהתחלה זה מה שמאפשר לי לפנות את הזמן ולהתחיל. זה גם מה ששומר על התור הוגן מול לקוחות אחרים.',
+      avoid: 'לא להתחיל עבודה לפני שהמקדמה נכנסה בפועל.' }
+  ];
+
+  function renderObjections() {
+    $('view').innerHTML =
+      '<section class="section"><h2 class="sec-title">מה שואלים אותי ומה עונים</h2>' +
+      '<div class="obj">' + OBJECTIONS.map(function (o) {
+        return '<details><summary>' + esc(o.q) + '</summary><div class="obj__body">' +
+          '<div class="obj__block"><small>מה זה באמת אומר</small><p>' + esc(o.mean) + '</p></div>' +
+          '<div class="obj__block obj__say"><small>מה לענות</small><p>' + esc(o.say) + '</p></div>' +
+          '<div class="obj__block obj__avoid"><small>מה לא לעשות</small><p>' + esc(o.avoid) + '</p></div>' +
+        '</div></details>';
+      }).join('') + '</div></section>';
+  }
+
+  /* ---------------- questions to ask ---------------- */
+  var QUESTION_GROUPS = [
+    { title: 'מוצר', items: [
+      [1, 'מה אתה מוכר, וכמה מוצרים?', false],
+      [2, 'מלאי שלך או ספק/דרופשיפינג?', false],
+      [3, 'מה מחיר המוצר הממוצע?', false],
+      [4, 'יש תמונות מוצר? מי צילם?', false] ] },
+    { title: 'איפה הוא היום', items: [
+      [5, 'איפה אתה מוכר היום? כמה מכירות בחודש?', false],
+      [6, 'מה כבר ניסית? עבדת עם מישהו לפני?', true] ] },
+    { title: 'כסף', note: 'פחות מ־3,000 ש״ח תקציב פרסום בחודש = לא רלוונטי.', items: [
+      [7, 'כמה תקציב פרסום בחודש?', true],
+      [8, 'מה התקציב שחשבת עליו לפרויקט?', true],
+      [9, 'יש עוסק וחשבון סליקה?', false] ] },
+    { title: 'החלטה', items: [
+      [10, 'למה עכשיו? מה השתנה?', false],
+      [11, 'מי עוד מחליט חוץ ממך?', false],
+      [12, 'תוך כמה זמן תעביר מוצרים, מחירים ותמונות?', false] ] }
+  ];
+
+  function renderQuestions() {
+    $('view').innerHTML =
+      '<section class="section">' +
+        '<div class="card" style="margin-bottom:var(--sp-5)">' +
+          '<p style="font-size:var(--fs-sm);color:var(--c-text-dim)">רבע שעה. אני שואל, ובסוף אתה יודע אם זה מתאים וכמה זה עולה.</p>' +
+          '<p style="font-size:var(--fs-sm);color:var(--c-text-dim)">לפני שמתקשרים: להסתכל על האינסטגרם שלו.</p>' +
+        '</div>' +
+        QUESTION_GROUPS.map(function (g) {
+          return '<div class="q-group"><h3>' + g.title + '</h3>' +
+            g.items.map(function (it) {
+              return '<label class="q' + (it[2] ? ' q--key' : '') + '">' +
+                '<input type="checkbox"><span><span class="num">' + it[0] + '</span>. ' + esc(it[1]) + '</span></label>';
+            }).join('') +
+            (g.note ? '<p class="q-note">' + esc(g.note) + '</p>' : '') +
+          '</div>';
+        }).join('') +
+        '<p class="close-note card" style="font-size:var(--fs-sm);color:var(--c-text-dim)">סגירה: לחזור על מה ששמעת, לתת טווח בעל־פה, הצעה כתובה תוך <span class="num">24</span> שעות.</p>' +
+        '<button class="btn btn--ghost btn--block" id="q-reset" style="margin-top:var(--sp-4)">איפוס</button>' +
+      '</section>';
+
+    $('q-reset').addEventListener('click', function () {
+      [].forEach.call($('view').querySelectorAll('input[type="checkbox"]'), function (c) { c.checked = false; });
+    });
+  }
+
+  /* ---------------- client: own project ---------------- */
+  function renderClientOwn() {
+    return api('projects?' + SELECT_FULL + '&order=created_at.desc&limit=1').then(function (rows) {
+      if (!rows || !rows.length) {
+        $('view').innerHTML = '<p class="all-clear" style="margin-top:var(--sp-6)">אין עדיין פרויקט משויך לחשבון הזה.</p>';
+        return;
+      }
+      renderDetail(rows[0], false);
+    });
+  }
+
+  /* ---------------- start ---------------- */
+  loadSession();
+  if (!configured) {
+    $('login-msg').className = 'msg msg--err';
+    $('login-msg').textContent = 'צריך למלא כתובת ומפתח בראש הקובץ.';
+  }
+  if (session) boot();
+})();
+</script>
+</body>
+</html>
