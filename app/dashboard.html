@@ -405,53 +405,122 @@ button,input,select{font:inherit;color:inherit}
 .opt:has(input:checked){border-color:var(--c-accent);background:var(--c-accent-glow)}
 .opt__price{margin-inline-start:auto;font-size:var(--fs-xs);color:var(--c-text-faint);white-space:nowrap}
 
+/* ---------- catalogue picker ---------- */
+.qcat{background:var(--c-surface);border:var(--border);border-radius:var(--radius);margin-bottom:var(--sp-2)}
+.qcat summary{
+  cursor:pointer;list-style:none;padding:var(--sp-4);min-height:var(--tap);
+  display:flex;align-items:center;gap:var(--sp-3);
+  font-size:var(--fs-sm);font-weight:var(--fw-black);
+}
+.qcat summary::-webkit-details-marker{display:none}
+.qcat summary::after{content:"+";margin-inline-start:auto;color:var(--c-accent);font-size:1.3rem;line-height:1}
+.qcat[open] summary::after{content:"-"}
+.qcat__count:not(:empty){
+  background:var(--c-accent-fill);color:var(--c-accent-ink);
+  border-radius:var(--radius-pill);padding:.1rem .5rem;font-size:var(--fs-xs);
+}
+.qcat__body{padding:0 var(--sp-3) var(--sp-3);display:grid;gap:var(--sp-1)}
+
+.qitem{
+  display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-3);border-top:1px solid var(--c-line);
+}
+.qitem__name{flex:1;min-width:0;font-size:var(--fs-sm)}
+.qitem__name small{display:block;font-size:var(--fs-xs);color:var(--c-text-faint)}
+.qitem__price{font-size:var(--fs-xs);color:var(--c-text-dim);white-space:nowrap}
+.qitem__unpriced{color:var(--c-ph)}
+.qqty,.qprice{
+  flex:none;width:72px;min-height:44px;padding:var(--sp-2);
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius-sm);
+  font-size:var(--fs-sm);font-weight:var(--fw-bold);
+  direction:ltr;text-align:center;
+}
+.qprice{width:88px}
+.qqty:focus,.qprice:focus{outline:none;border-color:var(--c-accent)}
+
+.q-warn{
+  margin-top:var(--sp-3);padding:var(--sp-3) var(--sp-4);
+  background:var(--c-ph-wash);border:1px solid var(--c-ph-line);
+  border-radius:var(--radius-sm);font-size:var(--fs-sm);color:var(--c-ph);
+}
+
 /* ---------- the printable quote ---------- */
-.qdoc{background:var(--c-surface);border:var(--border);border-radius:var(--radius);
-  padding:var(--sp-5);margin-top:var(--sp-4)}
-.qdoc__head{display:flex;justify-content:space-between;gap:var(--sp-4);
-  align-items:flex-start;flex-wrap:wrap;border-bottom:2px solid var(--c-line-hi);padding-bottom:var(--sp-4)}
-.qdoc__head h3{font-size:var(--fs-lg)}
-.qdoc__head p{font-size:var(--fs-xs);color:var(--c-text-faint)}
-.qdoc__to{margin-block:var(--sp-4);font-size:var(--fs-sm)}
-.qdoc__to b{font-size:var(--fs-md)}
-.qdoc table{width:100%;border-collapse:collapse;margin-top:var(--sp-3)}
-.qdoc th{text-align:start;font-size:var(--fs-xs);color:var(--c-text-faint);
-  padding:var(--sp-2) 0;border-bottom:1px solid var(--c-line-hi);font-weight:var(--fw-black)}
+.qdoc{
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius);
+  padding:var(--sp-6) var(--sp-5);margin-top:var(--sp-4);
+}
+.qdoc__head{
+  display:flex;justify-content:space-between;gap:var(--sp-4);align-items:flex-start;
+  flex-wrap:wrap;padding-bottom:var(--sp-4);border-bottom:2px solid var(--c-text);
+}
+.qdoc__brand{display:flex;align-items:center;gap:var(--sp-3)}
+.qdoc__logo{width:46px;height:34px;flex:none;color:var(--c-text)}
+.qdoc__brand h3{font-size:var(--fs-lg);line-height:1.1}
+.qdoc__brand p{font-size:var(--fs-xs);color:var(--c-text-faint);letter-spacing:var(--tracking-wide);text-transform:uppercase}
+.qdoc__meta{text-align:end;font-size:var(--fs-xs);color:var(--c-text-faint);line-height:1.8}
+.qdoc__to{margin-block:var(--sp-5);font-size:var(--fs-sm);color:var(--c-text-dim)}
+.qdoc__to b{display:block;font-size:var(--fs-md);color:var(--c-text)}
+
+.qdoc table{width:100%;border-collapse:collapse}
+.qdoc th{
+  text-align:start;font-size:var(--fs-xs);color:var(--c-text-faint);
+  padding:var(--sp-2) 0;border-bottom:1px solid var(--c-line-hi);
+  font-weight:var(--fw-black);letter-spacing:.04em;
+}
 .qdoc td{padding:var(--sp-3) 0;border-bottom:1px solid var(--c-line);font-size:var(--fs-sm);vertical-align:top}
-.qdoc td:last-child{text-align:end;white-space:nowrap}
+.qdoc td:last-child{text-align:end;white-space:nowrap;font-variant-numeric:tabular-nums}
+
 .qdoc__sum{margin-top:var(--sp-4);display:grid;gap:var(--sp-2)}
 .qdoc__line{display:flex;justify-content:space-between;gap:var(--sp-3);font-size:var(--fs-sm);color:var(--c-text-dim)}
-.qdoc__line b{color:var(--c-text)}
-.qdoc__total{border-top:2px solid var(--c-line-hi);padding-top:var(--sp-3);font-size:var(--fs-md);color:var(--c-text)}
-.qdoc__total b{color:var(--c-accent);font-weight:var(--fw-black)}
-.qdoc__terms{margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:1px solid var(--c-line);
-  display:grid;gap:var(--sp-1)}
+.qdoc__line b{color:var(--c-text);font-variant-numeric:tabular-nums}
+.qdoc__total{
+  border-top:2px solid var(--c-text);margin-top:var(--sp-2);
+  padding-top:var(--sp-3);font-size:var(--fs-md);color:var(--c-text);font-weight:var(--fw-black);
+}
+.qdoc__monthly{margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:1px solid var(--c-line)}
+.qdoc__monthly h4{margin:0 0 var(--sp-2);font-size:var(--fs-xs);color:var(--c-text-faint);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase}
+.qdoc__terms{margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:1px solid var(--c-line);display:grid;gap:var(--sp-1)}
 .qdoc__terms li{font-size:var(--fs-xs);color:var(--c-text-faint)}
-
 /* Print to PDF. Chrome does the bidi shaping and font embedding, which is
    why this beats a JS PDF library: those need a font blob and still reorder
    mixed Hebrew and Latin runs incorrectly. */
 @media print{
   .bar,.tabbar,.savebar,.no-print{display:none !important}
-  body{background:#fff;color:#000;padding:0;font-size:11pt}
+  body{background:#fff;color:#111;padding:0;font-size:10.5pt;line-height:1.55}
   .wrap{max-width:none;padding:0}
-  /* .qdoc lives inside the #q-doc wrapper, so target the wrapper: matching
-     on .qdoc hid its own container and printed a blank page. */
   #view > *:not(#q-doc){display:none !important}
-  .qdoc{background:#fff;border:none;border-radius:0;padding:0;margin:0;color:#000}
-  .qdoc__head{border-bottom:2px solid #000}
-  .qdoc__head h3,.qdoc__line b,.qdoc__total,.qdoc__to b{color:#000}
-  .qdoc__head p,.qdoc th,.qdoc__terms li,.qdoc__line{color:#333}
-  .qdoc td{border-bottom:1px solid #ccc}
-  .qdoc__total{border-top:2px solid #000}
-  .qdoc__total b{color:#000}
-  .qdoc__terms{border-top:1px solid #ccc}
-  @page{size:A4;margin:16mm}
+
+  .qdoc{background:#fff;border:none;border-radius:0;padding:0;margin:0;color:#111}
+  /* the mark is white on screen and would disappear on paper */
+  .qdoc__logo{color:#111}
+  .qdoc__head{border-bottom:2px solid #111}
+  .qdoc__brand h3,.qdoc__to b,.qdoc__line b{color:#111}
+  .qdoc__brand p,.qdoc__meta,.qdoc th,.qdoc__terms li,.qdoc__line,.qdoc__to,.qdoc__monthly h4{color:#555}
+  .qdoc td{border-bottom:1px solid #ddd}
+  .qdoc th{border-bottom:1px solid #999}
+  .qdoc__total{border-top:2px solid #111;color:#111}
+  .qdoc__terms,.qdoc__monthly{border-top:1px solid #ddd}
+  .qitem__unpriced{color:#a33}
+
+  /* keep a table row and the totals block from splitting across pages */
+  .qdoc tr,.qdoc__sum,.qdoc__monthly{break-inside:avoid}
+
+  @page{size:A4;margin:18mm 16mm}
+}
 }
 </style>
 </head>
 
 <body>
+
+<!-- Logo mark, same vector as logo.svg. Drawn in currentColor so it can be
+     light on screen and black on paper: a white mark would vanish in print. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="bz-mark" viewBox="222 310 630 468">
+    <path fill="currentColor" fill-rule="evenodd" d="M 460.702 316.682 C 460.427 317.132, 457.278 323.118, 453.704 329.984 C 445.811 345.147, 446.063 344.959, 437.451 342.132 C 426.401 338.504, 424.296 339.797, 416.502 355 C 414.387 359.125, 411.782 364.068, 410.714 365.984 C 409.645 367.901, 406.064 374.651, 402.755 380.984 C 399.447 387.318, 395.958 393.850, 395.002 395.500 C 394.046 397.150, 390.892 403, 387.993 408.500 C 385.094 414, 381.035 421.650, 378.972 425.500 C 376.910 429.350, 373.322 436.100, 371 440.500 C 368.677 444.900, 365.311 451.200, 363.519 454.500 C 361.726 457.800, 357.884 465, 354.979 470.500 C 352.074 476, 348.140 483.425, 346.236 487 C 344.333 490.575, 340.626 497.550, 338 502.500 C 335.374 507.450, 331.541 514.650, 329.483 518.500 C 327.425 522.350, 323.708 529.325, 321.223 534 C 316.702 542.505, 305.335 563.768, 298.772 576 C 296.854 579.575, 292.682 587.450, 289.502 593.500 C 286.322 599.550, 276.771 617.503, 268.279 633.396 C 259.787 649.289, 252.427 663.239, 251.922 664.396 C 251.418 665.553, 250.557 667.175, 250.010 668 C 249.462 668.825, 244.048 678.816, 237.976 690.203 C 222.492 719.244, 221.923 718.166, 255 722.403 C 272.131 724.597, 297.268 727.590, 310.500 729.011 C 316.550 729.661, 325.325 730.804, 330 731.551 C 334.675 732.298, 341.425 733.189, 345 733.531 C 354.613 734.451, 391.242 738.732, 409 741.011 C 417.525 742.105, 434.175 744.130, 446 745.511 C 469.009 748.199, 490.504 750.796, 517 754.088 C 526.075 755.216, 537.550 756.513, 542.500 756.971 C 547.450 757.428, 552.625 758.071, 554 758.399 C 555.375 758.727, 564.375 759.916, 574 761.041 C 583.625 762.167, 600.950 764.189, 612.500 765.536 C 624.050 766.883, 638.900 768.657, 645.500 769.478 C 719.334 778.664, 778.664 754.877, 807.576 704.500 C 808.839 702.300, 813.124 697.125, 817.100 693 C 859.162 649.358, 854.470 587.950, 805.548 541.794 L 799.500 536.088 804.110 531.294 C 822.429 512.242, 825.246 485.750, 811.744 459.500 C 801.220 439.039, 779.204 419.434, 753 407.189 C 743.162 402.592, 736.698 400.362, 707.253 391.406 C 691.600 386.645, 683.395 384.123, 665.500 378.569 C 657.250 376.008, 647.575 373.035, 644 371.962 C 633.514 368.814, 621.152 365.045, 611.500 362.052 C 586.568 354.322, 578.757 351.929, 570.500 349.490 C 565.550 348.028, 558.800 345.973, 555.500 344.924 C 552.200 343.875, 545.900 341.937, 541.500 340.618 C 533.723 338.286, 525.209 335.663, 502.500 328.602 C 496.450 326.721, 485.302 323.322, 477.726 321.050 C 470.150 318.778, 463.333 316.681, 462.577 316.391 C 461.821 316.101, 460.977 316.232, 460.702 316.682 M 426.139 351.250 C 424.994 353.587, 421.994 359.325, 419.471 364 C 416.949 368.675, 412.368 377.225, 409.292 383 C 406.216 388.775, 402.129 396.425, 400.210 400 C 398.290 403.575, 393.800 412.125, 390.231 419 C 386.662 425.875, 383.139 432.475, 382.403 433.666 C 381.667 434.857, 378.289 441.157, 374.897 447.666 C 371.504 454.175, 367.499 461.750, 365.997 464.500 C 362.367 471.141, 357.285 480.608, 351.770 491 C 349.289 495.675, 345.400 502.988, 343.129 507.250 C 340.858 511.512, 337.144 518.487, 334.876 522.750 C 332.608 527.013, 329.071 533.650, 327.015 537.500 C 324.960 541.350, 320.903 549, 318 554.500 C 315.096 560, 311.261 567.200, 309.476 570.500 C 307.691 573.800, 304.323 580.100, 301.992 584.500 C 299.660 588.900, 296.077 595.650, 294.030 599.500 C 291.983 603.350, 288.159 610.550, 285.533 615.500 C 282.906 620.450, 279.742 626.300, 278.500 628.500 C 277.259 630.700, 273.882 637, 270.996 642.500 C 268.110 648, 261.659 660.150, 256.660 669.500 C 244.239 692.731, 238.364 703.856, 236.326 708 C 235.380 709.925, 234.445 711.799, 234.248 712.165 C 234.051 712.530, 236.952 713.125, 240.695 713.488 C 244.438 713.850, 249.979 714.563, 253.010 715.073 C 258.676 716.027, 271.478 717.586, 302 721.037 C 311.625 722.126, 326.025 723.890, 334 724.958 C 341.975 726.026, 352.775 727.375, 358 727.956 C 385.576 731.020, 403.585 733.162, 413 734.498 C 418.775 735.317, 433.400 737.130, 445.500 738.527 C 477.900 742.267, 499.977 744.872, 513.500 746.549 C 520.100 747.368, 529.325 748.491, 534 749.046 C 538.675 749.601, 547.450 750.716, 553.500 751.523 C 559.550 752.330, 570.800 753.698, 578.500 754.563 C 586.200 755.427, 601.725 757.235, 613 758.580 C 624.275 759.925, 641.600 761.970, 651.500 763.125 C 706.058 769.489, 751.248 756.418, 782.991 725.090 C 796.027 712.225, 796.229 710.945, 784.275 716.943 C 747.313 735.488, 720.251 737.825, 650 728.537 C 635.575 726.630, 618.500 724.580, 591 721.453 C 579.175 720.109, 566.350 718.579, 562.500 718.053 C 558.650 717.528, 549.650 716.396, 542.500 715.539 C 535.350 714.681, 512.625 711.952, 492 709.474 C 471.375 706.996, 448.425 704.284, 441 703.447 C 433.575 702.610, 423 701.289, 417.500 700.512 C 412 699.734, 401.200 698.384, 393.500 697.510 C 385.800 696.637, 375.675 695.488, 371 694.958 C 366.325 694.428, 355.300 693.089, 346.500 691.983 C 331.640 690.115, 303.425 686.720, 279.323 683.899 C 267.514 682.517, 265.981 681.899, 267.656 679.194 C 268.725 677.469, 271.943 671.441, 283.776 649 C 288.679 639.701, 293.748 630.261, 298.005 622.500 C 299.514 619.750, 303.795 611.650, 307.519 604.500 C 313.601 592.824, 323.560 574.079, 332.490 557.500 C 337.664 547.893, 352.292 520.376, 358.005 509.500 C 367.808 490.841, 372.249 482.508, 373.995 479.500 C 374.952 477.850, 378.108 472, 381.007 466.500 C 383.906 461, 387.955 453.350, 390.004 449.500 C 392.054 445.650, 396.567 437.100, 400.033 430.500 C 403.500 423.900, 407.236 416.925, 408.336 415 C 409.437 413.075, 413.251 405.875, 416.812 399 C 420.373 392.125, 424.947 383.575, 426.975 380 C 429.004 376.425, 432.171 370.575, 434.014 367 C 443.266 349.051, 443.090 351.124, 435.572 348.633 C 428.764 346.377, 428.488 346.454, 426.139 351.250 M 523.108 395.250 C 509.037 428.088, 509.774 425.457, 514.250 426.873 C 518.293 428.152, 546.897 436.178, 557 438.868 C 561.125 439.966, 571.025 442.724, 579 444.996 C 605.879 452.654, 631.464 459.868, 637 461.350 C 640.025 462.160, 645.875 463.789, 650 464.971 C 657.844 467.219, 670.305 470.683, 680.500 473.449 C 700.889 478.981, 712.328 485.765, 717.519 495.405 C 719.413 498.922, 719.586 499, 725.477 498.989 C 752.351 498.941, 762.748 476.844, 744.666 458.206 C 736.985 450.287, 731.553 447.921, 702.500 439.833 C 673.311 431.708, 653.232 426.115, 641.500 422.842 C 635.450 421.155, 629.150 419.422, 627.500 418.992 C 625.850 418.562, 617.300 416.183, 608.500 413.705 C 514.018 387.099, 525.534 389.588, 523.108 395.250 M 507.248 433.304 C 506.066 434.864, 501.765 445.131, 502.180 445.404 C 502.356 445.519, 506.775 446.652, 512 447.921 C 517.225 449.190, 522.850 450.633, 524.500 451.128 C 526.150 451.623, 552.250 458.099, 582.500 465.518 C 612.750 472.938, 639.750 479.647, 642.500 480.428 C 653.869 483.657, 709.241 497.092, 709.620 496.713 C 712.486 493.848, 690.485 482.204, 677.231 479.572 C 674.413 479.012, 661.767 475.588, 649.500 472.064 C 645.650 470.958, 639.125 469.122, 635 467.985 C 630.875 466.848, 624.575 465.069, 621 464.032 C 617.425 462.994, 606.850 460.021, 597.500 457.425 C 588.150 454.828, 576.675 451.610, 572 450.272 C 562.024 447.417, 554.492 445.309, 551 444.395 C 549.625 444.035, 544.675 442.638, 540 441.291 C 535.325 439.943, 527.346 437.744, 522.270 436.403 C 517.193 435.063, 511.941 433.548, 510.597 433.037 C 508.906 432.394, 507.876 432.476, 507.248 433.304 M 475.168 507.750 C 473.556 510.873, 463.186 535.437, 462.560 537.613 C 461.830 540.151, 461.401 540.021, 492 546.516 C 503.825 549.026, 517.325 551.949, 522 553.011 C 526.675 554.074, 535.900 556.089, 542.500 557.489 C 549.100 558.890, 558.325 560.901, 563 561.958 C 567.675 563.016, 574.875 564.608, 579 565.496 C 583.125 566.384, 588.300 567.516, 590.500 568.011 C 592.700 568.506, 601.700 570.466, 610.500 572.366 C 673.913 586.059, 695.827 591.030, 699.682 592.598 C 726.461 603.489, 740.370 620.938, 740.457 643.750 C 740.506 656.476, 740.131 656.095, 748.360 651.781 C 784.056 633.066, 780.268 585.838, 741.500 566.247 C 730.489 560.682, 724.237 559.083, 662.500 546.042 C 660.300 545.577, 654.225 544.243, 649 543.078 C 643.775 541.912, 637.475 540.538, 635 540.023 C 632.525 539.509, 626.225 538.133, 621 536.965 C 615.775 535.797, 606.550 533.782, 600.500 532.487 C 584.408 529.044, 569.375 525.776, 543.500 520.098 C 530.850 517.322, 518.250 514.570, 515.500 513.983 C 512.750 513.396, 503.555 511.360, 495.066 509.458 C 477.280 505.473, 476.382 505.396, 475.168 507.750 M 455.741 553.174 C 454.341 556.670, 452.079 561.999, 450.713 565.015 C 444.108 579.604, 430 613.265, 430 614.437 C 430 615.358, 433.430 616.277, 441.250 617.453 C 447.438 618.383, 457.675 620.044, 464 621.144 C 470.325 622.245, 479.775 623.810, 485 624.624 C 490.225 625.437, 498.325 626.711, 503 627.456 C 507.675 628.200, 517.575 629.747, 525 630.892 C 532.425 632.037, 542.325 633.644, 547 634.463 C 551.675 635.282, 561.575 636.899, 569 638.055 C 576.425 639.212, 588.800 641.210, 596.500 642.496 C 604.200 643.781, 615.225 645.562, 621 646.453 C 649.937 650.920, 670.236 654.191, 677 655.477 C 696.613 659.205, 720.960 660.779, 728.067 658.777 C 736.346 656.445, 735.690 634.130, 726.968 621.454 C 716.405 606.101, 704.129 599.603, 673.500 593.152 C 663.305 591.005, 654.208 589.006, 643.500 586.560 C 637.450 585.179, 628.900 583.322, 624.500 582.434 C 620.100 581.546, 614.925 580.456, 613 580.011 C 611.075 579.566, 607.250 578.728, 604.500 578.149 C 601.750 577.569, 591.175 575.260, 581 573.016 C 570.825 570.773, 556.425 567.615, 549 565.998 C 541.575 564.382, 532.350 562.350, 528.500 561.483 C 524.650 560.616, 515.425 558.618, 508 557.043 C 500.575 555.468, 487.975 552.737, 480 550.972 C 472.025 549.208, 463.877 547.552, 461.893 547.291 L 458.286 546.817 455.741 553.174"/>
+  </symbol>
+</svg>
 
 <!-- ---------- login ---------- -->
 <div class="login" id="login">
@@ -898,74 +967,79 @@ button,input,select{font:inherit;color:inherit}
     if (name === 'questions') return renderQuestions();
   }
 
-  /* ---------------- quote builder ---------------- */
-  /* Owner figures. Same numbers as the internal rate sheet. */
-  var PACKAGES = {
-    store: { label: 'רק חנות',        launch: 4500, real: 7000 },
-    full:  { label: 'חבילה מלאה',      launch: 7500, real: 11500 },
-    ads:   { label: 'רק פרסום (הקמה)', launch: 2500, real: 3500 }
+  /* ---------------- quote builder ----------------
+     Line items from public.quote_items, not fixed packages: a website quote
+     has to describe the scope that was actually agreed. Prices live in the
+     table and are edited in the מחירון mode, never hardcoded here. */
+  var catalog = [];
+  var qty = {};        /* item id -> quantity, kept across redraws */
+  var priceEditing = false;
+  var lastQuote = null;
+
+  var UNIT_LABEL = {
+    unit: '', page: 'לעמוד', product: 'למוצר', week: 'לשבוע', month: 'לחודש', hour: 'לשעה'
   };
-  var ADDONS = [
-    { id: 'q-products',  unit: 50,   label: 'מוצרים מעבר ל־15' },
-    { id: 'q-creatives', unit: 250,  label: 'קריאטיבים נוספים' },
-    { id: 'q-weeks',     unit: 800,  label: 'שבועות ליווי נוספים' },
-    { id: 'q-migration', unit: 1500, label: 'העברה מוויקס או ווקומרס' }
-  ];
-  var RUSH_RATE = 0.25;
-  var RETAINER = { launch: 2000, realMin: 2500, realPct: 0.12 };
 
   function money(n) {
     return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ש״ח';
   }
-  function qnum(id) {
-    var el2 = $(id); if (!el2) return 0;
-    var v = parseInt(el2.value, 10);
-    return isNaN(v) || v < 0 ? 0 : v;
-  }
-  function qval(id) { var e = $(id); return e ? e.value.trim() : ''; }
-  function qsel(name) {
-    var n = document.querySelector('input[name="' + name + '"]:checked');
-    return n ? n.value : null;
-  }
+  function numOf(v) { var n = parseFloat(v); return isNaN(n) || n < 0 ? 0 : n; }
 
   function renderQuote() {
+    $('view').innerHTML = '<div class="spinner">טוען...</div>';
+    return api('quote_items?select=*&active=eq.true&order=position').then(function (rows) {
+      catalog = (rows || []).map(function (r) { r.price = numOf(r.price); return r; });
+      drawQuoteForm();
+    }).catch(function (err) {
+      var msg = String(err && err.message || err);
+      var missing = /quote_items/i.test(msg) && /(does not exist|schema cache|PGRST205)/i.test(msg);
+      $('view').innerHTML = '<div class="setup"><h2>' +
+        (missing ? 'המחירון עוד לא קיים' : 'שגיאה בטעינה') + '</h2><p>' +
+        (missing
+          ? 'צריך להריץ פעם אחת את <code>supabase/003_quote_items.sql</code> ב־SQL Editor.'
+          : esc(msg)) + '</p></div>';
+    });
+  }
+
+  function categories() {
+    var out = [], seen = {};
+    catalog.forEach(function (i) {
+      if (!seen[i.category]) { seen[i.category] = []; out.push(i.category); }
+      seen[i.category].push(i);
+    });
+    return out.map(function (c) { return { name: c, items: seen[c] }; });
+  }
+
+  /* The form is built once and only #q-doc is redrawn as you type. Rebuilding
+     the whole view on every keystroke would drop focus out of the field. */
+  function drawQuoteForm() {
+    var groups = categories().map(function (g) {
+      var chosen = g.items.filter(function (i) { return (qty[i.id] || 0) > 0; }).length;
+      return '<details class="qcat"' + (chosen ? ' open' : '') + '>' +
+        '<summary>' + esc(g.name) +
+          '<span class="qcat__count" data-count="' + esc(g.name) + '">' +
+          (chosen ? '<span class="num">' + chosen + '</span>' : '') + '</span></summary>' +
+        '<div class="qcat__body">' + g.items.map(qItemRow).join('') + '</div></details>';
+    }).join('');
+
     $('view').innerHTML =
-      '<section class="section no-print">' +
-        '<h2 class="sec-title">פרטי הלקוח</h2>' +
-        '<div class="card">' +
-          qfield('q-client', 'שם הלקוח', 'text') +
-          qfield('q-brand', 'שם המותג', 'text') +
-          qfield('q-valid', 'תוקף ההצעה', 'text', '14 יום') +
-        '</div>' +
-      '</section>' +
+      '<div class="detail__head no-print"><div><h2>הצעת מחיר</h2>' +
+        '<p><span class="num">' + catalog.length + '</span> סעיפים במחירון</p></div>' +
+        '<button class="btn btn--ghost btn--sm" id="q-prices">' +
+        (priceEditing ? 'סיום עריכת מחירון' : 'מחירון') + '</button></div>' +
 
-      '<section class="section no-print">' +
-        '<h2 class="sec-title">חבילה</h2>' +
-        '<div class="opts">' +
-          qradio('pkg', 'store', 'רק חנות') +
-          qradio('pkg', 'full', 'חבילה מלאה', true) +
-          qradio('pkg', 'ads', 'רק פרסום (הקמה)') +
-        '</div>' +
-        '<div class="opts" style="margin-top:var(--sp-3)">' +
-          qradio('mode', 'launch', 'מחיר השקה', true) +
-          qradio('mode', 'real', 'מחיר אמיתי') +
-        '</div>' +
-      '</section>' +
+      '<section class="section no-print"><div class="card">' +
+        qText('q-client', 'שם הלקוח') +
+        qText('q-brand', 'שם המותג') +
+        qText('q-valid', 'תוקף ההצעה', '14 יום') +
+      '</div></section>' +
 
-      '<section class="section no-print">' +
-        '<h2 class="sec-title">תוספות</h2><div class="card">' +
-          ADDONS.map(function (a) {
-            return qrow(a.id, a.label, money(a.unit) + ' ליחידה');
-          }).join('') +
-        '</div>' +
-        '<div class="opts" style="margin-top:var(--sp-3)">' +
-          '<label class="opt"><input type="checkbox" id="q-rush"><span>אקספרס פחות מ־<span class="num">4</span> שבועות</span><span class="opt__price">+<span class="num">25%</span></span></label>' +
-          '<label class="opt"><input type="checkbox" id="q-ret"><span>לכלול ריטיינר חודשי</span></label>' +
-        '</div>' +
-        '<div class="card" id="q-budget-row" style="display:none;margin-top:var(--sp-3)">' +
-          qrow('q-budget', 'תקציב פרסום חודשי', '12% מהתקציב או 2,500, הגבוה מביניהם') +
-        '</div>' +
-      '</section>' +
+      '<section class="section no-print">' + groups + '</section>' +
+
+      '<section class="section no-print"><div class="card">' +
+        '<div class="row"><span class="row__label">הנחה<small>סכום בשקלים, לפני מע״מ</small></span>' +
+        '<input type="number" id="q-disc" min="0" step="50" value="0" inputmode="numeric"></div>' +
+      '</div></section>' +
 
       '<div id="q-doc"></div>' +
 
@@ -973,113 +1047,199 @@ button,input,select{font:inherit;color:inherit}
         '<button class="btn btn--primary btn--block" id="q-print">ייצוא ל־PDF</button>' +
         '<button class="btn btn--ghost btn--block" id="q-copy">העתק לוואטסאפ</button>' +
         '<p class="msg" id="q-msg" role="status" aria-live="polite"></p>' +
-      '</div>';
+      '</div>' +
+      (priceEditing
+        ? '<div class="savebar"><span class="msg" id="qp-msg"></span>' +
+          '<button class="btn btn--primary" id="qp-save">שמירת מחירון</button></div>'
+        : '');
 
-    [].forEach.call($('view').querySelectorAll('input'), function (i) {
-      i.addEventListener('input', drawQuote);
-      i.addEventListener('change', drawQuote);
+    wireQuote();
+    drawDoc();
+  }
+
+  function qItemRow(i) {
+    var unit = UNIT_LABEL[i.unit] || '';
+    var priceCell = priceEditing
+      ? '<input class="qprice" type="number" min="0" step="10" data-price-for="' + esc(i.id) + '" value="' + i.price + '" inputmode="numeric">'
+      : '<span class="qitem__price">' + (i.price ? money(i.price) : '<span class="qitem__unpriced">ללא מחיר</span>') + '</span>';
+    return '<div class="qitem">' +
+      '<span class="qitem__name">' + esc(i.name) +
+        (i.note ? '<small>' + esc(i.note) + '</small>' : '') +
+        (unit ? '<small>' + unit + '</small>' : '') +
+      '</span>' + priceCell +
+      '<input class="qqty" type="number" min="0" step="1" data-qty-for="' + esc(i.id) + '" value="' + (qty[i.id] || 0) + '" inputmode="numeric">' +
+    '</div>';
+  }
+
+  function qText(id, label, val) {
+    return '<div class="row"><span class="row__label">' + label + '</span>' +
+      '<input type="text" id="' + id + '" value="' + (val || '') + '"></div>';
+  }
+
+  function wireQuote() {
+    $('q-prices').addEventListener('click', function () {
+      priceEditing = !priceEditing;
+      drawQuoteForm();
     });
+
+    [].forEach.call(document.querySelectorAll('[data-qty-for]'), function (inp) {
+      /* a zero left in the box turns '12' into '012' when you start typing */
+      inp.addEventListener('focus', function () { if (numOf(inp.value) === 0) inp.value = ''; });
+      inp.addEventListener('blur', function () { if (inp.value.trim() === '') inp.value = 0; });
+      inp.addEventListener('input', function () {
+        qty[inp.getAttribute('data-qty-for')] = numOf(inp.value);
+        drawDoc();
+        refreshCounts();
+      });
+    });
+
+    ['q-client', 'q-brand', 'q-valid', 'q-disc'].forEach(function (id) {
+      var e = $(id);
+      if (e) e.addEventListener('input', drawDoc);
+    });
+
     $('q-print').addEventListener('click', function () { window.print(); });
     $('q-copy').addEventListener('click', copyQuote);
-    drawQuote();
+
+    var savePrices = $('qp-save');
+    if (savePrices) savePrices.addEventListener('click', function () {
+      savePrices.disabled = true;
+      var m = $('qp-msg');
+      m.className = 'msg'; m.textContent = 'שומר...';
+      var jobs = [];
+      [].forEach.call(document.querySelectorAll('[data-price-for]'), function (inp) {
+        var id = inp.getAttribute('data-price-for');
+        var row = catalog.filter(function (c) { return c.id === id; })[0];
+        var val = numOf(inp.value);
+        if (!row || val === row.price) return;
+        jobs.push(api('quote_items?id=eq.' + encodeURIComponent(id),
+          { method: 'PATCH', body: { price: val } })
+          .then(function () { row.price = val; }));
+      });
+      if (!jobs.length) {
+        savePrices.disabled = false;
+        m.className = 'msg msg--ok'; m.textContent = 'אין שינויים';
+        return;
+      }
+      Promise.all(jobs).then(function () {
+        m.className = 'msg msg--ok'; m.textContent = 'המחירון נשמר';
+        drawDoc();
+      }).catch(function () {
+        m.className = 'msg msg--err'; m.textContent = 'שגיאה בשמירה';
+      }).then(function () { savePrices.disabled = false; });
+    });
   }
 
-  function qfield(id, label, type, val) {
-    return '<div class="row"><span class="row__label">' + label + '</span>' +
-      '<input type="' + type + '" id="' + id + '" value="' + (val || '') + '"></div>';
+  /* only the little count badges change, so the open/closed state of each
+     category survives a quantity change */
+  function refreshCounts() {
+    categories().forEach(function (g) {
+      var badge = document.querySelector('[data-count="' + g.name.replace(/"/g, '') + '"]');
+      if (!badge) return;
+      var n = g.items.filter(function (i) { return (qty[i.id] || 0) > 0; }).length;
+      badge.innerHTML = n ? '<span class="num">' + n + '</span>' : '';
+    });
   }
-  function qrow(id, label, hint) {
-    return '<div class="row"><span class="row__label">' + label +
-      '<small>' + hint + '</small></span>' +
-      '<input type="number" id="' + id + '" min="0" step="1" value="0" inputmode="numeric"></div>';
-  }
-  function qradio(name, val, label, checked) {
-    /* Only package radios get a live price hint. Putting data-price on the mode
-       radios too made the hint loop look up PACKAGES['launch'], which is not a
-       package, and it threw on every keystroke. */
-    var hint = name === 'pkg'
-      ? '<span class="opt__price" data-price="' + val + '"></span>' : '';
-    return '<label class="opt"><input type="radio" name="' + name + '" value="' + val + '"' +
-      (checked ? ' checked' : '') + '><span>' + label + '</span>' + hint + '</label>';
-  }
-
-  var lastQuote = null;
 
   function computeQuote() {
-    var pkgKey = qsel('pkg') || 'full';
-    var mode = qsel('mode') || 'launch';
-    var base = PACKAGES[pkgKey][mode];
-
-    var lines = [], addons = 0;
-    ADDONS.forEach(function (a) {
-      var n = qnum(a.id);
+    var oneOff = [], monthly = [];
+    catalog.forEach(function (i) {
+      var n = qty[i.id] || 0;
       if (!n) return;
-      var sum = n * a.unit;
-      addons += sum;
-      lines.push({ label: a.label, count: n, sum: sum });
+      var line = { name: i.name, unit: i.unit, count: n, price: i.price, sum: n * i.price };
+      if (i.unit === 'month') monthly.push(line); else oneOff.push(line);
     });
 
-    var beforeRush = base + addons;
-    var rushOn = $('q-rush') && $('q-rush').checked;
-    var rush = rushOn ? beforeRush * RUSH_RATE : 0;
-    var subtotal = beforeRush + rush;
+    var gross = oneOff.reduce(function (s, l) { return s + l.sum; }, 0);
+    var disc = Math.min(numOf($('q-disc') && $('q-disc').value), gross);
+    var subtotal = gross - disc;
     var vat = subtotal * VAT_RATE;
-
-    var retOn = $('q-ret') && $('q-ret').checked;
-    var ret = 0;
-    if (retOn) {
-      ret = mode === 'launch' ? RETAINER.launch
-        : Math.max(RETAINER.realMin, qnum('q-budget') * RETAINER.realPct);
-    }
+    /* Quantity on a monthly line is the number of months, so the recurring
+       figure is the unit price. Summing qty * price would present the whole
+       term as if it were the monthly charge. */
+    var monthlySum = monthly.reduce(function (s, l) { return s + l.price; }, 0);
+    var monthlyTerm = monthly.reduce(function (m, l) { return Math.max(m, l.count); }, 0);
 
     return {
-      pkg: PACKAGES[pkgKey].label, mode: mode, base: base,
-      lines: lines, addons: addons, rushOn: rushOn, rush: rush,
-      subtotal: subtotal, vat: vat, total: subtotal + vat,
-      retOn: retOn, ret: ret, retTotal: ret * (1 + VAT_RATE),
-      client: qval('q-client'), brand: qval('q-brand'), valid: qval('q-valid')
+      oneOff: oneOff, monthly: monthly,
+      gross: gross, disc: disc, subtotal: subtotal, vat: vat, total: subtotal + vat,
+      monthlySum: monthlySum, monthlyTotal: monthlySum * (1 + VAT_RATE), monthlyTerm: monthlyTerm,
+      client: ($('q-client') || {}).value || '',
+      brand: ($('q-brand') || {}).value || '',
+      valid: ($('q-valid') || {}).value || '',
+      unpriced: oneOff.concat(monthly).filter(function (l) { return !l.price; }).length
     };
   }
 
-  function drawQuote() {
+  function drawDoc() {
     var q = computeQuote();
     lastQuote = q;
 
-    var hints = document.querySelectorAll('[data-price]');
-    for (var i = 0; i < hints.length; i++) {
-      hints[i].textContent = money(PACKAGES[hints[i].getAttribute('data-price')][q.mode]);
+    if (!q.oneOff.length && !q.monthly.length) {
+      $('q-doc').innerHTML = '<p class="all-clear no-print">בחרו סעיפים כדי לבנות הצעה.</p>';
+      return;
     }
-    var br = $('q-budget-row');
-    if (br) br.style.display = (q.retOn && q.mode === 'real') ? '' : 'none';
 
-    var rows = '<tr><td>' + esc(q.pkg) + '</td><td>' + money(q.base) + '</td></tr>';
-    q.lines.forEach(function (l) {
-      rows += '<tr><td>' + esc(l.label) + ' <span class="num">x' + l.count + '</span></td><td>' + money(l.sum) + '</td></tr>';
-    });
-    if (q.rushOn) rows += '<tr><td>תוספת אקספרס <span class="num">25%</span></td><td>' + money(q.rush) + '</td></tr>';
+    function rows(list) {
+      return list.map(function (l) {
+        var qtyLabel = l.count > 1 ? ' <span class="num">x' + l.count + '</span>' : '';
+        return '<tr><td>' + esc(l.name) + qtyLabel + '</td><td>' +
+          (l.price ? money(l.sum) : '<span class="qitem__unpriced">ללא מחיר</span>') + '</td></tr>';
+      }).join('');
+    }
 
     $('q-doc').innerHTML =
       '<div class="qdoc">' +
-        '<div class="qdoc__head"><div><h3>הצעת מחיר</h3>' +
-          '<p>בלאקזי</p></div>' +
-          (q.valid ? '<p>בתוקף ל־' + esc(q.valid) + '</p>' : '') +
+        '<div class="qdoc__head">' +
+          '<div class="qdoc__brand">' +
+            '<svg class="qdoc__logo" viewBox="222 310 630 468" aria-hidden="true"><use href="#bz-mark"/></svg>' +
+            '<div><h3>הצעת מחיר</h3><p>בלאקזי</p></div>' +
+          '</div>' +
+          '<div class="qdoc__meta">'
+            + (q.valid ? 'בתוקף ל־' + esc(q.valid) + '<br>' : '')
+            + 'תנאי תשלום <span class="num">50%</span> / <span class="num">50%</span>' +
+          '</div>' +
         '</div>' +
-        (q.client || q.brand ? '<p class="qdoc__to">לכבוד <b>' + esc(q.client || q.brand) + '</b>' +
-          (q.brand && q.client ? ' · ' + esc(q.brand) : '') + '</p>' : '') +
-        '<table><thead><tr><th>סעיף</th><th>מחיר</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        (q.client || q.brand
+          ? '<p class="qdoc__to">לכבוד <b>' + esc(q.client || q.brand) + '</b>' +
+            (q.brand && q.client ? ' · ' + esc(q.brand) : '') + '</p>'
+          : '') +
+
+        (q.oneOff.length
+          ? '<table><thead><tr><th>סעיף</th><th>מחיר</th></tr></thead><tbody>' + rows(q.oneOff) + '</tbody></table>'
+          : '') +
+
         '<div class="qdoc__sum">' +
+          (q.disc ? '<div class="qdoc__line"><span>לפני הנחה</span><b>' + money(q.gross) + '</b></div>' +
+                    '<div class="qdoc__line"><span>הנחה</span><b>' + money(-q.disc) + '</b></div>' : '') +
           '<div class="qdoc__line"><span>סכום ביניים</span><b>' + money(q.subtotal) + '</b></div>' +
           '<div class="qdoc__line"><span>מע״מ <span class="num">' + Math.round(VAT_RATE * 100) + '%</span></span><b>' + money(q.vat) + '</b></div>' +
           '<div class="qdoc__line qdoc__total"><span>סה״כ לתשלום</span><b>' + money(q.total) + '</b></div>' +
-          (q.retOn ? '<div class="qdoc__line"><span>ריטיינר חודשי, בנפרד</span><b>' + money(q.retTotal) + ' כולל מע״מ</b></div>' : '') +
         '</div>' +
+
+        (q.monthly.length
+          ? '<div class="qdoc__monthly"><h4>חודשי, בנפרד</h4>' +
+            '<table><tbody>' + q.monthly.map(function (l) {
+              return '<tr><td>' + esc(l.name) + '</td><td>' +
+                (l.price ? money(l.price) + ' לחודש' : '<span class="qitem__unpriced">ללא מחיר</span>') +
+                '</td></tr>';
+            }).join('') + '</tbody></table>' +
+            '<div class="qdoc__line"><span>לחודש כולל מע״מ</span><b>' + money(q.monthlyTotal) + '</b></div>' +
+            (q.monthlyTerm > 1
+              ? '<div class="qdoc__line"><span>התחייבות</span><b><span class="num">' + q.monthlyTerm + '</span> חודשים</b></div>'
+              : '') +
+            '</div>'
+          : '') +
+
         '<ul class="qdoc__terms">' +
           '<li>תנאי תשלום: <span class="num">50%</span> מקדמה, <span class="num">50%</span> לפני עלייה לאוויר.</li>' +
-          '<li>זמן אספקה: <span class="num">4</span> שבועות מקבלת החומרים.</li>' +
           '<li>המחירים אינם כוללים שופיפיי, אפליקציות, דומיין ותקציב פרסום.</li>' +
-          (q.retOn ? '<li>מינימום <span class="num">3</span> חודשים לריטיינר.</li>' : '') +
+          '<li>כל המחירים לפני מע״מ, אלא אם צוין אחרת.</li>' +
         '</ul>' +
-      '</div>';
+      '</div>' +
+      (q.unpriced
+        ? '<p class="q-warn no-print">יש <span class="num">' + q.unpriced + '</span> סעיפים ללא מחיר. הגדירו אותם במחירון לפני שליחה.</p>'
+        : '');
   }
 
   function copyQuote() {
@@ -1087,24 +1247,28 @@ button,input,select{font:inherit;color:inherit}
     out.push('הצעת מחיר - בלאקזי');
     if (q.client || q.brand) out.push('לכבוד: ' + (q.client || q.brand));
     out.push('');
-    out.push(q.pkg + ': ' + money(q.base));
-    q.lines.forEach(function (l) { out.push('- ' + l.label + ' x' + l.count + ': ' + money(l.sum)); });
-    if (q.rushOn) out.push('- תוספת אקספרס 25%: ' + money(q.rush));
+    q.oneOff.forEach(function (l) {
+      out.push('- ' + l.name + (l.count > 1 ? ' x' + l.count : '') + ': ' + (l.price ? money(l.sum) : 'ללא מחיר'));
+    });
     out.push('');
+    if (q.disc) out.push('הנחה: ' + money(q.disc));
     out.push('סכום ביניים: ' + money(q.subtotal));
     out.push('מע״מ ' + Math.round(VAT_RATE * 100) + '%: ' + money(q.vat));
     out.push('סה״כ לתשלום: ' + money(q.total));
-    if (q.retOn) out.push('ריטיינר חודשי: ' + money(q.retTotal) + ' כולל מע״מ, מינימום 3 חודשים.');
+    if (q.monthly.length) {
+      out.push('');
+      q.monthly.forEach(function (l) { out.push('חודשי - ' + l.name + ': ' + money(l.price) + ' לחודש'); });
+      out.push('סה״כ חודשי כולל מע״מ: ' + money(q.monthlyTotal));
+    }
     out.push('');
     out.push('תנאי תשלום: 50% מקדמה, 50% לפני עלייה לאוויר.');
-    out.push('זמן אספקה: 4 שבועות מקבלת החומרים.');
     var text = out.join('\n');
 
     function done(ok) {
       var m = $('q-msg');
       m.className = ok ? 'msg msg--ok' : 'msg msg--err';
       m.textContent = ok ? 'הועתק' : 'ההעתקה נכשלה';
-      setTimeout(function () { m.textContent = ''; }, 2500);
+      setTimeout(function () { if ($('q-msg')) $('q-msg').textContent = ''; }, 2500);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () { done(true); }, function () { legacyCopy(text, done); });
