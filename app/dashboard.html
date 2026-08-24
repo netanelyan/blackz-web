@@ -452,6 +452,14 @@ button,input,select{font:inherit;color:inherit}
   direction:ltr;text-align:center;
 }
 .qprice{width:88px}
+.qincl{
+  flex:none;min-height:44px;padding-inline:var(--sp-3);
+  border-radius:var(--radius-pill);border:var(--border);
+  background:var(--c-bg);color:var(--c-text-faint);
+  font-size:var(--fs-xs);font-weight:var(--fw-bold);cursor:pointer;
+}
+.qincl.is-on{background:var(--c-ok-wash);color:var(--c-ok);border-color:var(--c-ok)}
+.qdoc__incl{color:var(--c-ok);font-weight:var(--fw-bold)}
 .qqty:focus,.qprice:focus{outline:none;border-color:var(--c-accent)}
 
 .q-warn{
@@ -1129,6 +1137,9 @@ button,input,select{font:inherit;color:inherit}
      table and are edited in the price-list mode, never hardcoded here. */
   var catalog = [];
   var qty = {};        /* item id -> quantity, kept across redraws */
+  /* item id -> true when the item is in scope but carries no charge. Kept
+     apart from quantity so an included line still prints as a deliverable. */
+  var incl = {};
   var priceEditing = false;
   var lastQuote = null;
 
@@ -1170,7 +1181,7 @@ button,input,select{font:inherit;color:inherit}
      the whole view on every keystroke would drop focus out of the field. */
   function drawQuoteForm() {
     var groups = categories().map(function (g) {
-      var chosen = g.items.filter(function (i) { return (qty[i.id] || 0) > 0; }).length;
+      var chosen = g.items.filter(function (i) { return (qty[i.id] || 0) > 0 || incl[i.id]; }).length;
       return '<details class="qcat"' + (chosen ? ' open' : '') + '>' +
         '<summary>' + esc(g.name) +
           '<span class="qcat__count" data-count="' + esc(g.name) + '">' +
@@ -1224,7 +1235,9 @@ button,input,select{font:inherit;color:inherit}
         (i.note ? '<small>' + esc(i.note) + '</small>' : '') +
         (unit ? '<small>' + unit + '</small>' : '') +
       '</span>' + priceCell +
-      '<input class="qqty" type="number" min="0" step="1" data-qty-for="' + esc(i.id) + '" value="' + (qty[i.id] || 0) + '" inputmode="numeric">' +
+      '<button type="button" class="qincl' + (incl[i.id] ? ' is-on' : '') + '" data-incl-for="' + esc(i.id) + '">כלול</button>' +
+      '<input class="qqty" type="number" min="0" step="1" data-qty-for="' + esc(i.id) + '" value="' + (qty[i.id] || 0) + '"' +
+        (incl[i.id] ? ' disabled' : '') + ' inputmode="numeric">' +
     '</div>';
   }
 
@@ -1265,6 +1278,22 @@ button,input,select{font:inherit;color:inherit}
       inp.addEventListener('blur', function () { if (inp.value.trim() === '') inp.value = 0; });
       inp.addEventListener('input', function () {
         qty[inp.getAttribute('data-qty-for')] = numOf(inp.value);
+        drawDoc();
+        refreshCounts();
+      });
+    });
+
+    [].forEach.call(document.querySelectorAll('[data-incl-for]'), function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-incl-for');
+        incl[id] = !incl[id];
+        btn.classList.toggle('is-on', incl[id]);
+        var box = document.querySelector('[data-qty-for="' + id + '"]');
+        if (box) {
+          box.disabled = !!incl[id];
+          /* an included line still needs to appear, so give it a quantity */
+          if (incl[id] && numOf(box.value) === 0) { box.value = 1; qty[id] = 1; }
+        }
         drawDoc();
         refreshCounts();
       });
@@ -1313,7 +1342,7 @@ button,input,select{font:inherit;color:inherit}
     categories().forEach(function (g) {
       var badge = document.querySelector('[data-count="' + g.name.replace(/"/g, '') + '"]');
       if (!badge) return;
-      var n = g.items.filter(function (i) { return (qty[i.id] || 0) > 0; }).length;
+      var n = g.items.filter(function (i) { return (qty[i.id] || 0) > 0 || incl[i.id]; }).length;
       badge.innerHTML = n ? '<span class="num">' + n + '</span>' : '';
     });
   }
@@ -1321,9 +1350,15 @@ button,input,select{font:inherit;color:inherit}
   function computeQuote() {
     var oneOff = [], monthly = [];
     catalog.forEach(function (i) {
+      var included = !!incl[i.id];
       var n = qty[i.id] || 0;
-      if (!n) return;
-      var line = { name: i.name, unit: i.unit, count: n, price: i.price, sum: n * i.price };
+      if (!n && !included) return;
+      /* included lines carry scope, not money, so they sum to zero */
+      var line = {
+        name: i.name, unit: i.unit, count: included ? 1 : n,
+        price: i.price, included: included,
+        sum: included ? 0 : n * i.price
+      };
       if (i.unit === 'month') monthly.push(line); else oneOff.push(line);
     });
 
@@ -1334,7 +1369,7 @@ button,input,select{font:inherit;color:inherit}
     /* Quantity on a monthly line is the number of months, so the recurring
        figure is the unit price. Summing qty * price would present the whole
        term as if it were the monthly charge. */
-    var monthlySum = monthly.reduce(function (s, l) { return s + l.price; }, 0);
+    var monthlySum = monthly.reduce(function (s, l) { return s + (l.included ? 0 : l.price); }, 0);
     var monthlyTerm = monthly.reduce(function (m, l) { return Math.max(m, l.count); }, 0);
 
     return {
@@ -1345,7 +1380,7 @@ button,input,select{font:inherit;color:inherit}
       brand: ($('q-brand') || {}).value || '',
       date: ($('q-date') || {}).value || '',
       until: ($('q-until') || {}).value || '',
-      unpriced: oneOff.concat(monthly).filter(function (l) { return !l.price; }).length
+      unpriced: oneOff.concat(monthly).filter(function (l) { return !l.price && !l.included; }).length
     };
   }
 
@@ -1361,8 +1396,10 @@ button,input,select{font:inherit;color:inherit}
     function rows(list) {
       return list.map(function (l) {
         var qtyLabel = l.count > 1 ? ' <span class="num">x' + l.count + '</span>' : '';
-        return '<tr><td>' + esc(l.name) + qtyLabel + '</td><td>' +
-          (l.price ? money(l.sum) : '<span class="qitem__unpriced">ללא מחיר</span>') + '</td></tr>';
+        var cell = l.included
+          ? '<span class="qdoc__incl">כלול</span>'
+          : (l.price ? money(l.sum) : '<span class="qitem__unpriced">ללא מחיר</span>');
+        return '<tr><td>' + esc(l.name) + qtyLabel + '</td><td>' + cell + '</td></tr>';
       }).join('');
     }
 
@@ -1400,10 +1437,11 @@ button,input,select{font:inherit;color:inherit}
           ? '<div class="qdoc__monthly"><h4>חודשי, בנפרד</h4>' +
             '<table><tbody>' + q.monthly.map(function (l) {
               return '<tr><td>' + esc(l.name) + '</td><td>' +
-                (l.price ? money(l.price) + ' לחודש' : '<span class="qitem__unpriced">ללא מחיר</span>') +
+                (l.included ? '<span class="qdoc__incl">כלול</span>' : l.price ? money(l.price) + ' לחודש' : '<span class="qitem__unpriced">ללא מחיר</span>') +
                 '</td></tr>';
             }).join('') + '</tbody></table>' +
-            '<div class="qdoc__line"><span>לחודש כולל מע״מ</span><b>' + money(q.monthlyTotal) + '</b></div>' +
+            /* every recurring line marked as included leaves nothing to charge */
+            (q.monthlySum ? '<div class="qdoc__line"><span>לחודש כולל מע״מ</span><b>' + money(q.monthlyTotal) + '</b></div>' : '') +
             (q.monthlyTerm > 1
               ? '<div class="qdoc__line"><span>התחייבות</span><b><span class="num">' + q.monthlyTerm + '</span> חודשים</b></div>'
               : '') +
@@ -1429,7 +1467,7 @@ button,input,select{font:inherit;color:inherit}
     if (q.until) out.push('בתוקף עד: ' + niceDate(q.until));
     out.push('');
     q.oneOff.forEach(function (l) {
-      out.push('- ' + l.name + (l.count > 1 ? ' x' + l.count : '') + ': ' + (l.price ? money(l.sum) : 'ללא מחיר'));
+      out.push('- ' + l.name + (l.count > 1 ? ' x' + l.count : '') + ': ' + (l.included ? 'כלול' : l.price ? money(l.sum) : 'ללא מחיר'));
     });
     out.push('');
     if (q.disc) out.push('הנחה: ' + money(q.disc));
