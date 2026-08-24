@@ -366,6 +366,23 @@ button,input,select{font:inherit;color:inherit}
 .obj__say p{color:var(--c-text)}
 .obj__avoid{border-inline-start:3px solid var(--c-warn);padding-inline-start:var(--sp-3)}
 
+/* edit mode */
+.obj-edit{display:grid;gap:var(--sp-3);padding:var(--sp-4);margin-bottom:var(--sp-2);
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius)}
+.obj-edit label{display:grid;gap:var(--sp-1)}
+.obj-edit label > span{font-size:var(--fs-xs);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--c-text-faint)}
+.obj-edit input,.obj-edit textarea{
+  width:100%;padding:var(--sp-3);
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius-sm);
+  font-size:var(--fs-sm);line-height:1.5;font-family:inherit;
+}
+.obj-edit input{min-height:44px;font-weight:var(--fw-bold)}
+.obj-edit textarea{min-height:80px;resize:vertical}
+.obj-edit input:focus,.obj-edit textarea:focus{outline:none;border-color:var(--c-accent)}
+.obj-edit__foot{display:flex;justify-content:flex-start}
+.btn--danger{background:var(--c-warn-wash);color:var(--c-warn);border-color:var(--c-warn)}
+
 /* ---------- call checklist ---------- */
 .q-group{margin-bottom:var(--sp-5)}
 .q-group > h3{font-size:var(--fs-xs);font-weight:var(--fw-black);
@@ -1106,70 +1123,158 @@ button,input,select{font:inherit;color:inherit}
     cb(ok);
   }
 
-  /* ---------------- objections ---------------- */
-  /* Every answer here is grounded in a policy already stated on the public
-     site or the rate sheet: 50/50 terms, four weeks, no sales guarantee,
-     a minimum ad budget, and the client owning every account. */
-  var OBJECTIONS = [
-    { q: 'יקר לי', mean: 'לרוב זה לא המחיר, זה שהוא לא יודע מה הוא מקבל תמורתו.',
-      say: 'מה השוויתם אליו? אם קיבלתם הצעה זולה יותר, תשלחו לי אותה ואני אגיד לכם מה חסר בה. בדרך כלל חסר שם פרסום, מדידה, או בעלות על החשבונות.',
-      avoid: 'לא להוריד מחיר במקום. הנחה מיידית אומרת שהמחיר הראשון היה מנופח.' },
-
-    { q: 'קיבלתי הצעה בחצי מחיר', mean: 'בדרך כלל מול פרילנסר שמוכר שעות, לא תוצאה.',
-      say: 'יכול להיות שזו הצעה טובה. תבדקו שלושה דברים: על שם מי נפתחים החשבונות, מי מעלה את הקמפיין הראשון, ומה קורה שבועיים אחרי העלייה לאוויר. אם התשובות טובות, קחו אותה.',
-      avoid: 'לא להשמיץ את המתחרה. זה מוריד אותך לרמה שלו.' },
-
-    { q: 'כמה מכירות אני אעשה?', mean: 'רוצה ביטחון. לא באמת מצפה למספר.',
-      say: 'אני לא יודע, ומי שנותן לכם מספר ממציא אותו. אני מתחייב לחנות שעובדת ולקמפיין שמוקם נכון. מה שקורה אחר כך תלוי גם במוצר, במחיר ובשוק.',
-      avoid: 'לא לתת טווח כדי להרגיע. כל מספר שתיתן ייזכר כהבטחה.' },
-
-    { q: 'בוא נעבוד באחוזים מהמכירות', mean: 'רוצה להעביר אליך את כל הסיכון.',
-      say: 'אני לא עובד ככה. אני שולט בחנות ובקמפיין, אבל לא במוצר, במחיר, במלאי ובשירות. אחוזים אומרים שאני נושא בסיכון על דברים שאין לי שליטה עליהם.',
-      avoid: 'לא להסכים לגרסה מרוככת של זה. זה דגל אדום, לא נקודת מיקוח.' },
-
-    { q: 'אין לי עכשיו תקציב פרסום', mean: 'או שאין כסף, או שהוא לא מבין שצריך.',
-      say: 'אז עדיף שנחכה. חנות בלי תנועה היא אתר תדמית יקר. כשיהיה תקציב, נדבר. אני לא רוצה שתשלמו לי על משהו שלא יביא לכם כלום.',
-      avoid: 'לא לקחת את הפרויקט בכל זאת. זה נגמר בלקוח מאוכזב ובלי המלצה.' },
-
-    { q: 'אני צריך לחשוב על זה', mean: 'יש התנגדות שלא נאמרה. בדרך כלל מחיר, זמן, או שותף להחלטה.',
-      say: 'ברור. רק תגידו לי על מה אתם חושבים, כדי שאדע אם יש משהו שלא הסברתי טוב. זה המחיר, העיתוי, או שיש עוד מישהו שצריך לאשר?',
-      avoid: 'לא לסיים את השיחה בלי לדעת מה באמת עוצר. אחרת אין לך למה לחזור.' },
-
-    { q: 'אני יכול לבנות לבד בוויקס', mean: 'נכון שהוא יכול. השאלה אם הוא רוצה.',
-      say: 'אתם באמת יכולים. השאלה כמה זמן זה ייקח לכם, ומה שווה הזמן הזה לעומת למכור. ואם תגיעו לנקודה שהתבנית לא מספיקה, אנחנו גם מעבירים אתרים משם.',
-      avoid: 'לא לזלזל בוויקס. לחלק מהעסקים הוא באמת מספיק.' },
-
-    { q: 'מה אם לא אהיה מרוצה?', mean: 'פחד מלשלם מראש לספק שלא מכיר.',
-      say: 'לכן התשלום מתחלק: חצי בהתחלה וחצי רק לפני העלייה לאוויר. אתם רואים את האתר באמצע הדרך ומעירים, לא רק ביום שהוא עולה.',
-      avoid: 'לא להבטיח החזר כספי. לא הבטחת את זה בשום מקום.' },
-
-    { q: 'אפשר יותר מהר מארבעה שבועות?', mean: 'יש דדליין אמיתי, או חוסר סבלנות.',
-      say: 'אפשר, בתוספת 25%. זה לא כי אני מייקר, זה כי אני דוחה עבודות אחרות. חשוב לדעת שהשעון מתחיל מרגע שקיבלתי את החומרים, לא מרגע החתימה.',
-      avoid: 'לא להתחייב לתאריך קצר בלי התוספת. זה מה שהורס פרויקטים.' },
-
-    { q: 'של מי החנות בסוף?', mean: 'שאלה טובה. שווה לענות עליה גם אם לא נשאלת.',
-      say: 'שלכם. כל החשבונות נפתחים על שמכם, עם המייל ואמצעי התשלום שלכם. אני נכנס כמשתמש מוזמן, ובסוף אתם מסירים אותי בלחיצה. אותו דבר לגבי הדומיין וחשבונות הפרסום.',
-      avoid: 'אין מה להימנע. זו התשובה הכי חזקה שיש לך.' },
-
-    { q: 'עבדתי עם מישהו וזה נכשל', mean: 'הזדמנות. הוא מספר לך בדיוק ממה הוא מפחד.',
-      say: 'ספרו לי מה קרה. מה הוא הבטיח, מה הוא סיפק, ואיפה זה נתקע. אני רוצה לדעת שאני לא חוזר על אותה טעות.',
-      avoid: 'לא לקפוץ להבטיח שאצלך יהיה אחרת. קודם להקשיב עד הסוף.' },
-
-    { q: 'אפשר לשלם הכל בסוף?', mean: 'רוצה שאתה תממן את הפרויקט.',
-      say: 'לא. חצי בהתחלה זה מה שמאפשר לי לפנות את הזמן ולהתחיל. זה גם מה ששומר על התור הוגן מול לקוחות אחרים.',
-      avoid: 'לא להתחיל עבודה לפני שהמקדמה נכנסה בפועל.' }
-  ];
+  /* ---------------- objections ----------------
+     Stored in public.objections, so edits persist and follow the account
+     between devices. Admin only, enforced by RLS. Requires the migration in
+     supabase/002_objections.sql. */
+  var objections = [];
+  var objEditing = false;
 
   function renderObjections() {
-    $('view').innerHTML =
-      '<section class="section"><h2 class="sec-title">מה שואלים אותי ומה עונים</h2>' +
-      '<div class="obj">' + OBJECTIONS.map(function (o) {
+    $('view').innerHTML = '<div class="spinner">טוען...</div>';
+    return api('objections?select=*&order=position').then(function (rows) {
+      objections = rows || [];
+      drawObjections();
+    }).catch(function (err) {
+      /* until the migration is run the table does not exist, which is a
+         different problem from a network failure and needs a different fix */
+      var msg = String(err && err.message || err);
+      var missing = /objections/i.test(msg) && /(does not exist|schema cache|PGRST205)/i.test(msg);
+      $('view').innerHTML = '<div class="setup"><h2>' +
+        (missing ? 'הטבלה עוד לא קיימת' : 'שגיאה בטעינה') + '</h2><p>' +
+        (missing
+          ? 'צריך להריץ פעם אחת את <code>supabase/002_objections.sql</code> ב־SQL Editor של סופאבייס.'
+          : esc(msg)) + '</p></div>';
+    });
+  }
+
+  function drawObjections() {
+    var head =
+      '<div class="detail__head"><div><h2>מה שואלים אותי ומה עונים</h2>' +
+      '<p><span class="num">' + objections.length + '</span> תשובות</p></div>' +
+      '<button class="btn btn--ghost btn--sm" id="obj-mode">' +
+      (objEditing ? 'סיום עריכה' : 'עריכה') + '</button></div>';
+
+    var body;
+    if (!objEditing) {
+      body = '<div class="obj">' + objections.map(function (o) {
         return '<details><summary>' + esc(o.q) + '</summary><div class="obj__body">' +
-          '<div class="obj__block"><small>מה זה באמת אומר</small><p>' + esc(o.mean) + '</p></div>' +
-          '<div class="obj__block obj__say"><small>מה לענות</small><p>' + esc(o.say) + '</p></div>' +
-          '<div class="obj__block obj__avoid"><small>מה לא לעשות</small><p>' + esc(o.avoid) + '</p></div>' +
+          (o.mean  ? '<div class="obj__block"><small>מה זה באמת אומר</small><p>' + esc(o.mean) + '</p></div>' : '') +
+          (o.say   ? '<div class="obj__block obj__say"><small>מה לענות</small><p>' + esc(o.say) + '</p></div>' : '') +
+          (o.avoid ? '<div class="obj__block obj__avoid"><small>מה לא לעשות</small><p>' + esc(o.avoid) + '</p></div>' : '') +
         '</div></details>';
-      }).join('') + '</div></section>';
+      }).join('') + '</div>';
+      if (!objections.length) body = '<p class="all-clear">אין עדיין תשובות. לחצו על עריכה כדי להוסיף.</p>';
+    } else {
+      body = objections.map(function (o) {
+        return '<div class="obj-edit" data-id="' + esc(o.id) + '">' +
+          objField(o.id, 'q', 'ההתנגדות', o.q, true) +
+          objField(o.id, 'mean', 'מה זה באמת אומר', o.mean) +
+          objField(o.id, 'say', 'מה לענות', o.say) +
+          objField(o.id, 'avoid', 'מה לא לעשות', o.avoid) +
+          '<div class="obj-edit__foot">' +
+            '<button class="btn btn--danger btn--sm" data-del="' + esc(o.id) + '">מחיקה</button>' +
+          '</div></div>';
+      }).join('') +
+      '<button class="btn btn--ghost btn--block" id="obj-add" style="margin-top:var(--sp-3)">הוספת התנגדות</button>' +
+      '<div class="savebar"><span class="msg" id="obj-msg"></span>' +
+        '<button class="btn btn--primary" id="obj-save">שמירה</button></div>';
+    }
+
+    $('view').innerHTML = '<section class="section">' + head + body + '</section>';
+    wireObjections();
+  }
+
+  function objField(id, key, label, value, single) {
+    var input = single
+      ? '<input type="text" data-f="' + key + '" value="' + esc(value || '') + '">'
+      : '<textarea data-f="' + key + '">' + esc(value || '') + '</textarea>';
+    return '<label><span>' + label + '</span>' + input + '</label>';
+  }
+
+  function wireObjections() {
+    var mode = $('obj-mode');
+    if (mode) mode.addEventListener('click', function () {
+      objEditing = !objEditing;
+      drawObjections();
+    });
+
+    if (!objEditing) return;
+
+    /* a new row is written straight away, so it has a real id to edit against */
+    var add = $('obj-add');
+    if (add) add.addEventListener('click', function () {
+      add.disabled = true;
+      var next = objections.reduce(function (m, o) { return Math.max(m, o.position || 0); }, 0) + 1;
+      api('objections', {
+        method: 'POST',
+        headers: { 'Prefer': 'return=representation' },
+        body: { position: next, q: 'התנגדות חדשה', mean: '', say: '', avoid: '' }
+      }).then(function (rows) {
+        if (rows && rows[0]) objections.push(rows[0]);
+        drawObjections();
+      }).catch(function () {
+        add.disabled = false;
+        objMsg(false, 'לא ניתן להוסיף');
+      });
+    });
+
+    [].forEach.call(document.querySelectorAll('[data-del]'), function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-del');
+        var row = objections.filter(function (o) { return o.id === id; })[0];
+        if (!window.confirm('למחוק את "' + (row ? row.q : '') + '"?')) return;
+        b.disabled = true;
+        api('objections?id=eq.' + encodeURIComponent(id), { method: 'DELETE' })
+          .then(function () {
+            objections = objections.filter(function (o) { return o.id !== id; });
+            drawObjections();
+          })
+          .catch(function () { b.disabled = false; objMsg(false, 'המחיקה נכשלה'); });
+      });
+    });
+
+    var save = $('obj-save');
+    if (save) save.addEventListener('click', function () {
+      save.disabled = true;
+      objMsg(null, 'שומר...');
+
+      /* only send rows that actually changed, so a save with one edit is one
+         request rather than one per objection */
+      var jobs = [];
+      [].forEach.call(document.querySelectorAll('.obj-edit'), function (card) {
+        var id = card.getAttribute('data-id');
+        var row = objections.filter(function (o) { return o.id === id; })[0];
+        if (!row) return;
+        var patch = {}, changed = false;
+        [].forEach.call(card.querySelectorAll('[data-f]'), function (f) {
+          var key = f.getAttribute('data-f');
+          var val = f.value.trim();
+          if (val !== (row[key] || '')) { patch[key] = val; changed = true; }
+        });
+        if (changed) {
+          jobs.push(api('objections?id=eq.' + encodeURIComponent(id), { method: 'PATCH', body: patch })
+            .then(function () { Object.keys(patch).forEach(function (k) { row[k] = patch[k]; }); }));
+        }
+      });
+
+      if (!jobs.length) { save.disabled = false; return objMsg(true, 'אין שינויים'); }
+
+      Promise.all(jobs).then(function () {
+        objMsg(true, 'נשמר');
+      }).catch(function (err) {
+        objMsg(false, 'שגיאה בשמירה');
+        if (window.console) console.error('objection save failed', err);
+      }).then(function () { save.disabled = false; });
+    });
+  }
+
+  function objMsg(ok, text) {
+    var m = $('obj-msg');
+    if (!m) return;
+    m.className = ok === null ? 'msg' : (ok ? 'msg msg--ok' : 'msg msg--err');
+    m.textContent = text;
+    if (ok !== null) setTimeout(function () { if ($('obj-msg')) $('obj-msg').textContent = ''; }, 2500);
   }
 
   /* ---------------- questions to ask ---------------- */
