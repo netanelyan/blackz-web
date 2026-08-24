@@ -29,6 +29,7 @@ by an actual request.
 - [ ] **Run `supabase/005_quote_files.sql`** to create the private quotes
       bucket. Until then attaching a quote to a new client fails, though the
       client itself is still created.
+- [ ] **Run `supabase/006_drop_upload_url.sql`** to drop the unused column.
 
 Six items were marked כלול rather than given a number, meaning they are always
 part of the base price. They carry a `default_included` flag instead of a price

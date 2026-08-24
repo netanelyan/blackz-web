@@ -54,7 +54,6 @@ create table if not exists public.projects (
   target_launch_date  text not null default '',
   last_updated        text not null default '',
   preview_url         text not null default '',
-  upload_url          text not null default '',
   deposit_paid        boolean not null default false,
   balance_due         text not null default '',
   wa_number           text not null default '',

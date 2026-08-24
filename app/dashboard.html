@@ -906,7 +906,6 @@ button,input,select{font:inherit;color:inherit}
         field('last_updated', 'עודכן לאחרונה', p.last_updated, 'text') +
         field('target_launch_date', 'תאריך עלייה לאוויר', p.target_launch_date, 'text') +
         field('preview_url', 'קישור לתצוגה', p.preview_url, 'url') +
-        field('upload_url', 'קישור להעלאת קבצים', p.upload_url, 'url') +
         '<div class="row"><span class="row__label">מקדמה שולמה</span>' +
           '<div class="seg" id="deposit-seg">' +
             '<button type="button" data-dep="1"' + (p.deposit_paid ? ' class="is-on"' : '') + '>שולם</button>' +
@@ -1068,7 +1067,6 @@ button,input,select{font:inherit;color:inherit}
           '</span></div>' +
         ncField('nc-start', 'תאריך התחלה', 'text') +
         ncField('nc-launch', 'תאריך יעד לעלייה לאוויר', 'text') +
-        ncField('nc-upload', 'קישור להעלאת קבצים', 'url') +
         ncField('nc-wa', 'וואטסאפ של הלקוח', 'tel') +
         '<label class="newc__file" id="nc-file-label">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
@@ -1158,7 +1156,6 @@ button,input,select{font:inherit;color:inherit}
       brand_name: $('nc-brand').value.trim(),
       start_date: $('nc-start').value.trim(),
       target_launch_date: $('nc-launch').value.trim(),
-      upload_url: $('nc-upload').value.trim(),
       wa_number: $('nc-wa').value.trim(),
       materials: [].slice.call(document.querySelectorAll('[data-mat]:checked'))
         .map(function (c) { return c.value; })

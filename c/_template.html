@@ -73,7 +73,6 @@ const CONFIG = {
   ],
 
   /* ---- links ---- */
-  uploadUrl:  'https://www.dropbox.com/request/REPLACE_ME',
   previewUrl: '',   /* empty until there is something to show. Fills the top card. */
 
   /* ---- payment. Status only, no amounts ---- */
@@ -368,14 +367,6 @@ a{color:inherit;text-decoration:none}
 }
 
 /* ==========================  UPLOAD  ========================== */
-.upload-btn{
-  width:100%;min-height:60px;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:var(--radius-pill);
-  background:var(--c-accent-fill);color:var(--c-accent-ink);
-  font-size:var(--fs-md);font-weight:var(--fw-black);
-}
-.upload-note{margin-top:var(--sp-3);font-size:var(--fs-xs);color:var(--c-text-faint);text-align:center}
 
 /* ==========================  PAYMENT  ========================== */
 .pay{display:grid;gap:var(--sp-2)}
@@ -445,10 +436,6 @@ a{color:inherit;text-decoration:none}
     </p>
   </section>
 
-  <section class="section" id="upload-sec" hidden>
-    <a class="upload-btn" id="upload-btn" target="_blank" rel="noopener">העלאת קבצים</a>
-    <p class="upload-note">אפשר להעלות ישירות מהטלפון. בלי הרשמה ובלי דחיסת תמונות.</p>
-  </section>
 
   <section class="section" id="payment-sec" hidden>
     <h2 class="sec-title">תשלום</h2>
@@ -457,7 +444,7 @@ a{color:inherit;text-decoration:none}
 </main>
 
 <div class="wa-bar" id="wa-bar" hidden>
-  <p class="wa-bar__note">לכל שאלה, וואטסאפ. לקבצים, הכפתור למעלה.</p>
+  <p class="wa-bar__note">לכל שאלה ולשליחת קבצים, וואטסאפ.</p>
   <a class="wa-bar__btn" id="wa-btn" target="_blank" rel="noopener">
     <svg class="wa-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2"/></svg>
     <span id="wa-label">וואטסאפ</span>
@@ -566,13 +553,8 @@ a{color:inherit;text-decoration:none}
     show(el('materials-sec'));
   }
 
-  /* ---- 6. upload ---- */
-  if (has(C.uploadUrl)) {
-    el('upload-btn').setAttribute('href', C.uploadUrl);
-    show(el('upload-sec'));
-  }
 
-  /* ---- 7. payment. Status only, never amounts ---- */
+  /* ---- 6. payment. Status only, never amounts ---- */
   var pay = C.payment || {};
   var payRows = [];
   payRows.push(
@@ -589,7 +571,7 @@ a{color:inherit;text-decoration:none}
   el('pay').innerHTML = payRows.join('');
   show(el('payment-sec'));
 
-  /* ---- 8. sticky WhatsApp ---- */
+  /* ---- 7. sticky WhatsApp ---- */
   if (has(C.waNumber)) {
     var msg = 'היי, זה ' + (has(C.brandName) ? C.brandName : '') + ', לגבי הפרויקט';
     el('wa-btn').setAttribute('href',

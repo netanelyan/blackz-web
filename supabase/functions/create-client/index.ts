@@ -109,7 +109,6 @@ Deno.serve(async (req) => {
       start_date: String(body.start_date ?? ''),
       target_launch_date: String(body.target_launch_date ?? ''),
       last_updated: String(body.start_date ?? ''),
-      upload_url: String(body.upload_url ?? ''),
       wa_number: String(body.wa_number ?? ''),
       balance_due: 'לפני עלייה לאוויר',
     })

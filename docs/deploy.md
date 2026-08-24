@@ -233,7 +233,7 @@ In **SQL Editor**, using that UID:
 ```sql
 insert into public.projects
   (owner_id, client_name, brand_name, start_date, target_launch_date,
-   last_updated, upload_url, wa_number, balance_due)
+   last_updated, wa_number, balance_due)
 values
   ('PASTE-THE-UID-HERE',
    'client name',
@@ -241,7 +241,7 @@ values
    '12 בינואר',
    '9 בפברואר',
    '12 בינואר',
-   'https://www.dropbox.com/request/...',
+
    '972515310498',
    'לפני עלייה לאוויר')
 returning id;
