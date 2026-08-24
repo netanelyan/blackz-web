@@ -1156,6 +1156,14 @@ button,input,select{font:inherit;color:inherit}
     $('view').innerHTML = '<div class="spinner">טוען...</div>';
     return api('quote_items?select=*&active=eq.true&order=position').then(function (rows) {
       catalog = (rows || []).map(function (r) { r.price = numOf(r.price); return r; });
+      /* items that are always part of the base price start marked as included,
+         so they print as scope without anyone having to remember to tick them */
+      catalog.forEach(function (r) {
+        if (r.default_included && incl[r.id] === undefined) {
+          incl[r.id] = true;
+          if (!qty[r.id]) qty[r.id] = 1;
+        }
+      });
       drawQuoteForm();
     }).catch(function (err) {
       var msg = String(err && err.message || err);

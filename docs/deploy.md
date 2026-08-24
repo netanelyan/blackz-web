@@ -164,7 +164,23 @@ Two more SQL files, run once each in the SQL editor:
 - `supabase/002_objections.sql` - the editable objection answers
 - `supabase/003_quote_items.sql` - the quote catalogue
 
-Then deploy the function that creates client accounts:
+Then deploy the function that creates client accounts. No CLI needed:
+
+1. Supabase dashboard -> **Edge Functions** in the left sidebar
+2. **Deploy a new function** -> **Via editor**
+3. Name it exactly `create-client`. The dashboard calls
+   `/functions/v1/create-client`, so a different name will 404.
+4. Delete the template code in the editor
+5. Paste the entire contents of `supabase/functions/create-client/index.ts`
+6. **Deploy**
+
+Leave **Verify JWT** on. The dashboard sends the logged-in user's token, and
+that setting makes Supabase reject anonymous calls before your code even runs.
+
+Nothing to configure: Supabase injects the service_role key into the function
+environment by itself.
+
+If you would rather use the CLI:
 
 ```bash
 npx supabase login
@@ -172,8 +188,8 @@ npx supabase link --project-ref yaeralfvkrqlxhwavczz
 npx supabase functions deploy create-client
 ```
 
-Nothing to configure: Supabase injects the service_role key into the function
-environment by itself.
+To check it worked, open the new-client tab. If it still says the function is
+not deployed, the name does not match.
 
 **Why an account needs a function at all.** Creating a login requires the
 service_role key, which bypasses every policy. That key can never sit in a page,

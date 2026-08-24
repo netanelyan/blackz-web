@@ -23,14 +23,13 @@ by an actual request.
 
 ## Pricing
 
-- [ ] **55 of 60 catalogue items have no price.** Full list in
-      [pricing.md](pricing.md).
+- [x] **All 60 items priced.** Filled in via [pricing.md](pricing.md).
+- [ ] **Run `supabase/004_prices.sql`** to write them to the database. Until
+      then the dashboard still shows the seeded zeros.
 
-The five that are priced are the only figures ever given to me: extra product 50,
-creative 250, support week 800, migration 1,500, retainer 2,000.
-
-The one to do first is **הקמת אתר או חנות, בסיס**. It appears in almost every
-quote and everything else is priced relative to it.
+Six items were marked כלול rather than given a number, meaning they are always
+part of the base price. They carry a `default_included` flag instead of a price
+of 0, so they print as included and do not trigger the unpriced warning.
 
 ---
 
