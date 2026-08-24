@@ -818,6 +818,22 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
   align-items:center;justify-content:space-between;
 }
 .ftr__copy{font-size:var(--fs-xs);color:var(--c-text-faint)}
+.ftr__login{
+  display:inline-flex;align-items:center;gap:.45rem;
+  min-height:44px;padding-inline:var(--sp-4);
+  border:var(--border);border-radius:var(--radius-pill);
+  font-size:var(--fs-sm);font-weight:var(--fw-bold);
+  color:var(--c-text-dim);
+  transition:color var(--dur) var(--ease), border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.ftr__login:hover{color:var(--c-accent);border-color:var(--c-line-hi);background:var(--c-hover-wash)}
+.ftr__login svg{width:16px;height:16px;flex:none}
+/* three items in one row do not fit a 390px phone, and the row was pushing the
+   page 51px wide. Stack them instead of relying on wrap. */
+@media (max-width:560px){
+  .ftr__bottom{flex-direction:column;align-items:stretch;gap:var(--sp-4)}
+  .ftr__login{justify-content:center}
+}
 
 /* ==========================  STICKY WHATSAPP BAR (MOBILE)  ========================== */
 .wa-bar{
@@ -1534,6 +1550,14 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
       <p class="ftr__copy">
         © <span class="num" id="year">2026</span> בלאקזי איקומרס. כל הזכויות שמורות.
       </p>
+
+      <!-- Relative path, so it works locally and on the deployed domain alike.
+           The dashboard is noindex and behind a login, this only makes it
+           reachable for clients who already have an account. -->
+      <a class="ftr__login" href="app/dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+        כניסת לקוחות
+      </a>
       <blackz-signature></blackz-signature>
     </div>
 

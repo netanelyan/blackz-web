@@ -25,10 +25,14 @@ page copy, code comments, docs, and commit messages.
 The Hebrew maqaf `־` inside compound words (`יום־אחרי־יום`, `ב־base64`) is correct Hebrew
 punctuation, not a dash. It stays.
 
-### Do not commit or push unless asked
+### Commit and push every time
 
-Make the edits and stop. The user runs commits and pushes on their own schedule, and
-batching them keeps iteration fast. Wait for an explicit "commit" / "push".
+Finish the work, verify it, then commit and push to `main` without being asked.
+
+Fetch first. The screenshot Action commits to `main` on its own schedule, so a push can
+be rejected as out of date. Rebase onto it rather than forcing.
+
+(This replaces an earlier rule to wait for an explicit "commit". The user changed it.)
 
 ## Structure
 
