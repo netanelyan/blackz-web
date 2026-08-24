@@ -163,6 +163,8 @@ Two more SQL files, run once each in the SQL editor:
 
 - `supabase/002_objections.sql` - the editable objection answers
 - `supabase/003_quote_items.sql` - the quote catalogue
+- `supabase/004_prices.sql` - the prices themselves
+- `supabase/005_quote_files.sql` - the private bucket for signed quotes
 
 Then deploy the function that creates client accounts. No CLI needed:
 

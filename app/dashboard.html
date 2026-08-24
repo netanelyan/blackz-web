@@ -410,6 +410,23 @@ button,input,select{font:inherit;color:inherit}
 .newc__pass{display:flex;gap:var(--sp-2);align-items:center}
 .newc__pass input{flex:1;min-width:0}
 .newc__hint{font-size:var(--fs-xs);color:var(--c-text-faint)}
+.newc__file{
+  display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-4);min-height:var(--tap);
+  background:var(--c-bg);border:1px dashed var(--c-line-hi);border-radius:var(--radius-sm);
+  cursor:pointer;font-size:var(--fs-sm);color:var(--c-text-dim);
+}
+.newc__file.has-file{border-style:solid;border-color:var(--c-ok);color:var(--c-text)}
+.newc__file input{display:none}
+.newc__file svg{width:20px;height:20px;flex:none}
+
+.quote-link{
+  display:flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  width:100%;min-height:54px;margin-bottom:var(--sp-4);
+  border-radius:var(--radius-pill);
+  background:var(--c-surface);border:1px solid var(--c-accent);color:var(--c-accent);
+  font-size:var(--fs-sm);font-weight:var(--fw-black);
+}
 .newc__done{
   padding:var(--sp-5);border-radius:var(--radius);
   background:var(--c-ok-wash);border:1px solid var(--c-ok);display:grid;gap:var(--sp-3);
@@ -827,6 +844,13 @@ button,input,select{font:inherit;color:inherit}
       html += '<p class="all-clear">הכל אצלנו. אנחנו עובדים.</p>';
     }
 
+    if (has(p.quote_path)) {
+      html += '<a class="quote-link" id="quote-dl" href="#" target="_blank" rel="noopener">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px;height:18px">' +
+        '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>' +
+        'הצעת המחיר</a>';
+    }
+
     if (has(p.preview_url)) {
       html += '<a class="btn btn--primary btn--block" style="margin-bottom:var(--sp-4)" target="_blank" rel="noopener" href="' +
         esc(p.preview_url) + '">החנות מוכנה לצפייה</a>';
@@ -897,6 +921,20 @@ button,input,select{font:inherit;color:inherit}
 
     html += '</div>';
     $('view').innerHTML = html;
+
+    /* signed on demand: the URL expires, so it cannot be minted at render time
+       and left sitting in the markup */
+    var dl = $('quote-dl');
+    if (dl && has(p.quote_path)) {
+      dl.addEventListener('click', function (e) {
+        e.preventDefault();
+        dl.textContent = 'פותח...';
+        signedQuoteUrl(p.quote_path).then(function (url) {
+          if (url) window.open(url, '_blank', 'noopener');
+          else dl.textContent = 'לא ניתן לפתוח את ההצעה';
+        });
+      });
+    }
 
     if (editable) wireEditor(p);
   }
@@ -1032,6 +1070,13 @@ button,input,select{font:inherit;color:inherit}
         ncField('nc-launch', 'תאריך יעד לעלייה לאוויר', 'text') +
         ncField('nc-upload', 'קישור להעלאת קבצים', 'url') +
         ncField('nc-wa', 'וואטסאפ של הלקוח', 'tel') +
+        '<label class="newc__file" id="nc-file-label">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>' +
+          '</svg>' +
+          '<span id="nc-file-name">צירוף הצעת מחיר (לא חובה)</span>' +
+          '<input type="file" id="nc-file" accept="application/pdf,image/*">' +
+        '</label>' +
       '</div>' +
 
       '<h2 class="sec-title" style="margin-top:var(--sp-5)">חומרים שמחכים לו</h2>' +
@@ -1047,10 +1092,55 @@ button,input,select{font:inherit;color:inherit}
       '<div id="nc-done"></div>' +
       '</section>';
 
+    $('nc-file').addEventListener('change', function () {
+      var f = $('nc-file').files[0];
+      $('nc-file-name').textContent = f ? f.name : 'צירוף הצעת מחיר (לא חובה)';
+      $('nc-file-label').classList.toggle('has-file', !!f);
+    });
+
     $('nc-regen').addEventListener('click', function () {
       $('nc-pass').value = randomPassword();
     });
     $('nc-create').addEventListener('click', createClient);
+  }
+
+  /* Storage REST, same bearer token as everything else. The bucket is private,
+     so reading it back later needs a signed URL rather than a plain link. */
+  function uploadQuote(projectId, file) {
+    var safe = file.name.replace(/[^\w.\-]+/g, '_');
+    var path = projectId + '/' + safe;
+    return fetch(SUPABASE_URL + '/storage/v1/object/quotes/' + encodeURI(path), {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + (session ? session.access_token : ''),
+        'Content-Type': file.type || 'application/octet-stream',
+        'x-upsert': 'true'
+      },
+      body: file
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(t || r.status); });
+      return api('projects?id=eq.' + encodeURIComponent(projectId),
+        { method: 'PATCH', body: { quote_path: path } });
+    });
+  }
+
+  /* Private bucket, so the link has to be signed and expires. */
+  function signedQuoteUrl(path) {
+    return fetch(SUPABASE_URL + '/storage/v1/object/sign/quotes/' + encodeURI(path), {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + (session ? session.access_token : ''),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ expiresIn: 3600 })
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (b) {
+        return b && b.signedURL
+          ? SUPABASE_URL + '/storage/v1' + b.signedURL
+          : null;
+      });
   }
 
   function ncField(id, label, type) {
@@ -1097,8 +1187,20 @@ button,input,select{font:inherit;color:inherit}
         if (!r.ok) throw new Error(b.error || ('HTTP ' + r.status));
         return b;
       });
+    }).then(function (res) {
+      /* the file can only be filed under a project id, so it uploads after
+         the account exists rather than before */
+      var f = $('nc-file').files[0];
+      if (!f || !res.project_id) return null;
+      msg.textContent = 'מעלה את ההצעה...';
+      return uploadQuote(res.project_id, f).catch(function (err) {
+        /* the client exists either way, so a failed upload is a warning */
+        msg.className = 'msg msg--err';
+        msg.textContent = 'הלקוח נוצר אבל ההצעה לא הועלתה: ' + (err.message || err);
+        return null;
+      });
     }).then(function () {
-      msg.textContent = '';
+      if (msg.className.indexOf('err') === -1) msg.textContent = '';
       /* the password is not stored anywhere, so this is the only chance to
          hand it over. Show it until the owner navigates away. */
       $('nc-done').innerHTML =

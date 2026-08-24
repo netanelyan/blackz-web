@@ -26,6 +26,9 @@ by an actual request.
 - [x] **All items priced.** 55 in the catalogue: 49 with a number, 6 always included.
 - [ ] **Run `supabase/004_prices.sql`** to write them to the database. Until
       then the dashboard still shows the seeded zeros.
+- [ ] **Run `supabase/005_quote_files.sql`** to create the private quotes
+      bucket. Until then attaching a quote to a new client fails, though the
+      client itself is still created.
 
 Six items were marked כלול rather than given a number, meaning they are always
 part of the base price. They carry a `default_included` flag instead of a price
