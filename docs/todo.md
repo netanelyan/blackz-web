@@ -1,7 +1,8 @@
 # What is left to do
 
-Checked against the live project, not from memory. Anything ticked was verified
-by an actual request.
+Ticked items were either verified by an actual request against the live project,
+or reported done by the owner. Which one is noted, because the two are not the
+same kind of certainty.
 
 ---
 
@@ -10,76 +11,99 @@ by an actual request.
 - [x] **Schema is live.** All four tables exist and RLS is enforcing. Verified:
       an anonymous write is rejected with
       `42501 new row violates row-level security policy`.
-- [x] **Migrations are run.** `objections` and `quote_items` both respond.
-- [ ] **Admin account.** If not done yet: Authentication -> Users -> Add user,
-      then run the `update` statement at the bottom of `supabase/schema.sql`.
+- [x] **Migrations run.** `002_objections`, `003_quote_items`, `004_prices`,
+      `005_quote_files`, `006_drop_upload_url`. Reported done by the owner, not
+      re-verified: the machine this was checked from has no network access.
+- [ ] **Deploy `create-client`.** Last confirmed missing: the endpoint returned
+      404. Without it the new-client tab cannot create accounts. No CLI needed,
+      see [deploy.md](deploy.md) section 6b. **This is the only remaining
+      blocker for taking on a first client.**
+- [ ] **Admin account.** Authentication -> Users -> Add user, then run the
+      `update` statement at the bottom of `supabase/schema.sql`. Unverified.
 - [ ] **Turn off self-signup.** Authentication -> Sign In / Providers -> Email ->
-      disable Allow new users to sign up.
-- [ ] **Deploy `create-client`.** Confirmed missing: the endpoint returns 404.
-      Without it the new-client tab cannot create accounts. No CLI needed, see
-      [deploy.md](deploy.md) section 6b.
+      disable Allow new users to sign up. Unverified.
 
----
+To check the last two in one go, from the SQL editor:
 
-## Pricing
+```sql
+select u.email, p.role from public.profiles p
+join auth.users u on u.id = p.id;
+```
 
-- [x] **All items priced.** 55 in the catalogue: 49 with a number, 6 always included.
-- [ ] **Run `supabase/004_prices.sql`** to write them to the database. Until
-      then the dashboard still shows the seeded zeros.
-- [ ] **Run `supabase/005_quote_files.sql`** to create the private quotes
-      bucket. Until then attaching a quote to a new client fails, though the
-      client itself is still created.
-- [ ] **Run `supabase/006_drop_upload_url.sql`** to drop the unused column.
-
-Six items were marked כלול rather than given a number, meaning they are always
-part of the base price. They carry a `default_included` flag instead of a price
-of 0, so they print as included and do not trigger the unpriced warning.
+One row, role `admin`, is what you want to see.
 
 ---
 
 ## Public site
 
-- [ ] **`og:url`** in `index.html` is still `https://blackz.example`.
-- [ ] **`og:image`** is still commented out. Needs a 1200x630 image.
+- [x] **`og:url` removed.** It pointed at `blackz.example`, which is the
+      canonical address every WhatsApp share would have sent people to. Absent,
+      the crawler falls back to the real page URL.
+- [ ] **Domain on Vercel.** Nothing else on this list can be finished first.
+- [ ] **`og:url` and `og:image`.** Both are written out as a ready-to-paste
+      block in the head of `index.html`. Needs the domain, plus a 1200x630
+      image. Until then every shared link previews as bare text, and that is
+      how most people will first meet the page.
 
-These two decide what the link looks like when it is shared on WhatsApp or
-Instagram. Without them the preview is bare text, and that is probably how most
-people will first meet the page.
+---
 
-- [ ] **Domain on Vercel.** Once it resolves, update the two fields above.
+## Repo health
+
+- [x] **Line endings normalised.** `.gitattributes` added and the tree converted
+      to LF. Before this every commit rewrote every file, so `git log` and
+      `git blame` were useless. Verified: committed blobs contain zero CRLF.
+- [x] **`c/_template.html` kept off the deployment.** It ships with demo data
+      and was reachable in production as a project belonging to nobody. Copies
+      of it under `c/` still deploy, which is the point.
+- [x] **README rewritten** to describe the dashboard, Supabase and Vercel. It
+      previously described the project as a single static file, which was about
+      half of what exists.
+- [x] **`docs/` excluded from the deployment.** No reason to publish the
+      internal notes, and `pricing.md` in particular lists every price.
 
 ---
 
 ## Open decisions
 
-Things I raised that were never settled. None of them break anything.
+Things raised and never settled. None of them break anything.
 
-- [ ] **Two Instagram accounts in the footer.** The network signature links to
-      `@netanel.yan` while the footer links to `@blackzecom`. If `@blackzecom` is
-      the one you want people landing on, it is a one-line change.
+- [ ] **No development track in the package tabs.** The commercially significant
+      one. The quote catalogue prices databases, admin interfaces, API work and
+      custom components, but the public page offers only store, ads, or both. A
+      client who wants a coded site sees nothing for himself, and that is the
+      work with the least price competition. Adding a fourth tab means deciding
+      what it promises, which is why it is sitting here rather than done.
+- [ ] **Starting price in the hero.** The line is written and waiting in a
+      comment at `index.html`. A page with a number on it closes harder.
 - [ ] **`בלאקזי איקומרס` versus `בלאקזי`.** The copyright says the former,
       everything else says the latter. Fine if that is the registered name.
-- [ ] **Brand design is not in the package tabs.** It is sold as a standalone
-      service only.
-- [ ] **The package tabs have no development track.** They are store, ads, or
-      both. A client buying a developed site does not see themselves there.
-- [ ] **Starting price in the hero.** The line is written and waiting in a
-      comment in `index.html`. A page with a number on it closes harder.
+- [ ] **Brand design is not in the package tabs.** Sold as a standalone service
+      only. Deliberate, since it also closes the gap between what the packages
+      promise and what they cost.
+- [ ] **Two Instagram accounts.** The network signature links to
+      `@netanel.yan`, the footer to `@blackzecom`. Reasonable if one is the
+      owner and one is the brand.
 
 ---
 
-## Now redundant
+## Not started
 
-- **`internal/sales.html`** - its quote calculator and call questions moved into
-  the dashboard. Still in the repo but deliberately not deployed to Vercel,
-  because it has no login and exposes the floor price.
-- **`c/_template.html`** - still useful for a client you do not want to create an
-  account for.
+- [ ] **No client proof anywhere on the site.** Four brands you own, zero client
+      work. The `<article class="venture">` block in `#ventures` is already the
+      right component: duplicate it, point it at the client's domain, add the
+      URL to `scripts/shoot.js`, and the weekly job keeps the screenshot current.
+      Works from the first shipped project, and it is the single biggest gap
+      between this site and one that closes on its own.
 
 ---
 
 ## Optional
 
-- **The call questions** are still hardcoded, unlike the objections which are
-  editable. Same treatment available if you want it.
+- **The call questions** are hardcoded in `app/dashboard.html`, unlike the
+  objections which are editable from the dashboard. Same treatment available:
+  a table, a policy, and a small editor. Worth doing only once the questions
+  stop changing after every call.
+- **`internal/sales.html`** is redundant. Its quote calculator and call
+  questions both moved into the dashboard. Kept in the repo, deliberately not
+  deployed, and safe to delete whenever you are sure nothing there is unique.
 - **The venture screenshots** refresh themselves weekly. Nothing to do.

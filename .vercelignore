@@ -3,8 +3,7 @@
 # internal/sales.html has no authentication. Deployed, it is a public URL that
 # exposes the launch-vs-real pricing, the qualification script and the red
 # flags. A prospect who sees it knows the floor before negotiating.
-# Safe default: it does not ship. See the note in README about moving it behind
-# the dashboard login instead.
+# Its contents have since moved into the dashboard, which does have a login.
 internal/
 
 # Server-side SQL. Nothing to serve, and no reason to publish the schema.
@@ -14,7 +13,11 @@ supabase/
 scripts/
 .github/
 CLAUDE.md
-translations.txt
+README.md
+
+# Internal notes. pricing.md lists every price including the launch rates, so
+# this matters for the same reason internal/ does.
+docs/
 
 # The client status template. It ships with demo data ("קלאץ׳ סטור",
 # "ישראל ישראלי") and is a template, not a page. Deployed it sits at

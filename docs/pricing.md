@@ -19,8 +19,13 @@ triggers the unpriced warning.
 > To retire an item: `update public.quote_items set active = false where position = NN;`
 
 The content category (writing, product photography, image editing, translation)
-was removed. The rows still exist with `active = false`, so it can come back with
-one statement if that changes.
+was removed. On the live database those rows still exist with `active = false`,
+so they can come back with `update public.quote_items set active = true where
+position between 30 and 34;`.
+
+On a database built fresh from `003_quote_items.sql` they never exist at all:
+the seed no longer creates them, which makes `004`'s deactivate a no-op there.
+Rebuilding from scratch and wanting them back means adding the rows by hand.
 
 ---
 
