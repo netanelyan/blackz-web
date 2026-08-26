@@ -22,13 +22,24 @@
 </script>
 <meta name="color-scheme" content="dark">
 
-<!-- ============ Open Graph - [REPLACE with the real URL and share image] ============ -->
+<!-- ============ Open Graph ============
+     og:url and og:image are deliberately absent until the domain exists.
+     og:url is the canonical address a share points at, so a placeholder value
+     sends every WhatsApp and Instagram click to a domain that does not resolve.
+     Absent, the crawler falls back to the real URL of the page, which is right.
+
+     [ADD BOTH once the domain is live, replacing example.com:]
+       <meta property="og:url" content="https://example.com">
+       <meta property="og:image" content="https://example.com/og.jpg">
+       <meta property="og:image:width" content="1200">
+       <meta property="og:image:height" content="630">
+     The image must be 1200x630 and reachable at an absolute URL. Without it the
+     share preview is text only, which is how most people first meet this page.
+     ============================================================ -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
 <meta property="og:title" content="בלאקזי - בונים מותגים באינטרנט">
 <meta property="og:description" content="חנויות ומוצרים דיגיטליים שאנחנו מריצים בעצמנו - ואת אותו הדבר אנחנו בונים לכם.">
-<meta property="og:url" content="https://blackz.example">
-<!-- <meta property="og:image" content="https://blackz.example/og.jpg"> -->
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
 <style>

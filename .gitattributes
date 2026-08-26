@@ -1,0 +1,30 @@
+# Normalise line endings.
+#
+# Every file was committed as CRLF at some point, which made each commit a
+# full-file rewrite: git log, git blame and code review all became useless
+# because every line showed as changed. LF in the repository fixes that.
+# Windows editors handle LF fine, so nothing needs to change locally.
+
+* text=auto eol=lf
+
+# Explicit, so a new contributor's editor cannot reintroduce CRLF.
+*.html   text eol=lf
+*.css    text eol=lf
+*.js     text eol=lf
+*.ts     text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+*.sql    text eol=lf
+*.yml    text eol=lf
+*.svg    text eol=lf
+*.txt    text eol=lf
+
+# Binary. Never touched, never diffed as text.
+*.jpg    binary
+*.jpeg   binary
+*.png    binary
+*.gif    binary
+*.webp   binary
+*.woff   binary
+*.woff2  binary
+*.ico    binary

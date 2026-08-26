@@ -15,3 +15,10 @@ scripts/
 .github/
 CLAUDE.md
 translations.txt
+
+# The client status template. It ships with demo data ("קלאץ׳ סטור",
+# "ישראל ישראלי") and is a template, not a page. Deployed it sits at
+# /c/_template.html as a fake project belonging to nobody.
+# Real client pages are copies of it under c/ with their own filename, and
+# those still deploy: only the template itself is excluded.
+c/_template.html
