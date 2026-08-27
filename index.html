@@ -1175,7 +1175,7 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
       <div class="pack__head">
         <span class="pack__badge">מה נכנס</span>
         <h3>בחרו מה אתם צריכים</h3>
-        <p>אתם מביאים מוצר - אנחנו מביאים את כל השאר.</p>
+        <p>אתם מביאים את המוצר או את הרעיון - אנחנו מביאים את כל השאר.</p>
       </div>
 
       <!-- Tabbed deliverables. Panels are absolutely positioned and the viewport
@@ -1188,6 +1188,8 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
                   aria-controls="pn-store" aria-selected="false" tabindex="-1">רק חנות</button>
           <button class="tab" role="tab" type="button" id="tb-ads"
                   aria-controls="pn-ads" aria-selected="false" tabindex="-1">רק פרסום</button>
+          <button class="tab" role="tab" type="button" id="tb-dev"
+                  aria-controls="pn-dev" aria-selected="false" tabindex="-1">פיתוח לפי מידה</button>
         </div>
 
         <div class="tabs__viewport">
@@ -1269,6 +1271,43 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
             </p>
           </div>
 
+          <!-- Development. Deliberately not a fixed package: the scope comes out
+               of a paid spec, so the note below carries that instead of a price. -->
+          <div class="tabs__panel" role="tabpanel" id="pn-dev" aria-labelledby="tb-dev" hidden>
+            <ul class="offer-grid">
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>שיחת אפיון: מה המערכת צריכה לעשות, בשביל מי, ואיפה זה נשבר היום</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>מסמך אפיון כתוב - מסכים, מסלולי משתמש והיקף מדויק, לפני שורת קוד אחת</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>אתר או מערכת שנכתבים מאפס, בלי תבנית ובלי המגבלות של פלטפורמה מוכנה</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>עיצוב מותאם: דף בית ועמודים פנימיים לפי המבנה שסוכם באפיון</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>אזור אישי והתחברות משתמשים, כשהמוצר צריך את זה</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>בסיס נתונים שנבנה לפי מה שהמערכת באמת שומרת, ולא לפי מה שנוח לתבנית</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>ממשק ניהול לצוות שלכם - לעדכן תוכן ונתונים בלי לפנות אלינו</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>לוגיקה עסקית, מחשבונים ותהליכים שרצים לבד</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>חיבור למערכות שכבר יש לכם דרך <bdi>API</bdi></p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>מהירות טעינה, התאמות נגישות ובדיקות בדפדפנים ובמכשירים</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p>דומיין, אחסון, תעודת אבטחה וגיבויים - העלייה לאוויר עלינו</p></li>
+              <li class="deliver"><span class="deliver__tick" aria-hidden="true">✓</span>
+                <p><span class="num">2</span> סבבי תיקונים כלולים, ושיחת העברה בסיום</p></li>
+            </ul>
+            <p class="tabs__note">
+              פיתוח לא נמכר לפי מחירון. מתחילים באפיון בתשלום, שבסופו יש מסמך היקף
+              והצעת מחיר סגורה - ורק אז נכתבת שורת הקוד הראשונה. גם לוח הזמנים נקבע
+              שם, ולא לפי <span class="num">4</span> השבועות של הקמת חנות.
+              החלטתם לא להמשיך אחרי האפיון? המסמך שלכם, ואפשר לקחת אותו למפתח אחר.
+            </p>
+          </div>
+
         </div>
       </div>
 
@@ -1297,6 +1336,7 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
           </p>
           <p class="info__fine">
             לוחות הזמנים תלויים בקצב שבו מגיעים החומרים מהצד שלכם.
+            בפרויקט פיתוח לפי מידה לוח הזמנים נקבע באפיון.
           </p>
         </div>
       </div>
@@ -1409,6 +1449,18 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
         <div class="faq__body">
           אפשר. פשוט כדאי לדעת שחנות בלי תנועה לא מוכרת, ופרסום לחנות שלא ממירה
           שורף תקציב - ולכן רוב הלקוחות לוקחים את שני החלקים יחד.
+        </div>
+      </details>
+
+      <details>
+        <summary>מתי צריך פיתוח מאפס, ומתי שופיפיי מספיק?</summary>
+        <div class="faq__body">
+          אם אתם מוכרים מוצרים ומה שאתם צריכים זה עגלה, סליקה ומשלוחים - שופיפיי
+          מספיק, וזול יותר לתחזק. פיתוח מאפס נכון כשהמוצר עצמו הוא המערכת: אזור
+          אישי, נתונים שצריך לחשב, ממשק ניהול לצוות, חיבור למערכות קיימות, או פשוט
+          משהו שאף תבנית לא יודעת לעשות.
+          תגידו לנו מה המערכת צריכה לעשות ונגיד לכם באיזו דרך זה יוצא לכם זול יותר,
+          גם כשהתשובה היא פחות עבודה בשבילנו.
         </div>
       </details>
 
