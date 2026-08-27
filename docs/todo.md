@@ -8,20 +8,63 @@ same kind of certainty.
 
 ## Supabase
 
-- [x] **Schema is live.** All four tables exist and RLS is enforcing. Verified:
-      an anonymous write is rejected with
-      `42501 new row violates row-level security policy`.
-- [x] **Migrations run.** `002_objections`, `003_quote_items`, `004_prices`,
-      `005_quote_files`, `006_drop_upload_url`. Reported done by the owner, not
-      re-verified: the machine this was checked from has no network access.
-- [ ] **Deploy `create-client`.** Last confirmed missing: the endpoint returned
-      404. Without it the new-client tab cannot create accounts. No CLI needed,
-      see [deploy.md](deploy.md) section 6b. **This is the only remaining
-      blocker for taking on a first client.**
+Everything in this section was probed against the live project on 2026-08-27
+with the publishable key, from a machine with network access. Each check below
+was run alongside a deliberately wrong control (a column that does not exist, a
+bucket that does not exist) so that a pass means the endpoint really
+discriminates, rather than returning the same answer to everything. The earlier
+round of these checks reported `000` on every request, because that machine had
+no egress at all. None of those results meant anything and none are reused here.
+
+- [x] **Schema is live and RLS is enforcing.** Verified by request: `profiles`,
+      `projects`, `stages`, `materials`, `objections` and `quote_items` all
+      answer `200` to an anonymous read, and every one returns zero rows.
+      Zero rows on its own would be weak evidence, since an empty table looks
+      exactly like a blocked one. It is conclusive on two of them: `002` seeds
+      12 objection rows and `003` seeds 55 catalogue rows, both tables are
+      governed by `for all to authenticated using (is_admin())`, and both come
+      back empty anonymously. Seeded tables returning nothing is RLS filtering,
+      not absence of data. On `profiles`, `projects`, `stages` and `materials`
+      the empty result is consistent with RLS but not proof, because no client
+      account exists yet for them to hold anything.
+- [x] **Migrations run.** All five verified by request, each by probing for the
+      thing that migration is the only source of:
+      - `002_objections` - the `objections` table resolves.
+      - `003_quote_items` - the `quote_items` table resolves.
+      - `004_prices` - `quote_items.default_included` selects cleanly, where an
+        invented column name on the same table returns
+        `42703 column does not exist`. This is the one the owner reported as run
+        but that had never actually been checked. It is now checked, and it is
+        genuinely applied.
+      - `005_quote_files` - the `quotes` storage bucket resolves. Requesting a
+        missing object inside it returns `NoSuchKey`, while every other bucket
+        name tried returns `NoSuchBucket`. Storage resolved the bucket and then
+        failed to find the object, which only happens if the bucket is there.
+      - `006_drop_upload_url` - `projects.upload_url` is gone: selecting it
+        returns `42703`, while `projects.client_name` on the same table returns
+        `200`.
+- [ ] **Deploy `create-client`.** Still missing, re-confirmed by request:
+      `POST /functions/v1/create-client` returns
+      `404 {"code":"NOT_FOUND","message":"Requested function was not found"}`,
+      byte for byte the same answer as a function name invented for the
+      control. Deployment was attempted from the CLI and could not be finished:
+      `supabase login` needs a browser sign-in or an access token, neither of
+      which was available, and `supabase projects list` refuses with
+      `Access token not provided`. Nothing was guessed or half-applied. Use the
+      dashboard route in [deploy.md](deploy.md) section 6b, name it exactly
+      `create-client`, and leave Verify JWT on. Once deployed the same anonymous
+      POST should return `401` rather than `404`, and that is the check to
+      re-run. Without it the new-client tab cannot create accounts. **This is
+      the only remaining blocker for taking on a first client.**
 - [ ] **Admin account.** Authentication -> Users -> Add user, then run the
-      `update` statement at the bottom of `supabase/schema.sql`. Unverified.
+      `update` statement at the bottom of `supabase/schema.sql`. Still
+      unverified, and not checkable from outside: an anonymous read of
+      `profiles` returns zero rows whether the admin row exists or not, which
+      is RLS working correctly rather than an answer. Needs the SQL editor.
 - [ ] **Turn off self-signup.** Authentication -> Sign In / Providers -> Email ->
-      disable Allow new users to sign up. Unverified.
+      disable Allow new users to sign up. Still unverified. Deliberately not
+      probed: the only anonymous test is to actually sign a new user up, which
+      would create the account it was meant to check for. Needs the dashboard.
 
 To check the last two in one go, from the SQL editor:
 
