@@ -1,6 +1,15 @@
 # Pricing
 
-The live quote catalogue. **55 items: 49 priced, 6 always included.**
+The live quote catalogue. **54 items: 48 priced, 6 always included.**
+
+> **This snapshot has drifted from the live catalogue.** On 2026-08-29 the
+> dashboard was showing lower prices than several rows below: the site/store
+> base at 1,800 rather than 2,800, product page design at 400 rather than 750,
+> the component library at 1,000 rather than 1,500, brand design at 1,400
+> rather than 1,800, and banners at 250 rather than 350. Those were read off a
+> partial view of the dashboard, so the rest of the file has not been checked
+> and nothing here was edited to match. The database is the source of truth.
+> Resync this file from the dashboard when there is a moment.
 
 Item names are Hebrew because that is exactly how they print on the quote the
 client receives.
@@ -44,7 +53,7 @@ Rebuilding from scratch and wanting them back means adding the rows by hand.
 |---|---|---|
 | עיצוב דף בית | each | **1,400** |
 | עיצוב עמוד פנימי <br><sub>לכל עמוד נוסף</sub> | per page | **450** |
-| עיצוב דף מוצר | each | **750** |
+| ~~עיצוב דף מוצר~~ <br><sub>retired by `007`, merged into דף מוצר מותאם</sub> | - | - |
 | התאמת עיצוב למובייל | each | **כלול** |
 | ספריית רכיבים ומערכת עיצוב <br><sub>למותגים עם הרבה עמודים</sub> | each | **1,500** |
 | עיצוב מותג: לוגו, צבעים, טיפוגרפיה | each | **1,800** |
@@ -57,7 +66,7 @@ Rebuilding from scratch and wanting them back means adding the rows by hand.
 | הקמת אתר או חנות, בסיס <br><sub>תשתית, ניווט, עמודי ליבה</sub> | each | **2,800** |
 | העלאת מוצרים וקטגוריות <br><sub>עד 15 מוצרים כלול בבסיס</sub> | per product | **כלול** |
 | מוצר מעבר ל־15 | per product | **50** |
-| דף מוצר מותאם | each | **900** |
+| דף מוצר מותאם <br><sub>עיצוב ובנייה של דף המוצר</sub> | each | **900** |
 | עגלה ותהליך תשלום | each | **700** |
 | טפסים ואיסוף לידים | each | **400** |
 | בלוג או מרכז מאמרים | each | **800** |

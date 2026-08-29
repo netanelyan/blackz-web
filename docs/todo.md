@@ -130,7 +130,7 @@ One row, role `admin`, is what you want to see.
       covers, focus moving into the panel and back to the button, Escape,
       persistence across a reload, reset clearing everything, and no
       horizontal overflow at 390px with the panel open.
-- [ ] **Accessibility statement declarations.** `#accessibility` exists and
+- [ ] **Accessibility statement declarations.** `accessibility.html` exists and
       describes what is actually implemented, but the five legally required
       declarations are placeholders: conformance level and the standard tested
       against, known limitations, coordinator name, contact phone, and the
@@ -160,6 +160,21 @@ One row, role `admin`, is what you want to see.
       half of what exists.
 - [x] **`docs/` excluded from the deployment.** No reason to publish the
       internal notes, and `pricing.md` in particular lists every price.
+
+---
+
+## Quote catalogue
+
+- [ ] **Run `007_merge_product_page.sql`.** The catalogue priced the product
+      page twice: position 22 in the design category and position 43 in the
+      build category are one deliverable, and a quote carrying both charged for
+      it twice. The migration deactivates 22 and relabels 43 to say the design
+      is included. Not yet applied to the live database - run it in the SQL
+      editor, or do the same thing from the dashboard price list.
+- [ ] **`docs/pricing.md` has drifted from the live catalogue.** Several rows
+      were seen at lower prices in the dashboard on 2026-08-29. Only a partial
+      view was visible, so nothing in the file was edited to match and the
+      differences are noted at the top of it instead. Resync from the dashboard.
 
 ---
 
