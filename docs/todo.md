@@ -114,10 +114,13 @@ One row, role `admin`, is what you want to see.
       bottom of `index.html`. The section states in the markup that Hashofet is
       our own brand rather than a client, because a case study reads as client
       work by default.
-- [x] **Business and terms section.** New `#legal` section: Osek Murshe details
-      (all placeholders, the certificate has not been supplied), plus the 50/50
-      split, what the 4 weeks assume, what the 2 weeks of support cover, and
-      cancellation.
+- [x] **Business and terms section.** New `#legal` section: registered holder,
+      trade name, Osek Murshe number and business address, all taken from the
+      certificate supplied on 2026-08-29 and also mirrored into the JSON-LD.
+      Plus the 50/50 split, what the 4 weeks assume, and what the 2 weeks of
+      support cover. Only the two cancellation terms are still placeholders,
+      because they are a policy decision rather than anything the certificate
+      records.
 - [x] **Favicon on every page.** `app/dashboard.html` and `c/_template.html`
       had none and rendered with a blank tab icon.
 - [x] **Placeholder brackets no longer mirrored.** `.ph` markers are a
@@ -158,8 +161,11 @@ Things raised and never settled. None of them break anything.
       to the CTA in the pricing card, as a `[[FILL: ]]` placeholder in both
       places. The two must carry the same number - noted in the placeholder
       index.
-- [ ] **`בלאקזי איקומרס` versus `בלאקזי`.** The copyright says the former,
-      everything else says the latter. Fine if that is the registered name.
+- [x] **`בלאקזי איקומרס` versus `בלאקזי`.** Settled by the Osek Murshe
+      certificate: the registered trade name is `בלאקזי איקומרס`, so the
+      footer copyright was right all along and the shorter form everywhere
+      else is the brand name. Both now appear in `#legal`, where the
+      distinction is the point.
 - [ ] **Brand design is not in the package tabs.** Sold as a standalone service
       only. Deliberate, since it also closes the gap between what the packages
       promise and what they cost.

@@ -65,6 +65,15 @@ var BLACKZ = {
       "@type": "Organization",
       "name": "BlackZ",
       "alternateName": "בלאקזי",
+      /* from the Osek Murshe certificate - the same values printed in #legal */
+      "legalName": "בלאקזי איקומרס",
+      "vatID": "327727525",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "חדרה 16",
+        "addressLocality": "אשדוד",
+        "addressCountry": "IL"
+      },
       "url": BLACKZ.DOMAIN,
       "logo": BLACKZ.DOMAIN + "/logo.svg",
       "image": BLACKZ.DOMAIN + "/og.jpg",
@@ -1859,18 +1868,27 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 
       <div class="info">
         <h3>פרטי העסק</h3>
+        <!-- Taken verbatim from the Osek Murshe certificate, registered
+             12/05/2026. The first row is the registered holder and the second
+             is the trade name; both are printed exactly as the certificate
+             spells them, surname first, rather than reordered to read
+             naturally. The same values are mirrored into the JSON-LD. -->
         <dl class="legal-dl">
           <div>
             <dt>שם העוסק:</dt>
-            <dd><span class="ph">[[FILL: שם העוסק המורשה כפי שמופיע בתעודה]]</span></dd>
+            <dd>יאנצ׳בסקי נתנאל</dd>
+          </div>
+          <div>
+            <dt>שם העסק:</dt>
+            <dd>בלאקזי איקומרס</dd>
           </div>
           <div>
             <dt>מספר עוסק מורשה:</dt>
-            <dd><span class="ph">[[FILL: מספר עוסק מורשה]]</span></dd>
+            <dd><span class="num">327727525</span></dd>
           </div>
           <div>
             <dt>כתובת:</dt>
-            <dd><span class="ph">[[FILL: כתובת העסק]]</span></dd>
+            <dd>חדרה <span class="num">16</span>, אשדוד</dd>
           </div>
           <div>
             <dt>אימייל:</dt>
@@ -2480,7 +2498,7 @@ if (!customElements.get('blackz-signature')) {
 <!-- ==========================================================================
      PLACEHOLDER INDEX
 
-     Thirteen unfilled values, in document order. Each renders with a dashed
+     Ten unfilled values, in document order. Each renders with a dashed
      amber outline, so an unfilled one is visible to any visitor rather than
      quietly shipping as a blank. Search the file for "[[FILL" to jump to them.
      Descriptions are English here and Hebrew on the page, per CLAUDE.md.
@@ -2500,11 +2518,12 @@ if (!customElements.get('blackz-signature')) {
        8.  Starting price - the SAME number as 1. Change both together.
 
      Business and terms - #legal
-       9.  Registered Osek Murshe name, as printed on the certificate
-       10. Osek Murshe number
-       11. Business address
-       12. Cancellation: notice period
-       13. Cancellation: what happens to the advance payment
+       9.  Cancellation: notice period
+       10. Cancellation: what happens to the advance payment
+
+     Filled on 2026-08-29 from the Osek Murshe certificate, so no longer
+     placeholders: registered holder, trade name, Osek Murshe number and
+     business address.
 
      Not a placeholder, but still outstanding:
        - og.jpg (1200x630) does not exist at the site root. Until it is
