@@ -2242,80 +2242,6 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
   </div>
 </section>
 
-<!-- ---------- Accessibility statement ----------
-     Target of the widget's statement link, so it has to keep the id.
-
-     Everything in the first card is a factual description of what is actually
-     implemented and was verified. Everything that is a legal declaration - the
-     conformance level, the known exceptions, the coordinator, the date - is a
-     placeholder. Israeli regulations require those to be accurate, and a
-     conformance claim that has not been audited is exactly the kind of thing
-     that must not be invented here. -->
-<section class="section" id="accessibility">
-  <div class="wrap">
-    <p class="kicker rv">נגישות</p>
-    <h2 class="sec-title rv">הצהרת נגישות</h2>
-    <p class="sec-lead rv">
-      אנחנו רוצים שכל אחד יוכל להשתמש באתר הזה, ולכן הוא נבנה מלכתחילה
-      עם נגישות בראש - ולא כתוספת בסוף.
-    </p>
-
-    <div class="legal-grid rv">
-
-      <div class="info">
-        <h3>מה נגיש באתר</h3>
-        <ul class="case-list">
-          <li>ניווט מלא במקלדת, עם סימון ברור של הרכיב שבפוקוס.</li>
-          <li>מבנה כותרות סמנטי וקישור דילוג ישיר לתוכן הראשי.</li>
-          <li>טקסט חלופי לתמונות, ותוויות לכל הכפתורים והשדות בטופס.</li>
-          <li>תמיכה מלאה בעברית ובכיווניות מימין לשמאל.</li>
-          <li>מצב כהה ומצב בהיר, ושמירה על ניגודיות טקסט גם בשניהם.</li>
-          <li>האתר מכבד את הגדרת מערכת ההפעלה לצמצום אנימציות.</li>
-          <li>התוכן מוצג גם כשה־<bdi>JavaScript</bdi> לא רץ. אנימציית הגלילה היא תוספת, לא תנאי.</li>
-        </ul>
-        <p style="margin-top:var(--sp-4)">
-          בנוסף, כפתור הנגישות שבפינת המסך פותח תפריט להגדלת טקסט, ניגודיות גבוהה,
-          גווני אפור, הדגשת קישורים, הגדלת ריווח, סמן עכבר מוגדל ועצירת אנימציות.
-          ההגדרות נשמרות בדפדפן שלכם ונטענות שוב בכניסה הבאה.
-        </p>
-      </div>
-
-      <div class="info">
-        <h3>רמת הנגישות ופנייה</h3>
-        <p>
-          רמת ההנגשה של האתר: <span class="ph">[[FILL: רמת ההנגשה והתקן שלפיו נבדק]]</span>.
-        </p>
-        <p>
-          חלקים שטרם הונגשו במלואם:
-          <span class="ph">[[FILL: מגבלות ידועות, או "לא ידוע על חלקים כאלה"]]</span>.
-        </p>
-        <p>
-          נתקלתם בבעיית נגישות באתר? נשמח לדעת, ונטפל בזה.
-          אפשר לפנות אלינו ולקבל מענה:
-        </p>
-        <dl class="legal-dl" style="margin-top:var(--sp-3)">
-          <div>
-            <dt>רכז הנגישות:</dt>
-            <dd><span class="ph">[[FILL: שם רכז הנגישות]]</span></dd>
-          </div>
-          <div>
-            <dt>טלפון:</dt>
-            <dd><span class="ph">[[FILL: טלפון לפניות בנושא נגישות]]</span></dd>
-          </div>
-          <div>
-            <dt>אימייל:</dt>
-            <dd><a class="ltr" data-mail></a></dd>
-          </div>
-        </dl>
-        <p class="info__fine">
-          תאריך עדכון ההצהרה: <span class="ph">[[FILL: תאריך עדכון ההצהרה]]</span>.
-        </p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
 </main>
 
 <!-- ==================== FOOTER ==================== -->
@@ -2356,7 +2282,7 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
           <li><a href="#how">תהליך</a></li>
           <li><a href="#faq">שאלות נפוצות</a></li>
           <li><a href="#legal">פרטי העסק ותנאים</a></li>
-          <li><a href="#accessibility">הצהרת נגישות</a></li>
+          <li><a href="accessibility.html">הצהרת נגישות</a></li>
         </ul>
       </nav>
 
@@ -2464,7 +2390,9 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
     </div>
 
     <button class="a11y__reset" id="a11y-reset" type="button">איפוס כל ההגדרות</button>
-    <a class="a11y__link" href="#accessibility" id="a11y-statement">הצהרת הנגישות של האתר ←</a>
+    <!-- Relative, and with the extension: vercel.json sets cleanUrls false,
+         so a bare /accessibility would not resolve. -->
+    <a class="a11y__link" href="accessibility.html" id="a11y-statement">הצהרת הנגישות של האתר ←</a>
   </div>
 </div>
 
@@ -3032,7 +2960,7 @@ if (!customElements.get('blackz-signature')) {
 <!-- ==========================================================================
      PLACEHOLDER INDEX
 
-     Fifteen unfilled values, in document order. Each renders with a dashed
+     Ten unfilled values, in document order. Each renders with a dashed
      amber outline, so an unfilled one is visible to any visitor rather than
      quietly shipping as a blank. Search the file for "[[FILL" to jump to them.
      Descriptions are English here and Hebrew on the page, per CLAUDE.md.
@@ -3055,17 +2983,8 @@ if (!customElements.get('blackz-signature')) {
        9.  Cancellation: notice period
        10. Cancellation: what happens to the advance payment
 
-     Accessibility statement - #accessibility
-       11. Conformance level and the standard it was tested against
-       12. Known parts that are not yet fully accessible
-       13. Accessibility coordinator name
-       14. Accessibility contact phone
-       15. Date the statement was last updated
-
-     11-15 are legal declarations under the Israeli accessibility
-     regulations. They have to be accurate, so none of them is guessed at
-     here - in particular, do not write a conformance level that has not
-     actually been audited.
+     The accessibility statement moved to accessibility.html and carries five
+     more placeholders of its own. They are indexed at the bottom of that file.
 
      Filled on 2026-08-29 from the Osek Murshe certificate, so no longer
      placeholders: registered holder, trade name, Osek Murshe number and
