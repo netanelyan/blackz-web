@@ -159,12 +159,17 @@ WhatsApp link preview comes out half empty.
 
 ### 6b. The remaining migrations and the create-client function
 
-Two more SQL files, run once each in the SQL editor:
+The remaining SQL files, run once each in the SQL editor, in order:
 
 - `supabase/002_objections.sql` - the editable objection answers
 - `supabase/003_quote_items.sql` - the quote catalogue
 - `supabase/004_prices.sql` - the prices themselves
 - `supabase/005_quote_files.sql` - the private bucket for signed quotes
+- `supabase/006_drop_upload_url.sql` - drops a column that was never used
+- `supabase/007_merge_product_page.sql` - retires the duplicated product-page item
+- `supabase/008_payments_and_board.sql` - instalments, the project board, and
+  the private `files` bucket. Also backfills two payment rows per existing
+  project from the old `deposit_paid` and `balance_due` columns.
 
 Then deploy the function that creates client accounts. No CLI needed:
 

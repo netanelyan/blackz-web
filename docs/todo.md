@@ -163,6 +163,25 @@ One row, role `admin`, is what you want to see.
 
 ---
 
+## Payments and the board
+
+- [ ] **Run `008_payments_and_board.sql`.** Creates `payments` and `blocks`,
+      the private `files` bucket, and their policies. It backfills two payment
+      rows per existing project from `deposit_paid` and `balance_due`, so run
+      it before using the new payment section or every project will look like
+      it has no instalments. Safe to re-run.
+- [ ] **Redeploy `create-client` after 008.** It now seeds the two instalments
+      alongside the four stages. Deploying the old copy would create projects
+      with an empty payment section. It has never been deployed at all yet, so
+      this is the same single deploy either way - just make sure it is the
+      current file.
+- [ ] **Drop `projects.deposit_paid` and `projects.balance_due`.** Superseded
+      by the `payments` table and no longer written by the dashboard. Left in
+      place for one release so a rollback loses nothing. Once the new payment
+      section has been used for real, a `009` can drop both columns.
+
+---
+
 ## Quote catalogue
 
 - [ ] **Run `007_merge_product_page.sql`.** The catalogue priced the product

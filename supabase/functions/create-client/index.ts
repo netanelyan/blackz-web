@@ -35,6 +35,14 @@ function json(body: unknown, status = 200) {
 
 const STAGES = ['שיחה', 'חומרים ואפיון', 'בנייה', 'עולים לאוויר'];
 
+// Mirrors seed_payments in 008. A new project starts with the same two
+// instalments every existing project was backfilled with, so the payment
+// section is never empty and the amounts get filled in from the dashboard.
+const PAYMENTS = [
+  { position: 1, label: 'מקדמה 50%', due_note: 'לתחילת העבודה' },
+  { position: 2, label: 'יתרה 50%', due_note: 'לפני עלייה לאוויר' },
+];
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json({ error: 'method not allowed' }, 405);
@@ -126,6 +134,11 @@ Deno.serve(async (req) => {
     })),
   );
   if (stageErr) return await rollback(stageErr.message);
+
+  const { error: payErr } = await admin.from('payments').insert(
+    PAYMENTS.map((x) => ({ ...x, project_id: project.id, state: 'pending' })),
+  );
+  if (payErr) return await rollback(payErr.message);
 
   const materials = Array.isArray(body.materials) ? body.materials as string[] : [];
   if (materials.length) {

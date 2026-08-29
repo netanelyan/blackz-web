@@ -312,14 +312,111 @@ button,input,select{font:inherit;color:inherit}
 .mat__label{font-size:var(--fs-sm)}
 .mat__since{display:block;font-size:var(--fs-xs);color:var(--c-ph)}
 
+.pay{display:grid;gap:var(--sp-2)}
 .pay__row{
-  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  display:flex;align-items:center;gap:var(--sp-3);
   padding:var(--sp-3) var(--sp-4);
   background:var(--c-surface);border:var(--border);border-radius:var(--radius-sm);
   font-size:var(--fs-sm);
 }
-.pay__state{font-size:var(--fs-xs);color:var(--c-text-faint)}
+.pay__label{flex:1;min-width:0}
+.pay__label small{display:block;font-size:var(--fs-xs);color:var(--c-text-faint)}
+.pay__amt{flex:none;font-weight:var(--fw-bold)}
+.pay__state{flex:none;font-size:var(--fs-xs);color:var(--c-text-faint);text-align:end;min-width:64px}
+.pay__state small{display:block}
 .pay__state--paid{color:var(--c-ok)}
+.pay__row--paid{border-color:var(--c-ok)}
+.pay__row--void{opacity:.5}
+.pay__row--void .pay__label{text-decoration:line-through}
+.pay__row--total{background:var(--c-bg);border-style:dashed;font-weight:var(--fw-bold)}
+
+/* ---------- project board ---------- */
+.board{display:grid;gap:var(--sp-3)}
+@media (min-width:700px){ .board{grid-template-columns:repeat(2,1fr)} }
+.bcard{
+  padding:var(--sp-4);border-radius:var(--radius);
+  background:var(--c-surface);border:var(--border);
+  border-inline-start:3px solid var(--c-line-hi);
+  display:flex;flex-direction:column;gap:var(--sp-2);
+}
+.bcard--accent{border-inline-start-color:var(--c-accent)}
+.bcard--warn{border-inline-start-color:var(--c-ph)}
+.bcard--cool{border-inline-start-color:#5AA9E6}
+.bcard.is-pinned{box-shadow:0 0 0 1px var(--c-line-hi) inset}
+.bcard__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2)}
+.bcard__head h3{font-size:var(--fs-base)}
+.bcard__flag{
+  flex:none;font-size:var(--fs-xs);font-weight:var(--fw-bold);
+  color:var(--c-ph);border:1px dashed var(--c-ph-line);
+  border-radius:var(--radius-pill);padding:.1rem .5rem;
+}
+.bcard__text{font-size:var(--fs-sm);color:var(--c-text-dim);line-height:1.6}
+.bcard__empty{font-size:var(--fs-xs);color:var(--c-text-faint)}
+.bcard__link{font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--c-accent);word-break:break-word}
+.bcard__link:hover{text-decoration:underline}
+.bcard__dl{display:grid;gap:var(--sp-1);margin:0;font-size:var(--fs-sm)}
+.bcard__dl > div{display:flex;gap:var(--sp-2)}
+.bcard__dl dt{color:var(--c-text-faint)}
+.bcard__dl dd{margin:0}
+.bcard__check{display:grid;gap:var(--sp-1);font-size:var(--fs-sm)}
+.bcard__check li{display:flex;gap:var(--sp-2);color:var(--c-text-dim)}
+.bcard__check li span{color:var(--c-accent)}
+.bcard__check li.is-done{color:var(--c-text-faint);text-decoration:line-through}
+
+/* ---------- editable rows ---------- */
+.edit-title{font-size:var(--fs-sm);color:var(--c-text-faint);margin:var(--sp-4) 0 var(--sp-2)}
+.erow{
+  display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);
+  padding-bottom:var(--sp-3);border-bottom:1px dashed var(--c-line);
+}
+.erow:last-of-type{border-bottom:none;padding-bottom:0}
+.erow input,.erow select,.bedit__card input,.bedit__card select,.bedit__card textarea{
+  min-height:44px;padding:var(--sp-2) var(--sp-3);
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius-sm);
+  font-size:var(--fs-sm);
+}
+.erow__main{flex:1;min-width:150px}
+.erow__side{flex:1;min-width:120px;font-size:var(--fs-xs)}
+.erow__amt{width:110px}
+.erow__none{font-size:var(--fs-sm);color:var(--c-text-faint)}
+.tools{display:flex;gap:4px;flex:none}
+.tool{
+  width:36px;height:36px;border-radius:var(--radius-sm);
+  background:var(--c-bg);border:var(--border);color:var(--c-text-dim);
+  font-size:var(--fs-sm);cursor:pointer;
+}
+.tool:hover:not(:disabled){border-color:var(--c-line-hi);color:var(--c-text)}
+.tool:disabled{opacity:.35;cursor:not-allowed}
+.tool--del:hover{border-color:var(--c-warn);color:var(--c-warn)}
+.addrow{
+  min-height:44px;width:100%;margin-top:var(--sp-3);
+  background:var(--c-bg);border:1px dashed var(--c-line-hi);border-radius:var(--radius-sm);
+  color:var(--c-text-dim);font-size:var(--fs-sm);font-weight:var(--fw-bold);cursor:pointer;
+}
+.addrow:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.addrow--sm{min-height:36px;font-size:var(--fs-xs);margin-top:var(--sp-2)}
+
+.bedit{display:grid;gap:var(--sp-3)}
+@media (min-width:700px){ .bedit{grid-template-columns:repeat(2,1fr)} }
+.bedit__card{
+  padding:var(--sp-4);border-radius:var(--radius);
+  background:var(--c-surface);border:var(--border);
+  border-inline-start:3px solid var(--c-line-hi);
+  display:grid;gap:var(--sp-2);align-content:start;
+}
+.bedit__top{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap}
+.bedit__top select{flex:1;min-width:110px}
+.bedit__flags{display:flex;gap:var(--sp-4);flex-wrap:wrap;margin-top:var(--sp-1)}
+.flag{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-xs);color:var(--c-text-dim);cursor:pointer}
+.flag input{min-height:0;width:18px;height:18px;padding:0}
+.bfile{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;font-size:var(--fs-xs)}
+.bfile__has{color:var(--c-ok)}
+.bfile__none{color:var(--c-text-faint)}
+.bfile input[type="file"]{flex:1;min-width:140px;font-size:var(--fs-xs);min-height:36px;padding:var(--sp-1)}
+.bchk{display:grid;gap:var(--sp-1)}
+.bchk__row{display:flex;align-items:center;gap:var(--sp-2)}
+.bchk__row input[type="checkbox"]{min-height:0;width:18px;height:18px;flex:none;padding:0}
+.bchk__row input[type="text"]{flex:1;min-width:0}
 
 .savebar{
   position:sticky;bottom:0;z-index:30;
@@ -754,9 +851,15 @@ button,input,select{font:inherit;color:inherit}
   }
 
   /* ---------------- admin: project list ---------------- */
+  /* blocks are filtered by RLS, not here: a client's token only ever returns
+     the cards marked visible_to_client, so the same query is safe for both
+     roles and there is no client-side filter to forget. */
   var SELECT_FULL =
-    'select=*,stages(id,position,name,state),materials(id,position,item,state,since)' +
-    '&stages.order=position&materials.order=position';
+    'select=*,stages(id,position,name,state),materials(id,position,item,state,since),' +
+    'payments(id,position,label,amount,state,due_note,paid_on,invoice_no,invoice_path),' +
+    'blocks(id,position,kind,title,body,data,color,pinned,visible_to_client)' +
+    '&stages.order=position&materials.order=position' +
+    '&payments.order=position&blocks.order=position';
 
   function currentStage(p) {
     var st = (p.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
@@ -822,6 +925,126 @@ button,input,select{font:inherit;color:inherit}
     renderDetail(p, true);
   }
 
+  /* ---------------- payments and board: read view ---------------- */
+
+  function byPos(a, b) { return a.position - b.position; }
+
+  var PAY_STATE = { paid: 'שולם', pending: 'ממתין', void: 'בוטל' };
+
+  /* Multi-line plain text. Escaped first, then newlines become breaks, so a
+     card body can never inject markup. */
+  function textBlock(s) { return esc(s || '').replace(/\n/g, '<br>'); }
+
+  function payView(pays) {
+    var live = pays.filter(function (x) { return x.state !== 'void'; });
+    var total = 0, paid = 0;
+    live.forEach(function (x) {
+      var amt = parseFloat(x.amount) || 0;
+      total += amt;
+      if (x.state === 'paid') paid += amt;
+    });
+
+    var rows = pays.map(function (x) {
+      var amt = parseFloat(x.amount) || 0;
+      return '<div class="pay__row pay__row--' + esc(x.state) + '">' +
+        '<span class="pay__label">' + esc(x.label) +
+          (has(x.due_note) ? '<small>' + esc(x.due_note) + '</small>' : '') +
+          (has(x.invoice_no) ? '<small>חשבונית ' + bdi(x.invoice_no) + '</small>' : '') +
+        '</span>' +
+        '<span class="pay__amt">' + (amt > 0 ? '<span class="num">' + money(amt) + '</span>' : '') + '</span>' +
+        '<span class="pay__state' + (x.state === 'paid' ? ' pay__state--paid' : '') + '">' +
+          (PAY_STATE[x.state] || '') +
+          (x.state === 'paid' && has(x.paid_on) ? ' <small>' + esc(x.paid_on) + '</small>' : '') +
+        '</span></div>';
+    }).join('');
+
+    /* Only worth a total line once amounts are actually recorded. */
+    var foot = total > 0
+      ? '<div class="pay__row pay__row--total"><span class="pay__label">שולם עד כה</span>' +
+        '<span class="pay__amt"><span class="num">' + money(paid) + '</span> / <span class="num">' + money(total) + '</span></span>' +
+        '<span class="pay__state"></span></div>'
+      : '';
+
+    return '<div class="pay">' + rows + foot + '</div>';
+  }
+
+  var BLOCK_KINDS = [
+    ['note',      'פתק'],
+    ['link',      'קישור'],
+    ['file',      'קובץ'],
+    ['invoice',   'חשבונית מס'],
+    ['checklist', 'צ׳קליסט'],
+    ['payments',  'סיכום תשלומים']
+  ];
+  var BLOCK_LABEL = {};
+  BLOCK_KINDS.forEach(function (k) { BLOCK_LABEL[k[0]] = k[1]; });
+
+  function blockBody(b, pays) {
+    var d = b.data || {};
+    if (b.kind === 'link') {
+      return has(d.url)
+        ? '<a class="bcard__link" href="' + esc(d.url) + '" target="_blank" rel="noopener">' +
+          bdi(d.label || d.url) + ' ←</a>'
+        : '<p class="bcard__empty">לא הוגדר קישור</p>';
+    }
+    if (b.kind === 'file') {
+      return has(d.path)
+        ? '<a class="bcard__link" href="#" data-file="' + esc(d.path) + '">' +
+          bdi(d.name || d.path.split('/').pop()) + ' ↓</a>'
+        : '<p class="bcard__empty">לא צורף קובץ</p>';
+    }
+    if (b.kind === 'invoice') {
+      var amt = parseFloat(d.amount) || 0;
+      return '<dl class="bcard__dl">' +
+        (has(d.no)   ? '<div><dt>מספר:</dt><dd>' + bdi(d.no) + '</dd></div>' : '') +
+        (has(d.date) ? '<div><dt>תאריך:</dt><dd>' + esc(d.date) + '</dd></div>' : '') +
+        (amt > 0     ? '<div><dt>סכום:</dt><dd><span class="num">' + money(amt) + '</span></dd></div>' : '') +
+        '</dl>' +
+        (has(d.path) ? '<a class="bcard__link" href="#" data-file="' + esc(d.path) + '">הורדת החשבונית ↓</a>' : '');
+    }
+    if (b.kind === 'checklist') {
+      var items = Array.isArray(d.items) ? d.items : [];
+      return items.length
+        ? '<ul class="bcard__check">' + items.map(function (it) {
+            return '<li class="' + (it.d ? 'is-done' : '') + '"><span aria-hidden="true">' +
+              (it.d ? '✓' : '○') + '</span>' + esc(it.t) + '</li>';
+          }).join('') + '</ul>'
+        : '<p class="bcard__empty">אין פריטים</p>';
+    }
+    if (b.kind === 'payments') {
+      return pays && pays.length ? payView(pays) : '<p class="bcard__empty">אין תשלומים</p>';
+    }
+    return has(b.body) ? '<p class="bcard__text">' + textBlock(b.body) + '</p>' : '';
+  }
+
+  function blockCard(b, pays, isAdmin) {
+    return '<article class="bcard bcard--' + esc(b.color || 'default') + (b.pinned ? ' is-pinned' : '') + '">' +
+      '<div class="bcard__head">' +
+        '<h3>' + (has(b.title) ? esc(b.title) : BLOCK_LABEL[b.kind] || '') + '</h3>' +
+        (isAdmin && !b.visible_to_client
+          ? '<span class="bcard__flag" title="לא מוצג ללקוח">פנימי</span>' : '') +
+      '</div>' +
+      blockBody(b, pays) +
+      '</article>';
+  }
+
+  /* Signed on demand, never minted at render time: the URL expires, so one
+     baked into the markup would be dead by the time anyone clicked it. */
+  function wireFileLinks(root) {
+    [].forEach.call((root || document).querySelectorAll('[data-file]'), function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var label = a.textContent;
+        a.textContent = 'פותח...';
+        signedUrl('files', a.getAttribute('data-file')).then(function (url) {
+          a.textContent = label;
+          if (url) window.open(url, '_blank', 'noopener');
+          else a.textContent = 'לא ניתן לפתוח';
+        });
+      });
+    });
+  }
+
   function renderDetail(p, editable) {
     var stages = (p.stages || []).slice().sort(function (a, b) { return a.position - b.position; });
     var mats = (p.materials || []).slice().sort(function (a, b) { return a.position - b.position; });
@@ -878,13 +1101,18 @@ button,input,select{font:inherit;color:inherit}
         }).join('') + '</ul></section>';
     }
 
-    html += '<section class="section"><h2 class="sec-title">תשלום</h2>' +
-      '<div class="pay__row"><span>מקדמה <span class="num">50%</span></span>' +
-      '<span class="pay__state' + (p.deposit_paid ? ' pay__state--paid' : '') + '">' +
-      (p.deposit_paid ? 'שולם' : 'ממתין') + '</span></div>' +
-      (has(p.balance_due) ? '<div class="pay__row" style="margin-top:var(--sp-2)"><span>יתרה <span class="num">50%</span></span>' +
-        '<span class="pay__state">' + esc(p.balance_due) + '</span></div>' : '') +
-      '</section>';
+    var pays = (p.payments || []).slice().sort(byPos);
+    if (pays.length) html += '<section class="section"><h2 class="sec-title">תשלום</h2>' + payView(pays) + '</section>';
+
+    /* The board. RLS already stripped anything not shared with the client, so
+       whatever came back is what this viewer is allowed to see. */
+    var blocks = (p.blocks || []).slice().sort(function (a, b) {
+      return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || a.position - b.position;
+    });
+    if (blocks.length) {
+      html += '<section class="section"><h2 class="sec-title">לוח הפרויקט</h2>' +
+        '<div class="board">' + blocks.map(function (b) { return blockCard(b, pays, editable); }).join('') + '</div></section>';
+    }
 
     /* ---- admin-only editor ---- */
     if (editable) {
@@ -897,23 +1125,16 @@ button,input,select{font:inherit;color:inherit}
           }).join('') + '</select></div>';
       }).join('') + '</div>';
 
-      html += '<div class="card">' + mats.map(function (m) {
-        return '<div class="row"><span class="row__label">' + esc(m.item) +
-          '<small>נתבקש: ' + (has(m.since) ? esc(m.since) : 'לא צוין') + '</small></span>' +
-          '<select data-mat="' + esc(m.id) + '">' + MAT_OPTS.map(function (o) {
-            return '<option value="' + o[0] + '"' + (m.state === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
-          }).join('') + '</select></div>';
-      }).join('') + '</div>';
+      /* Each of these three is re-rendered on its own by the editor below, so
+         adding a row does not rebuild the whole page and lose the scroll. */
+      html += '<h3 class="edit-title">מה צריך מהלקוח</h3><div class="card" id="mats-editor"></div>';
+      html += '<h3 class="edit-title">תשלום</h3><div class="card" id="pays-editor"></div>';
+      html += '<h3 class="edit-title">לוח הפרויקט</h3><div id="board-editor"></div>';
 
-      html += '<div class="card">' +
+      html += '<h3 class="edit-title">פרטי הפרויקט</h3><div class="card">' +
         field('last_updated', 'עודכן לאחרונה', p.last_updated, 'text') +
         field('target_launch_date', 'תאריך עלייה לאוויר', p.target_launch_date, 'text') +
         field('preview_url', 'קישור לתצוגה', p.preview_url, 'url') +
-        '<div class="row"><span class="row__label">מקדמה שולמה</span>' +
-          '<div class="seg" id="deposit-seg">' +
-            '<button type="button" data-dep="1"' + (p.deposit_paid ? ' class="is-on"' : '') + '>שולם</button>' +
-            '<button type="button" data-dep="0"' + (!p.deposit_paid ? ' class="is-on"' : '') + '>ממתין</button>' +
-          '</div></div>' +
         '</div>';
 
       html += '</section>';
@@ -923,6 +1144,7 @@ button,input,select{font:inherit;color:inherit}
 
     html += '</div>';
     $('view').innerHTML = html;
+    wireFileLinks($('view'));
 
     /* signed on demand: the URL expires, so it cannot be minted at render time
        and left sitting in the markup */
@@ -946,21 +1168,309 @@ button,input,select{font:inherit;color:inherit}
       '<input type="' + type + '" data-field="' + key + '" value="' + esc(value || '') + '"></div>';
   }
 
+  /* ---------------- admin editor ----------------
+     Rows can now be added, renamed, reordered and deleted, so the editor keeps
+     a working copy rather than scraping the DOM on save. Text inputs write
+     into the draft as you type; anything structural mutates the draft and
+     re-renders only its own container. On save the draft is diffed against
+     what was loaded: rows without an id are inserted, rows in `del` are
+     deleted, the rest are patched. */
+  var draft = null;
+
+  function newRow(extra) {
+    var row = { id: null, position: 0 };
+    for (var k in extra) row[k] = extra[k];
+    return row;
+  }
+
+  function move(list, i, dir) {
+    var j = i + dir;
+    if (j < 0 || j >= list.length) return;
+    var tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+  }
+
+  /* buttons every reorderable row carries */
+  function rowTools(kind, i, len) {
+    return '<span class="tools">' +
+      '<button type="button" class="tool" data-' + kind + '-up="' + i + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="הזזה למעלה">↑</button>' +
+      '<button type="button" class="tool" data-' + kind + '-dn="' + i + '"' + (i === len - 1 ? ' disabled' : '') + ' aria-label="הזזה למטה">↓</button>' +
+      '<button type="button" class="tool tool--del" data-' + kind + '-del="' + i + '" aria-label="מחיקה">✕</button>' +
+      '</span>';
+  }
+
+  function bindText(root, attr, list, key) {
+    [].forEach.call(root.querySelectorAll('[' + attr + ']'), function (el) {
+      el.addEventListener('input', function () {
+        list[parseInt(el.getAttribute(attr), 10)][key] = el.value;
+      });
+    });
+  }
+
+  function bindTools(root, kind, list, delBin, rerender) {
+    [].forEach.call(root.querySelectorAll('[data-' + kind + '-up]'), function (b) {
+      b.addEventListener('click', function () { move(list, +b.getAttribute('data-' + kind + '-up'), -1); rerender(); });
+    });
+    [].forEach.call(root.querySelectorAll('[data-' + kind + '-dn]'), function (b) {
+      b.addEventListener('click', function () { move(list, +b.getAttribute('data-' + kind + '-dn'), 1); rerender(); });
+    });
+    [].forEach.call(root.querySelectorAll('[data-' + kind + '-del]'), function (b) {
+      b.addEventListener('click', function () {
+        var gone = list.splice(+b.getAttribute('data-' + kind + '-del'), 1)[0];
+        if (gone && gone.id) delBin.push(gone.id);
+        rerender();
+      });
+    });
+  }
+
+  /* ---- materials ---- */
+  function renderMatsEditor() {
+    var box = $('mats-editor');
+    if (!box) return;
+    var list = draft.mats;
+
+    box.innerHTML = (list.length ? list.map(function (m, i) {
+      return '<div class="erow">' +
+        '<input class="erow__main" type="text" data-mi="' + i + '" value="' + esc(m.item) + '" placeholder="מה צריך מהלקוח">' +
+        '<select data-ms="' + i + '">' + MAT_OPTS.map(function (o) {
+          return '<option value="' + o[0] + '"' + (m.state === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+        }).join('') + '</select>' +
+        '<input class="erow__side" type="text" data-mw="' + i + '" value="' + esc(m.since) + '" placeholder="נתבקש בתאריך">' +
+        rowTools('m', i, list.length) +
+        '</div>';
+    }).join('') : '<p class="erow__none">אין פריטים. אפשר להוסיף אחד.</p>') +
+      '<button type="button" class="addrow" id="mat-add">+ הוספת פריט</button>';
+
+    bindText(box, 'data-mi', list, 'item');
+    bindText(box, 'data-mw', list, 'since');
+    [].forEach.call(box.querySelectorAll('[data-ms]'), function (sel) {
+      sel.addEventListener('change', function () { list[+sel.getAttribute('data-ms')].state = sel.value; });
+    });
+    bindTools(box, 'm', list, draft.del.materials, renderMatsEditor);
+    $('mat-add').addEventListener('click', function () {
+      list.push(newRow({ item: '', state: 'missing', since: '' }));
+      renderMatsEditor();
+    });
+  }
+
+  /* ---- payments ---- */
+  function renderPaysEditor() {
+    var box = $('pays-editor');
+    if (!box) return;
+    var list = draft.pays;
+
+    box.innerHTML = (list.length ? list.map(function (x, i) {
+      return '<div class="erow erow--pay">' +
+        '<input class="erow__main" type="text" data-pl="' + i + '" value="' + esc(x.label) + '" placeholder="שם התשלום">' +
+        '<input class="erow__amt" type="number" min="0" step="1" data-pa="' + i + '" value="' + (parseFloat(x.amount) || '') + '" placeholder="סכום">' +
+        '<select data-ps="' + i + '">' +
+          ['pending', 'paid', 'void'].map(function (s) {
+            return '<option value="' + s + '"' + (x.state === s ? ' selected' : '') + '>' + PAY_STATE[s] + '</option>';
+          }).join('') + '</select>' +
+        rowTools('p', i, list.length) +
+        '<input class="erow__side" type="text" data-pd="' + i + '" value="' + esc(x.due_note) + '" placeholder="מתי (לפני עלייה לאוויר)">' +
+        '<input class="erow__side" type="text" data-pp="' + i + '" value="' + esc(x.paid_on) + '" placeholder="תאריך תשלום">' +
+        '<input class="erow__side" type="text" data-pn="' + i + '" value="' + esc(x.invoice_no) + '" placeholder="מספר חשבונית">' +
+        '</div>';
+    }).join('') : '<p class="erow__none">אין תשלומים. אפשר להוסיף אחד.</p>') +
+      '<button type="button" class="addrow" id="pay-add">+ הוספת תשלום</button>';
+
+    bindText(box, 'data-pl', list, 'label');
+    bindText(box, 'data-pd', list, 'due_note');
+    bindText(box, 'data-pp', list, 'paid_on');
+    bindText(box, 'data-pn', list, 'invoice_no');
+    [].forEach.call(box.querySelectorAll('[data-pa]'), function (el) {
+      el.addEventListener('input', function () { list[+el.getAttribute('data-pa')].amount = numOf(el.value); });
+    });
+    [].forEach.call(box.querySelectorAll('[data-ps]'), function (sel) {
+      sel.addEventListener('change', function () { list[+sel.getAttribute('data-ps')].state = sel.value; });
+    });
+    bindTools(box, 'p', list, draft.del.payments, renderPaysEditor);
+    $('pay-add').addEventListener('click', function () {
+      list.push(newRow({ label: '', amount: 0, state: 'pending', due_note: '', paid_on: '', invoice_no: '', invoice_path: '' }));
+      renderPaysEditor();
+    });
+  }
+
+  /* ---- board ---- */
+  var BOARD_COLORS = [['default', 'רגיל'], ['accent', 'ירוק'], ['warn', 'כתום'], ['cool', 'כחול']];
+
+  function boardFields(b, i) {
+    var d = b.data || (b.data = {});
+    if (b.kind === 'link') {
+      return '<input type="text" data-bd="' + i + '" data-key="label" value="' + esc(d.label || '') + '" placeholder="תיאור הקישור">' +
+             '<input type="url" data-bd="' + i + '" data-key="url" value="' + esc(d.url || '') + '" placeholder="https://">';
+    }
+    if (b.kind === 'file') {
+      return '<div class="bfile">' +
+        (has(d.path) ? '<span class="bfile__has">' + esc(d.name || d.path.split('/').pop()) + '</span>' : '<span class="bfile__none">לא צורף קובץ</span>') +
+        '<input type="file" data-bf="' + i + '"></div>';
+    }
+    if (b.kind === 'invoice') {
+      return '<input type="text" data-bd="' + i + '" data-key="no" value="' + esc(d.no || '') + '" placeholder="מספר חשבונית">' +
+             '<input type="text" data-bd="' + i + '" data-key="date" value="' + esc(d.date || '') + '" placeholder="תאריך">' +
+             '<input type="number" min="0" step="1" data-bd="' + i + '" data-key="amount" value="' + (parseFloat(d.amount) || '') + '" placeholder="סכום">' +
+             '<div class="bfile">' +
+               (has(d.path) ? '<span class="bfile__has">' + esc(d.name || d.path.split('/').pop()) + '</span>' : '<span class="bfile__none">אפשר לצרף PDF</span>') +
+               '<input type="file" data-bf="' + i + '"></div>';
+    }
+    if (b.kind === 'checklist') {
+      var items = Array.isArray(d.items) ? d.items : (d.items = []);
+      return '<div class="bchk">' + items.map(function (it, j) {
+        return '<label class="bchk__row">' +
+          '<input type="checkbox" data-bc="' + i + '" data-j="' + j + '"' + (it.d ? ' checked' : '') + '>' +
+          '<input type="text" data-bt="' + i + '" data-j="' + j + '" value="' + esc(it.t) + '" placeholder="פריט">' +
+          '<button type="button" class="tool tool--del" data-bx="' + i + '" data-j="' + j + '" aria-label="מחיקה">✕</button>' +
+          '</label>';
+      }).join('') + '<button type="button" class="addrow addrow--sm" data-badd="' + i + '">+ פריט</button></div>';
+    }
+    if (b.kind === 'payments') {
+      return '<p class="bcard__empty">מציג את טבלת התשלומים שלמעלה. אין מה למלא כאן.</p>';
+    }
+    return '<textarea data-bb="' + i + '" rows="4" placeholder="תוכן הפתק">' + esc(b.body) + '</textarea>';
+  }
+
+  function renderBoardEditor() {
+    var box = $('board-editor');
+    if (!box) return;
+    var list = draft.blocks;
+
+    box.innerHTML = '<div class="bedit">' + list.map(function (b, i) {
+      return '<div class="bedit__card bcard--' + esc(b.color || 'default') + '">' +
+        '<div class="bedit__top">' +
+          '<select data-bk="' + i + '">' + BLOCK_KINDS.map(function (k) {
+            return '<option value="' + k[0] + '"' + (b.kind === k[0] ? ' selected' : '') + '>' + k[1] + '</option>';
+          }).join('') + '</select>' +
+          '<select data-bcol="' + i + '">' + BOARD_COLORS.map(function (c) {
+            return '<option value="' + c[0] + '"' + ((b.color || 'default') === c[0] ? ' selected' : '') + '>' + c[1] + '</option>';
+          }).join('') + '</select>' +
+          rowTools('b', i, list.length) +
+        '</div>' +
+        '<input class="erow__main" type="text" data-bti="' + i + '" value="' + esc(b.title) + '" placeholder="כותרת">' +
+        boardFields(b, i) +
+        '<div class="bedit__flags">' +
+          '<label class="flag"><input type="checkbox" data-bv="' + i + '"' + (b.visible_to_client ? ' checked' : '') + '>' +
+            '<span>מוצג ללקוח</span></label>' +
+          '<label class="flag"><input type="checkbox" data-bp="' + i + '"' + (b.pinned ? ' checked' : '') + '>' +
+            '<span>נעוץ למעלה</span></label>' +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>' +
+    '<button type="button" class="addrow" id="block-add">+ הוספת כרטיס</button>';
+
+    bindText(box, 'data-bti', list, 'title');
+    bindText(box, 'data-bb', list, 'body');
+
+    [].forEach.call(box.querySelectorAll('[data-bk]'), function (sel) {
+      sel.addEventListener('change', function () {
+        list[+sel.getAttribute('data-bk')].kind = sel.value;
+        renderBoardEditor();
+      });
+    });
+    [].forEach.call(box.querySelectorAll('[data-bcol]'), function (sel) {
+      sel.addEventListener('change', function () {
+        list[+sel.getAttribute('data-bcol')].color = sel.value;
+        renderBoardEditor();
+      });
+    });
+    [].forEach.call(box.querySelectorAll('[data-bd]'), function (el) {
+      el.addEventListener('input', function () {
+        var b = list[+el.getAttribute('data-bd')];
+        var key = el.getAttribute('data-key');
+        b.data[key] = key === 'amount' ? numOf(el.value) : el.value;
+      });
+    });
+    [].forEach.call(box.querySelectorAll('[data-bv]'), function (cb) {
+      cb.addEventListener('change', function () { list[+cb.getAttribute('data-bv')].visible_to_client = cb.checked; });
+    });
+    [].forEach.call(box.querySelectorAll('[data-bp]'), function (cb) {
+      cb.addEventListener('change', function () { list[+cb.getAttribute('data-bp')].pinned = cb.checked; });
+    });
+
+    /* checklist items */
+    [].forEach.call(box.querySelectorAll('[data-bc]'), function (cb) {
+      cb.addEventListener('change', function () {
+        list[+cb.getAttribute('data-bc')].data.items[+cb.getAttribute('data-j')].d = cb.checked;
+      });
+    });
+    [].forEach.call(box.querySelectorAll('[data-bt]'), function (el) {
+      el.addEventListener('input', function () {
+        list[+el.getAttribute('data-bt')].data.items[+el.getAttribute('data-j')].t = el.value;
+      });
+    });
+    [].forEach.call(box.querySelectorAll('[data-bx]'), function (b) {
+      b.addEventListener('click', function () {
+        list[+b.getAttribute('data-bx')].data.items.splice(+b.getAttribute('data-j'), 1);
+        renderBoardEditor();
+      });
+    });
+    [].forEach.call(box.querySelectorAll('[data-badd]'), function (b) {
+      b.addEventListener('click', function () {
+        list[+b.getAttribute('data-badd')].data.items.push({ t: '', d: false });
+        renderBoardEditor();
+      });
+    });
+
+    /* file pickers upload immediately: the path has to exist before save, and
+       a file input cannot be re-populated after a re-render anyway */
+    [].forEach.call(box.querySelectorAll('[data-bf]'), function (inp) {
+      inp.addEventListener('change', function () {
+        var b = list[+inp.getAttribute('data-bf')];
+        var f = inp.files && inp.files[0];
+        if (!f) return;
+        var note = inp.parentNode.querySelector('.bfile__none, .bfile__has');
+        if (note) note.textContent = 'מעלה...';
+        uploadTo('files', draft.projectId, f).then(function (path) {
+          b.data.path = path;
+          b.data.name = f.name;
+          renderBoardEditor();
+        }).catch(function (err) {
+          if (note) note.textContent = 'ההעלאה נכשלה';
+          if (window.console) console.error('upload failed', err);
+        });
+      });
+    });
+
+    bindTools(box, 'b', list, draft.del.blocks, renderBoardEditor);
+    $('block-add').addEventListener('click', function () {
+      list.push(newRow({
+        kind: 'note', title: '', body: '', data: {},
+        color: 'default', pinned: false, visible_to_client: false
+      }));
+      renderBoardEditor();
+    });
+  }
+
   function wireEditor(p) {
     var back = $('back');
     if (back) back.addEventListener('click', function () { goTab('projects'); });
 
-    var depositPaid = p.deposit_paid;
-    var seg = $('deposit-seg');
-    if (seg) {
-      [].forEach.call(seg.querySelectorAll('button'), function (b) {
-        b.addEventListener('click', function () {
-          depositPaid = b.getAttribute('data-dep') === '1';
-          [].forEach.call(seg.querySelectorAll('button'), function (x) { x.classList.remove('is-on'); });
-          b.classList.add('is-on');
-        });
-      });
-    }
+    /* deep enough copy: the nested value that gets mutated is data, and it is
+       rebuilt per row rather than shared with the loaded object */
+    draft = {
+      projectId: p.id,
+      mats: (p.materials || []).slice().sort(byPos).map(function (m) {
+        return { id: m.id, item: m.item, state: m.state, since: m.since };
+      }),
+      pays: (p.payments || []).slice().sort(byPos).map(function (x) {
+        return {
+          id: x.id, label: x.label, amount: parseFloat(x.amount) || 0, state: x.state,
+          due_note: x.due_note, paid_on: x.paid_on,
+          invoice_no: x.invoice_no, invoice_path: x.invoice_path
+        };
+      }),
+      blocks: (p.blocks || []).slice().sort(byPos).map(function (b) {
+        return {
+          id: b.id, kind: b.kind, title: b.title, body: b.body,
+          data: JSON.parse(JSON.stringify(b.data || {})),
+          color: b.color, pinned: b.pinned, visible_to_client: b.visible_to_client
+        };
+      }),
+      del: { materials: [], payments: [], blocks: [] }
+    };
+
+    renderMatsEditor();
+    renderPaysEditor();
+    renderBoardEditor();
 
     $('save').addEventListener('click', function () {
       var btn = $('save'), msg = $('save-msg');
@@ -972,7 +1482,6 @@ button,input,select{font:inherit;color:inherit}
       [].forEach.call(document.querySelectorAll('[data-field]'), function (i) {
         patch[i.getAttribute('data-field')] = i.value.trim();
       });
-      patch.deposit_paid = depositPaid;
 
       var jobs = [api('projects?id=eq.' + encodeURIComponent(p.id), { method: 'PATCH', body: patch })];
 
@@ -980,9 +1489,48 @@ button,input,select{font:inherit;color:inherit}
         jobs.push(api('stages?id=eq.' + encodeURIComponent(sel.getAttribute('data-stage')),
           { method: 'PATCH', body: { state: sel.value } }));
       });
-      [].forEach.call(document.querySelectorAll('[data-mat]'), function (sel) {
-        jobs.push(api('materials?id=eq.' + encodeURIComponent(sel.getAttribute('data-mat')),
-          { method: 'PATCH', body: { state: sel.value } }));
+
+      /* Inserts, updates and deletes for the three editable lists. position is
+         rewritten from the array order, so a reorder needs nothing else. */
+      function sync(table, list, dels, shape) {
+        dels.forEach(function (id) {
+          jobs.push(api(table + '?id=eq.' + encodeURIComponent(id), { method: 'DELETE' }));
+        });
+        var fresh = [];
+        list.forEach(function (row, i) {
+          var body = shape(row, i);
+          if (row.id) {
+            jobs.push(api(table + '?id=eq.' + encodeURIComponent(row.id), { method: 'PATCH', body: body }));
+          } else {
+            body.project_id = p.id;
+            fresh.push(body);
+          }
+        });
+        /* one request for all the new rows, and Prefer makes PostgREST answer
+           with a body so api() has something to parse */
+        if (fresh.length) {
+          jobs.push(api(table, {
+            method: 'POST', body: fresh, headers: { 'Prefer': 'return=representation' }
+          }));
+        }
+      }
+
+      sync('materials', draft.mats, draft.del.materials, function (r, i) {
+        return { position: i + 1, item: r.item, state: r.state, since: r.since };
+      });
+      sync('payments', draft.pays, draft.del.payments, function (r, i) {
+        return {
+          position: i + 1, label: r.label, amount: r.amount, state: r.state,
+          due_note: r.due_note, paid_on: r.paid_on,
+          invoice_no: r.invoice_no, invoice_path: r.invoice_path
+        };
+      });
+      sync('blocks', draft.blocks, draft.del.blocks, function (r, i) {
+        return {
+          position: i + 1, kind: r.kind, title: r.title, body: r.body,
+          data: r.data, color: r.color, pinned: r.pinned,
+          visible_to_client: r.visible_to_client, updated_at: new Date().toISOString()
+        };
       });
 
       Promise.all(jobs).then(function () {
@@ -1105,12 +1653,14 @@ button,input,select{font:inherit;color:inherit}
     $('nc-create').addEventListener('click', createClient);
   }
 
-  /* Storage REST, same bearer token as everything else. The bucket is private,
-     so reading it back later needs a signed URL rather than a plain link. */
-  function uploadQuote(projectId, file) {
+  /* Storage REST, same bearer token as everything else. Both buckets are
+     private, so reading anything back needs a signed URL rather than a link.
+     Files are filed under <project_id>/, which is the segment the storage
+     policies in 005 and 008 check against. */
+  function uploadTo(bucket, projectId, file) {
     var safe = file.name.replace(/[^\w.\-]+/g, '_');
     var path = projectId + '/' + safe;
-    return fetch(SUPABASE_URL + '/storage/v1/object/quotes/' + encodeURI(path), {
+    return fetch(SUPABASE_URL + '/storage/v1/object/' + bucket + '/' + encodeURI(path), {
       method: 'POST',
       headers: {
         'apikey': SUPABASE_KEY,
@@ -1121,14 +1671,20 @@ button,input,select{font:inherit;color:inherit}
       body: file
     }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error(t || r.status); });
+      return path;
+    });
+  }
+
+  function uploadQuote(projectId, file) {
+    return uploadTo('quotes', projectId, file).then(function (path) {
       return api('projects?id=eq.' + encodeURIComponent(projectId),
         { method: 'PATCH', body: { quote_path: path } });
     });
   }
 
-  /* Private bucket, so the link has to be signed and expires. */
-  function signedQuoteUrl(path) {
-    return fetch(SUPABASE_URL + '/storage/v1/object/sign/quotes/' + encodeURI(path), {
+  /* Private buckets, so the link has to be signed and expires. */
+  function signedUrl(bucket, path) {
+    return fetch(SUPABASE_URL + '/storage/v1/object/sign/' + bucket + '/' + encodeURI(path), {
       method: 'POST',
       headers: {
         'apikey': SUPABASE_KEY,
@@ -1143,6 +1699,8 @@ button,input,select{font:inherit;color:inherit}
           : null;
       });
   }
+
+  function signedQuoteUrl(path) { return signedUrl('quotes', path); }
 
   function ncField(id, label, type) {
     return '<div class="row"><span class="row__label">' + label + '</span>' +
