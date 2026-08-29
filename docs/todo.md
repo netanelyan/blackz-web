@@ -82,11 +82,49 @@ One row, role `admin`, is what you want to see.
 - [x] **`og:url` removed.** It pointed at `blackz.example`, which is the
       canonical address every WhatsApp share would have sent people to. Absent,
       the crawler falls back to the real page URL.
-- [ ] **Domain on Vercel.** Nothing else on this list can be finished first.
-- [ ] **`og:url` and `og:image`.** Both are written out as a ready-to-paste
-      block in the head of `index.html`. Needs the domain, plus a 1200x630
-      image. Until then every shared link previews as bare text, and that is
-      how most people will first meet the page.
+- [ ] **Domain on Vercel.** `getblackz.com` is bought; it still has to be added
+      to the Vercel project and pointed at it. The page already claims that
+      address in `canonical` and `og:url`, so until the domain actually resolves
+      those tags point somewhere that does not answer.
+- [x] **`og:url` written.** Reported by the owner as the bought domain, not
+      verified by request: `getblackz.com` did not resolve at the time of
+      writing, which is expected before it is pointed at Vercel. Re-check once
+      the domain is live.
+- [ ] **`og:image`.** The tag is in the head and points at `/og.jpg`, but no
+      such file exists in the repo. It has to be a real 1200x630 image at the
+      site root. Until it is uploaded every shared link previews as bare text,
+      and that is how most people will first meet the page.
+- [x] **Domain, email and WhatsApp number pulled into one config.** `BLACKZ` at
+      the top of the head in `index.html`. Verified by rendering the page in
+      headless Chrome and reading the resulting DOM: all 7 WhatsApp links, all
+      3 mailto links and the injected JSON-LD are built from it. The four
+      crawler-facing tags still carry the domain literally, because the
+      crawlers that read them do not run JavaScript; a startup check warns on
+      drift between the two.
+- [x] **Sections no longer render as a heading over empty space.** The hidden
+      state was `.rv{opacity:0}`, so hidden was the CSS default and visible
+      required JS. It is now scoped to `.js-rv`, stamped on `<html>` before
+      first paint, and an uncaught error anywhere removes it. Verified in
+      headless Chrome by scrolling the whole page at 360x780, 390x844 and
+      1280x800, and by re-running both failure modes deliberately: with
+      `IntersectionObserver` deleted, and with an uncaught error thrown after
+      DOMContentLoaded. Nothing was left hidden in any of the five runs.
+- [x] **Case study for Hanut Hashofet.** New `#case` section. Every figure is a
+      `[[FILL: ]]` placeholder - see the PLACEHOLDER INDEX comment at the
+      bottom of `index.html`. The section states in the markup that Hashofet is
+      our own brand rather than a client, because a case study reads as client
+      work by default.
+- [x] **Business and terms section.** New `#legal` section: Osek Murshe details
+      (all placeholders, the certificate has not been supplied), plus the 50/50
+      split, what the 4 weeks assume, what the 2 weeks of support cover, and
+      cancellation.
+- [x] **Favicon on every page.** `app/dashboard.html` and `c/_template.html`
+      had none and rendered with a blank tab icon.
+- [x] **Placeholder brackets no longer mirrored.** `.ph` markers are a
+      bracketed mix of Latin and Hebrew; in an RTL line the brackets are
+      neutrals and swapped ends, so they rendered as `]]FILL: ...[[`. Fixed
+      with `direction:ltr` on `.ph`. Verified by measuring the client rect of
+      the opening and closing brackets of all 17 markers.
 
 ---
 
@@ -116,8 +154,10 @@ Things raised and never settled. None of them break anything.
       client who wants a coded site sees nothing for himself, and that is the
       work with the least price competition. Adding a fourth tab means deciding
       what it promises, which is why it is sitting here rather than done.
-- [ ] **Starting price in the hero.** The line is written and waiting in a
-      comment at `index.html`. A page with a number on it closes harder.
+- [x] **Starting price in the hero.** Now live in the hero note and again next
+      to the CTA in the pricing card, as a `[[FILL: ]]` placeholder in both
+      places. The two must carry the same number - noted in the placeholder
+      index.
 - [ ] **`בלאקזי איקומרס` versus `בלאקזי`.** The copyright says the former,
       everything else says the latter. Fine if that is the registered name.
 - [ ] **Brand design is not in the package tabs.** Sold as a standalone service
@@ -132,9 +172,12 @@ Things raised and never settled. None of them break anything.
 ## Not started
 
 - [ ] **No client proof anywhere on the site.** Four brands you own, zero client
-      work. The `<article class="venture">` block in `#ventures` is already the
-      right component: duplicate it, point it at the client's domain, add the
-      URL to `scripts/shoot.js`, and the weekly job keeps the screenshot current.
+      work. The `#case` section now walks through Hanut Hashofet end to end,
+      which is the closest thing available, but it is explicitly labelled as
+      our own brand and it is not a reference. The `<article class="venture">`
+      block in `#ventures` is still the right component for real client work:
+      duplicate it, point it at the client's domain, add the URL to
+      `scripts/shoot.js`, and the weekly job keeps the screenshot current.
       Works from the first shipped project, and it is the single biggest gap
       between this site and one that closes on its own.
 

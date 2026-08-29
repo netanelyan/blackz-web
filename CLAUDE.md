@@ -43,9 +43,18 @@ Everything is in `index.html` - inline CSS and JS, no build step, no external re
 - Arimo is embedded as base64 (`@font-face` at the top of the style block). Weights 400-700
   only, so `--fw-black` is 700 - 900 would clamp and flatten the heading hierarchy.
 - Page is two labelled parts: **01 המותג** (brand) and **02 השירותים** (services).
-- Every WhatsApp button reads from a single `WA_NUMBER` constant at the bottom of the file.
-- Anything unknown is marked `[כך]` with `class="ph"`, which renders with a dashed amber
-  outline so it is impossible to miss on the page.
+- The domain, the contact email and the WhatsApp number live in one `BLACKZ` config object
+  at the top of `<head>`. Every WhatsApp button, every mailto link and the JSON-LD block
+  are built from it. The only exception is the four crawler-facing tags (`canonical`,
+  `og:url`, `og:image`, `twitter:image`) directly beneath it, which have to carry the
+  domain as literal HTML because those crawlers do not run JavaScript. A startup check
+  warns on drift between the two.
+- Anything unknown is marked `[כך]` or `[[FILL: ...]]` with `class="ph"`, which renders with
+  a dashed amber outline so it is impossible to miss on the page. `.ph` is `direction: ltr`
+  so the wrapping brackets do not swap ends in an RTL line.
+- Reveal-on-scroll is enhancement only. The hidden state is scoped to `.js-rv`, stamped on
+  `<html>` before first paint, and any uncaught error removes it. Never write a rule that
+  hides content without that guard.
 
 ## RTL
 

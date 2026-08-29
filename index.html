@@ -9,38 +9,119 @@
      add the Latin form to the description below only - it never shows on the page.] -->
 <meta name="description" content="בלאקזי בונה ומריצה חנויות ומוצרים דיגיטליים משלה - ובונה אתרים, חנויות וקמפיינים לעסקים.">
 <meta name="theme-color" content="#0A0A0C" id="theme-color">
+
 <script>
-  /* Runs before the stylesheet paints. Dark is the default: only an explicit
-     stored choice of "light" switches the theme. */
-  (function () {
-    try {
-      if (localStorage.getItem("blackz-theme") === "light") {
-        document.documentElement.setAttribute("data-theme", "light");
-      }
-    } catch (e) {}
-  })();
+/* ==========================================================================
+   SITE CONFIG - the single source of truth for the domain, the contact
+   address and the WhatsApp number.
+
+   Everything the browser can build at runtime is derived from this object:
+   every WhatsApp button, every mailto link and the JSON-LD block below.
+   Changing the domain or the email here changes it everywhere.
+
+   The ONE exception is the crawler-facing block directly beneath this script
+   (canonical, og:url, og:image). Share-preview crawlers - WhatsApp, Facebook,
+   iMessage - do not execute JavaScript, so those three tags have to be real
+   HTML attributes. They are marked, they sit right here, and a startup check
+   at the bottom of this file warns in the console if they ever drift out of
+   sync with DOMAIN.
+   ========================================================================== */
+var BLACKZ = {
+  DOMAIN:    'https://getblackz.com',
+  EMAIL:     'natikyan153@gmail.com',
+  /* International format, no + and no dashes or spaces. 050-1234567 -> 972501234567 */
+  WA_NUMBER: '972515310498'
+};
+
+/* Runs before the stylesheet paints, so neither of these can flash.
+   1. Dark is the default theme: only an explicit stored "light" switches it.
+   2. .js-rv arms the scroll-reveal animation. The hidden state is scoped to
+      that class, so if this script never runs the content is simply visible.
+      Removing the class at any later point reveals everything instantly,
+      which is what the error handler below does. */
+(function () {
+  var root = document.documentElement;
+
+  try {
+    if (localStorage.getItem("blackz-theme") === "light") {
+      root.setAttribute("data-theme", "light");
+    }
+  } catch (e) {}
+
+  root.classList.add("js-rv");
+
+  /* Backstop: any uncaught error anywhere on the page drops the page back to
+     the no-animation state rather than leaving sections stuck at opacity 0. */
+  window.addEventListener("error", function () {
+    root.classList.remove("js-rv");
+  });
+
+  /* Structured data, built from BLACKZ so the domain lives in one place. */
+  try {
+    var ld = document.createElement("script");
+    ld.type = "application/ld+json";
+    ld.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "BlackZ",
+      "alternateName": "בלאקזי",
+      "url": BLACKZ.DOMAIN,
+      "logo": BLACKZ.DOMAIN + "/logo.svg",
+      "image": BLACKZ.DOMAIN + "/og.jpg",
+      "description": "בלאקזי בונה ומריצה חנויות ומוצרים דיגיטליים משלה - ובונה אתרים, חנויות וקמפיינים לעסקים.",
+      "email": BLACKZ.EMAIL,
+      "telephone": "+" + BLACKZ.WA_NUMBER,
+      "areaServed": { "@type": "Country", "name": "IL" },
+      "knowsLanguage": "he",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "sales",
+        "email": BLACKZ.EMAIL,
+        "telephone": "+" + BLACKZ.WA_NUMBER,
+        "availableLanguage": ["he"]
+      },
+      "sameAs": [
+        "https://instagram.com/blackzecom",
+        "https://hashofet.com",
+        "https://clutchstore.net",
+        "https://tiyulplus.com",
+        "https://brickdealil.com"
+      ]
+    });
+    document.head.appendChild(ld);
+  } catch (e) {}
+})();
 </script>
 <meta name="color-scheme" content="dark">
 
-<!-- ============ Open Graph ============
-     og:url and og:image are deliberately absent until the domain exists.
-     og:url is the canonical address a share points at, so a placeholder value
-     sends every WhatsApp and Instagram click to a domain that does not resolve.
-     Absent, the crawler falls back to the real URL of the page, which is right.
+<!-- ============ CRAWLER-FACING URLS - KEEP IN SYNC WITH BLACKZ.DOMAIN ============
+     These four values are the only place the domain is written as literal HTML.
+     They cannot be generated from the config object above, because the crawlers
+     that read them never run JavaScript. Change the domain in BLACKZ.DOMAIN and
+     then change it here; the console warns on startup if the two disagree.
 
-     [ADD BOTH once the domain is live, replacing example.com:]
-       <meta property="og:url" content="https://example.com">
-       <meta property="og:image" content="https://example.com/og.jpg">
-       <meta property="og:image:width" content="1200">
-       <meta property="og:image:height" content="630">
-     The image must be 1200x630 and reachable at an absolute URL. Without it the
-     share preview is text only, which is how most people first meet this page.
-     ============================================================ -->
+     og.jpg does not exist in the repo yet. It has to be a real 1200x630 image
+     at the site root - until it is uploaded, shares preview as text only.
+     ============================================================================ -->
+<link rel="canonical" href="https://getblackz.com/">
+<meta property="og:url" content="https://getblackz.com/">
+<meta property="og:image" content="https://getblackz.com/og.jpg">
+<meta name="twitter:image" content="https://getblackz.com/og.jpg">
+<!-- ========================================================================== -->
+
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="בלאקזי">
 <meta property="og:title" content="בלאקזי - בונים מותגים באינטרנט">
 <meta property="og:description" content="חנויות ומוצרים דיגיטליים שאנחנו מריצים בעצמנו - ואת אותו הדבר אנחנו בונים לכם.">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="בלאקזי - בונים מותגים באינטרנט">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="בלאקזי - בונים מותגים באינטרנט">
+<meta name="twitter:description" content="חנויות ומוצרים דיגיטליים שאנחנו מריצים בעצמנו - ואת אותו הדבר אנחנו בונים לכם.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
 
 <style>
 /* ==========================================================================
@@ -292,14 +373,19 @@ strong{font-weight:var(--fw-bold)}
 .sec-title{font-size:var(--fs-xl);margin-bottom:var(--sp-4)}
 .sec-lead{color:var(--c-text-dim);font-size:var(--fs-md);max-width:56ch;margin-bottom:var(--sp-6)}
 
-/* placeholder marker - anything still to be filled in */
+/* Placeholder marker - anything still to be filled in.
+   direction:ltr on top of the isolate is what keeps the wrapping brackets in
+   place. Every marker is a bracketed mix of Latin and Hebrew, and in an RTL
+   line the brackets are neutrals: without this they swap ends and the marker
+   renders as "]]FILL: ...[[". The isolate keeps the surrounding Hebrew
+   sentence unaffected either way. */
 .ph{
   display:inline;color:var(--c-ph);
   background:rgba(255,197,61,.09);
   border:1px dashed rgba(255,197,61,.5);
   border-radius:5px;padding:.05em .38em;
   font-size:.94em;font-weight:var(--fw-med);
-  unicode-bidi:isolate;
+  direction:ltr;unicode-bidi:isolate;
 }
 
 /* ==========================  BUTTONS  ========================== */
@@ -609,6 +695,65 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 }
 .venture__ig:hover{color:var(--c-accent)}
 .venture__ig svg{width:15px;height:15px;flex:none}
+/* inline jump from the venture card down to its case study */
+.venture__more{
+  color:var(--c-accent);font-weight:var(--fw-bold);white-space:nowrap;
+  border-bottom:1px solid transparent;transition:border-color var(--dur) var(--ease);
+}
+.venture__more:hover{border-bottom-color:currentColor}
+
+/* ==========================  CASE STUDY  ==========================
+   One panel rather than a full-width band, because the section sits between
+   two alternating backgrounds and the panel is what separates it from them. */
+.case{
+  border-radius:var(--radius-lg);border:var(--border);
+  background:var(--c-surface);
+  padding:clamp(1.4rem,4vw,2.4rem);
+}
+.case__head{margin-bottom:var(--sp-5)}
+.case__head h3{font-size:var(--fs-lg);margin-bottom:var(--sp-2)}
+.case__head p{color:var(--c-text-dim);font-size:var(--fs-sm)}
+/* "our own brand, not a client" - stated in the markup, flagged by the border */
+.case__own{
+  display:inline-block;font-size:var(--fs-xs);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
+  color:var(--c-accent);border:1px solid var(--c-accent);
+  padding:.25rem .7rem;border-radius:var(--radius-pill);margin-bottom:var(--sp-3);
+}
+.case__stack{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-4)}
+.case__stack li{
+  padding:.35rem .8rem;border-radius:var(--radius-pill);
+  background:var(--c-bg);border:var(--border);
+  font-size:var(--fs-xs);font-weight:var(--fw-med);color:var(--c-text-dim);
+}
+
+.case-grid{display:grid;gap:var(--sp-4)}
+@media (min-width:820px){ .case-grid{grid-template-columns:1fr 1fr} }
+.case-step{
+  padding:var(--sp-5);border-radius:var(--radius);
+  background:var(--c-bg);border:var(--border);
+  transition:border-color var(--dur) var(--ease);
+}
+.case-step:hover{border-color:var(--c-line-hi)}
+.case-step__no{
+  display:block;
+  font-family:var(--f-mono);font-size:var(--fs-xs);font-weight:var(--fw-black);
+  color:var(--c-accent);letter-spacing:.1em;direction:ltr;margin-bottom:var(--sp-2);
+}
+.case-step h4{font-size:var(--fs-md);margin-bottom:var(--sp-3)}
+.case-step p{color:var(--c-text-dim);font-size:var(--fs-sm)}
+.case-step p + p{margin-top:var(--sp-3)}
+.case-list{display:grid;gap:var(--sp-2);margin-top:var(--sp-3)}
+.case-list li{
+  position:relative;font-size:var(--fs-sm);color:var(--c-text-dim);
+  padding-inline-start:var(--sp-4);line-height:1.6;
+}
+.case-list li::before{
+  content:"";position:absolute;inset-inline-start:0;top:.62em;
+  width:6px;height:6px;border-radius:50%;background:var(--c-accent);
+}
+/* the outcome card is the one a stranger scrolls to - keep it distinguishable */
+.case-step--out{border-color:var(--c-line-hi);background:var(--c-surface-hi)}
 
 /* ==========================  SERVICES  ========================== */
 .svc-grid{display:grid;gap:var(--sp-4);margin-bottom:var(--sp-6)}
@@ -709,6 +854,19 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
   font-size:var(--fs-xs);color:var(--c-text-faint);
 }
 
+/* starting-price anchor - the number people self-filter on */
+.price-anchor{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--sp-2) var(--sp-3);
+  margin-bottom:var(--sp-4);padding-bottom:var(--sp-4);
+  border-bottom:1px dashed var(--c-line-hi);
+}
+.price-anchor__label{
+  font-size:var(--fs-xs);font-weight:var(--fw-black);
+  letter-spacing:var(--tracking-wide);text-transform:uppercase;
+  color:var(--c-text-faint);
+}
+.price-anchor__val{font-size:var(--fs-lg);font-weight:var(--fw-black);color:var(--c-text)}
+
 /* ==========================  HOW IT WORKS  ========================== */
 .steps{counter-reset:step;display:grid;gap:var(--sp-5)}
 @media (min-width:820px){ .steps{grid-template-columns:repeat(4,1fr);gap:var(--sp-4);position:relative} }
@@ -796,6 +954,18 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 .form__note{font-size:var(--fs-xs);color:var(--c-text-faint)}
 .form__status{font-size:var(--fs-sm);color:var(--c-accent);min-height:1.2em}
 
+/* ==========================  BUSINESS / LEGAL  ========================== */
+.legal-grid{display:grid;gap:var(--sp-4)}
+@media (min-width:820px){ .legal-grid{grid-template-columns:1fr 1fr} }
+.legal-dl{display:grid;gap:var(--sp-3);margin:0}
+/* label and value on one line where there is room, stacked on a narrow phone */
+.legal-dl > div{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:baseline}
+.legal-dl dt{font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--c-text)}
+.legal-dl dd{margin:0;font-size:var(--fs-sm);color:var(--c-text-dim);min-width:0}
+.legal-terms{display:grid;gap:var(--sp-4)}
+.legal-terms h4{font-size:var(--fs-base);margin-bottom:var(--sp-2)}
+.legal-terms p{color:var(--c-text-dim);font-size:var(--fs-sm)}
+
 /* ==========================  FOOTER  ========================== */
 .ftr{border-top:var(--border);background:var(--c-bg-alt);padding-block:var(--sp-7) var(--sp-5)}
 
@@ -860,17 +1030,22 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 .wa-bar.is-on{transform:translateY(0)}
 @media (min-width:900px){ .wa-bar{display:none} }
 
-/* ==========================  SCROLL REVEAL  ========================== */
-.rv{
+/* ==========================  SCROLL REVEAL  ==========================
+   The hidden state is scoped to .js-rv, which the head script stamps onto
+   <html> before first paint. Content is therefore VISIBLE by default and the
+   animation is progressive enhancement only: no script, a script that threw,
+   an observer that never fires, or a browser without IntersectionObserver all
+   leave the page fully readable. Nothing here can hide content on its own. */
+.js-rv .rv{
   opacity:0;
   transform:translateY(100px);
   filter:blur(4px);
   transition:opacity .3s ease-in-out, transform .3s ease-in-out, filter .3s ease-in-out;
 }
-.rv.is-in{opacity:1;transform:none;filter:blur(0px)}
+.js-rv .rv.is-in{opacity:1;transform:none;filter:blur(0px)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .rv{opacity:1;transform:none;transition:none}
+  .js-rv .rv{opacity:1;transform:none;filter:none;transition:none}
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
 }
 </style>
@@ -899,6 +1074,7 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 
     <nav class="hdr__nav" aria-label="ניווט ראשי">
       <a href="#ventures">המיזמים</a>
+      <a href="#case">מקרה בוחן</a>
       <a href="#services">שירותים</a>
       <a href="#how">תהליך</a>
       <a href="#contact">יצירת קשר</a>
@@ -934,6 +1110,7 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 <!-- Mobile navigation. Never rendered at desktop widths, where the inline nav shows. -->
 <nav class="mobile-nav" id="mobile-nav" aria-label="ניווט נייד" hidden>
   <a href="#ventures">המיזמים</a>
+  <a href="#case">מקרה בוחן</a>
   <a href="#services">שירותים</a>
   <a href="#package">מה נכנס</a>
   <a href="#how">תהליך</a>
@@ -974,10 +1151,8 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
     </div>
 
     <p class="hero__note">
-      אין מחירון קבוע. שיחה קצרה, ואתם מקבלים הצעת מחיר.
-      <!-- [OPTIONAL - once you know your price floor, replace the sentence above with:]
-      <br>Starting price: <span class="num">₪X,XXX</span>. Final quote after a short call.
-      -->
+      פרויקטים מתחילים ב־<span class="ph">[[FILL: מחיר התחלתי]]</span> ₪ + מע״מ.
+      אין מחירון קבוע: שיחה קצרה, ואתם מקבלים הצעת מחיר סגורה.
     </p>
   </div>
 </section>
@@ -989,7 +1164,8 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
     <p class="kicker rv">המיזמים שלנו</p>
     <h2 class="sec-title rv">אלה החנויות והמוצרים שאנחנו מריצים.</h2>
     <p class="sec-lead rv">
-      לא צילומי מסך - אתרים חיים. שניים על שופיפיי, שניים בפיתוח מלא מאפס.
+      לא צילומי מסך - ארבעה אתרים חיים שאפשר להיכנס אליהם עכשיו.
+      שניים בנויים על שופיפיי, שניים נכתבו אצלנו מאפס.
       תרגישו את האתרים עובדים, ואז תחליטו אם להקים איתנו.
     </p>
 
@@ -1025,6 +1201,7 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
           <p class="venture__desc">
             חולצות כדורגל - נבחרות, קבוצות, רטרו וגרסאות שחקן.
             מלאי, ספקים, שירות לקוחות ופרסום, הכול אצלנו.
+            <a class="venture__more" href="#case">איך היא נבנתה ↓</a>
           </p>
           <a class="venture__ig" href="https://instagram.com/hanut.hashofet" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.2" fill="currentColor" stroke="none"/></svg><bdi>@hanut.hashofet</bdi></a>
         </div>
@@ -1074,11 +1251,13 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
         <div>
           <div class="venture__head">
             <h3 class="venture__name"><bdi>Tiyul+</bdi></h3>
-            <span class="venture__tag">פיתוח</span>
+            <span class="venture__tag">מוצר במנוי</span>
           </div>
           <p class="venture__desc">
             סוכן טיולים מבוסס בינה מלאכותית: אתם מספרים מה אתם מדמיינים,
-            והוא בונה מסלול יום־אחרי־יום על מפה. פותח אצלנו מאפס.
+            והוא בונה מסלול יום־אחרי־יום על מפה.
+            באוויר ופתוח להרשמה, עם מנויים בתשלום דרך <bdi>PayPal</bdi>.
+            נכתב אצלנו מאפס - מהממשק ועד החיוב.
           </p>
           <a class="venture__ig" href="https://instagram.com/tiyulplus" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.2" fill="currentColor" stroke="none"/></svg><bdi>@tiyulplus</bdi></a>
         </div>
@@ -1101,12 +1280,13 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
         <div>
           <div class="venture__head">
             <h3 class="venture__name">בריק דיל</h3>
-            <span class="venture__tag">פיתוח</span>
+            <span class="venture__tag">ערוץ דילים</span>
           </div>
           <p class="venture__desc">
             סטים של אבני בנייה תואמות במחירים שלא נמצאים בחנות -
             דילים מסוננים, עם התראות יומיות בטלגרם ובאינסטגרם.
-            פלטפורמה שפותחה אצלנו מאפס.
+            הפלטפורמה באוויר ורצה: הדילים נאספים, מסוננים ויוצאים לערוצים
+            יום־אחרי־יום. נכתבה אצלנו מאפס.
           </p>
           <a class="venture__ig" href="https://instagram.com/brickdealil" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.2" fill="currentColor" stroke="none"/></svg><bdi>@brickdealil</bdi></a>
         </div>
@@ -1114,6 +1294,109 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 
       <!-- [To add a venture - duplicate one <article> block above] -->
 
+    </div>
+
+  </div>
+</section>
+
+<!-- ---------- Case study: Hanut Hashofet ----------
+     Every figure in this section is a [[FILL: ...]] placeholder wearing the
+     .ph style, so an unfilled number is impossible to miss on the page.
+     Do not replace one with an estimate. The full list is indexed in the
+     PLACEHOLDER INDEX comment at the bottom of this file. -->
+<section class="section section--alt" id="case">
+  <div class="wrap">
+    <p class="kicker rv">מקרה בוחן</p>
+    <h2 class="sec-title rv">חנות השופט, מקצה לקצה</h2>
+    <p class="sec-lead rv">
+      אותו תהליך בדיוק שאנחנו מריצים ללקוחות, רק שכאן אנחנו גם המזמינים -
+      ולכן אפשר לפרט כל שלב בלי לעגל פינות.
+    </p>
+
+    <div class="case rv">
+      <div class="case__head">
+        <span class="case__own">מיזם שלנו, לא של לקוח</span>
+        <h3>חנות כדורגל בעברית, על שופיפיי</h3>
+        <p>
+          חנות השופט היא אחד מארבעת המותגים שאנחנו מריצים בעצמנו. אנחנו כותבים
+          את זה במפורש כדי שלא תהיה אי־הבנה: זה לא פרויקט לקוח, וזו לא המלצה של
+          מישהו אחר. זה מה שבנינו לעצמנו, ובאותה שיטה אנחנו בונים לכם.
+        </p>
+        <ul class="case__stack">
+          <li><bdi>Shopify</bdi></li>
+          <li>סקשנים ב־<bdi>Liquid</bdi></li>
+          <li>לוקאל עברי מלא <bdi>RTL</bdi></li>
+          <li>אוטומציית הזמנות</li>
+          <li><bdi>Meta</bdi> ו־<bdi>TikTok</bdi></li>
+        </ul>
+      </div>
+
+      <div class="case-grid">
+
+        <article class="case-step">
+          <span class="case-step__no">01</span>
+          <h4>המצב לפני</h4>
+          <p>
+            נקודת הפתיחה: <span class="ph">[[FILL: מה היה קיים לפני - חנות ישנה, אינסטגרם בלבד, או אפס נוכחות]]</span>.
+          </p>
+          <p>
+            מה שהיה ברור כבר בהתחלה: שוק חולצות הכדורגל בישראל רץ כמעט כולו
+            בהודעות פרטיות ובקבוצות, בלי מלאי מסודר ובלי דרך לקנות בלי לדבר
+            עם מישהו. זו הייתה הנקודה שרצינו לפתור.
+          </p>
+        </article>
+
+        <article class="case-step">
+          <span class="case-step__no">02</span>
+          <h4>מה נבנה</h4>
+          <ul class="case-list">
+            <li>חנות <bdi>Shopify</bdi> שהוקמה מאפס ורשומה על שמנו - מלאי, וריאנטים ומידות.</li>
+            <li>סקשנים שנכתבו בקוד ב־<bdi>Liquid</bdi>, במקום להסתפק במה שהתבנית נותנת - דף מוצר, עמודי קטגוריה ורכיבים ייעודיים לחנות חולצות.</li>
+            <li>לוקאל עברי מלא ב־<bdi>RTL</bdi>: תרגום החנות, כיווניות נכונה בכל רכיב, ותיקון המקומות שבהם התבנית שוברת עברית.</li>
+            <li>פייפליין אוטומציה להזמנות - מרגע התשלום ועד העדכון ללקוח, בלי טיפול ידני בכל הזמנה.</li>
+            <li>סליקה, חשבוניות ומשלוחים מחוברים ועובדים.</li>
+          </ul>
+          <p>היקף הקטלוג בהעלייה לאוויר: <span class="ph">[[FILL: מספר מוצרים בחנות]]</span>.</p>
+        </article>
+
+        <article class="case-step">
+          <span class="case-step__no">03</span>
+          <h4>הפרסום</h4>
+          <p>
+            פיקסלים ומדידה הוקמו לפני השקל הראשון, כדי שכל מה שרץ אחר כך יהיה
+            מדיד. משם קריאטיבים וקמפיינים במטא ובטיקטוק, מול קהלים
+            שנבנו סביב קבוצות, נבחרות ועונות.
+          </p>
+          <p>
+            ערוצים, תקציב יומי והיקף הקריאטיבים:
+            <span class="ph">[[FILL: פירוט הקמפיינים - ערוצים, תקציב יומי, מספר קריאטיבים]]</span>.
+          </p>
+        </article>
+
+        <article class="case-step case-step--out">
+          <span class="case-step__no">04</span>
+          <h4>התוצאה</h4>
+          <p>
+            החנות באוויר ומוכרת, ואנחנו מפעילים אותה יום־אחרי־יום -
+            מלאי, ספקים, שירות לקוחות ופרסום.
+          </p>
+          <p>עלתה לאוויר: <span class="ph">[[FILL: תאריך העלייה לאוויר]]</span>.</p>
+          <p>מהתחלה ועד העלייה לאוויר: <span class="ph">[[FILL: משך הפרויקט]]</span>.</p>
+          <p>מאז ועד היום: <span class="ph">[[FILL: מדד תוצאה - מספר הזמנות, נפח מכירות או אחוז המרה]]</span>.</p>
+          <p class="info__fine">
+            אין כאן ציטוטים ואין המלצות. כשיהיו לנו לקוחות שירצו להעיד בשמם,
+            זה יופיע כאן בשמם המלא.
+          </p>
+        </article>
+
+      </div>
+
+      <div class="cta-row" style="margin-top:var(--sp-5)">
+        <a class="btn btn--wa" data-wa data-wa-msg="היי, ראיתי את מקרה הבוחן של חנות השופט באתר. אשמח לדבר על משהו דומה אצלי.">
+          רוצים תהליך כזה אצלכם?
+        </a>
+        <a class="btn btn--ghost" href="https://hashofet.com" target="_blank" rel="noopener">כניסה לחנות השופט ←</a>
+      </div>
     </div>
 
   </div>
@@ -1314,9 +1597,16 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
       <div class="info-grid">
         <div class="info">
           <h3>כמה זה עולה</h3>
+          <!-- Starting-price anchor. Deliberately placed next to the CTA: it is
+               there so people can rule themselves out before they message. -->
+          <p class="price-anchor">
+            <span class="price-anchor__label">מתחילים מ־</span>
+            <span class="price-anchor__val"><span class="ph">[[FILL: מחיר התחלתי]]</span> ₪ + מע״מ</span>
+          </p>
           <p>
-            אין מחירון קבוע, ולא במקרה: לכל אתר ולכל מותג יש מטרה משלו,
-            ולכן גם היקף העבודה והמחיר שונים מפרויקט לפרויקט.
+            זו נקודת ההתחלה, לא המחיר הסופי. אין מחירון קבוע ולא במקרה:
+            לכל אתר ולכל מותג יש מטרה משלו, ולכן גם היקף העבודה והמחיר
+            שונים מפרויקט לפרויקט.
           </p>
           <p>
             אחרי שיחה קצרה תקבלו הצעת מחיר כתובה וסגורה - מה נכנס, כמה זה עולה,
@@ -1508,7 +1798,7 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
           פתיחת שיחת וואטסאפ
         </a>
         <p style="margin-top:var(--sp-4);margin-bottom:0">
-          מעדיפים מייל? <a class="ltr" href="mailto:natikyan153@gmail.com">natikyan153@gmail.com</a>
+          מעדיפים מייל? <a class="ltr" data-mail></a>
         </p>
       </div>
 
@@ -1550,6 +1840,102 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
   </div>
 </section>
 
+<!-- ---------- Business details and terms ----------
+     Every factual detail about the business is a [[FILL: ...]] placeholder.
+     Nothing here was inferred from anything: the Osek Murshe certificate has
+     not been supplied, so none of these values are guessed at. The terms that
+     ARE written out (50/50, 4 weeks, 2 weeks of support) repeat what the FAQ
+     already commits to - keep the two in step if either changes. -->
+<section class="section section--alt" id="legal">
+  <div class="wrap">
+    <p class="kicker rv">פרטי העסק ותנאים</p>
+    <h2 class="sec-title rv">עם מי אתם עובדים, ובאילו תנאים</h2>
+    <p class="sec-lead rv">
+      עסק מורשה, חשבונית מס כחוק, ותנאים כתובים מראש.
+      מה שכתוב כאן הוא מה שיופיע גם בהצעת המחיר.
+    </p>
+
+    <div class="legal-grid rv">
+
+      <div class="info">
+        <h3>פרטי העסק</h3>
+        <dl class="legal-dl">
+          <div>
+            <dt>שם העוסק:</dt>
+            <dd><span class="ph">[[FILL: שם העוסק המורשה כפי שמופיע בתעודה]]</span></dd>
+          </div>
+          <div>
+            <dt>מספר עוסק מורשה:</dt>
+            <dd><span class="ph">[[FILL: מספר עוסק מורשה]]</span></dd>
+          </div>
+          <div>
+            <dt>כתובת:</dt>
+            <dd><span class="ph">[[FILL: כתובת העסק]]</span></dd>
+          </div>
+          <div>
+            <dt>אימייל:</dt>
+            <dd><a class="ltr" data-mail></a></dd>
+          </div>
+        </dl>
+        <p class="info__fine">
+          כל תשלום הוא בתוספת מע״מ כחוק, וכנגד חשבונית מס/קבלה.
+        </p>
+      </div>
+
+      <div class="info">
+        <h3>תנאי התקשרות</h3>
+        <div class="legal-terms">
+
+          <div>
+            <h4>תשלום</h4>
+            <p>
+              <span class="num">50%</span> מקדמה עם אישור ההצעה ולפני תחילת העבודה,
+              ו־<span class="num">50%</span> הנותרים עם סיום הפרויקט ולפני העלייה
+              לאוויר. תוספות שלא נכללו בהצעה מתומחרות בנפרד ומאושרות בכתב לפני ביצוען.
+            </p>
+          </div>
+
+          <div>
+            <h4>לוח זמנים</h4>
+            <p>
+              <span class="num">4</span> שבועות להקמת חנות. הספירה מתחילה מהיום
+              שבו התקבלו מכם כל החומרים והגישות - מוצרים, מחירים, תמונות, לוגו
+              וגישה למערכות קיימות - ולא מיום אישור ההצעה. עיכוב בהעברת חומרים
+              או בקבלת משוב על גרסת הביניים דוחה את התאריך בהתאמה.
+              בפרויקט פיתוח לפי מידה לוח הזמנים נקבע במסמך האפיון ולא לפי
+              <span class="num">4</span> השבועות האלה.
+            </p>
+          </div>
+
+          <div>
+            <h4>ליווי אחרי העלייה לאוויר</h4>
+            <p>
+              <span class="num">2</span> שבועות ליווי כלולים מרגע העלייה לאוויר.
+              הליווי כולל תיקון תקלות ובאגים במה שנבנה, שאלות תפעול על החנות ועל
+              חשבונות הפרסום, והתאמות קטנות בתוך ההיקף שסוכם. הליווי אינו כולל
+              עמודים או פיצ׳רים חדשים, שינויי עיצוב מהותיים, העלאת מוצרים נוספת,
+              ניהול שוטף של הקמפיינים או כתיבת תוכן. אלה עבודה חדשה, ומתומחרים בנפרד.
+            </p>
+          </div>
+
+          <div>
+            <h4>ביטול</h4>
+            <p>
+              הודעת ביטול מכל צד תימסר בכתב.
+              תקופת ההודעה המוקדמת: <span class="ph">[[FILL: תקופת הודעה מוקדמת לביטול]]</span>.
+              דין המקדמה במקרה של ביטול: <span class="ph">[[FILL: מה קורה למקדמה בביטול]]</span>.
+              בכל מקרה של הפסקת עבודה, מה שכבר נבנה ושולם עליו נשאר שלכם,
+              והחשבונות רשומים על שמכם ממילא.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 </main>
 
 <!-- ==================== FOOTER ==================== -->
@@ -1585,9 +1971,11 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
         <h4>באתר</h4>
         <ul>
           <li><a href="#ventures">המיזמים</a></li>
+          <li><a href="#case">מקרה בוחן</a></li>
           <li><a href="#services">שירותים</a></li>
           <li><a href="#how">תהליך</a></li>
           <li><a href="#faq">שאלות נפוצות</a></li>
+          <li><a href="#legal">פרטי העסק ותנאים</a></li>
         </ul>
       </nav>
 
@@ -1600,7 +1988,7 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
               וואטסאפ
             </a>
           </li>
-          <li><a class="ltr" href="mailto:natikyan153@gmail.com">natikyan153@gmail.com</a></li>
+          <li><a class="ltr" data-mail></a></li>
         </ul>
         <p class="ftr__hours">
           עונים בדרך כלל תוך עד <span class="num">3</span> שעות, בימים א׳-ו׳.
@@ -1637,14 +2025,10 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 
 <script>
 /* ==========================================================================
-   EDIT ZONE - everything you need to change in the code is here
+   The domain, the contact address and the WhatsApp number are NOT here.
+   They live in the BLACKZ config object at the top of <head>, so that the
+   metadata in the head can be built from the same values as the page body.
    ========================================================================== */
-
-/* [REQUIRED - your WhatsApp number]
-   International format, no + and no dashes or spaces.
-   Example: 050-1234567  ->  '972501234567'
-   This single value feeds every WhatsApp button on the page. */
-const WA_NUMBER = '972515310498';
 
 /* true  = the form opens WhatsApp prefilled with the entered details (works with no server)
    false = the form posts to the action set on the <form> tag (Formspree etc.) */
@@ -1655,13 +2039,15 @@ const USE_WHATSAPP_FORM = true;
 (function () {
   'use strict';
 
+  var CFG = window.BLACKZ || {};
+  var WA_NUMBER = CFG.WA_NUMBER || '';
   var isPlaceholderNumber = /^9725000000/.test(WA_NUMBER);
 
   function waLink(msg) {
     return 'https://wa.me/' + WA_NUMBER + (msg ? '?text=' + encodeURIComponent(msg) : '');
   }
 
-  /* --- feed every WhatsApp button from the single number above --- */
+  /* --- feed every WhatsApp button from the single number in the config --- */
   var waEls = document.querySelectorAll('[data-wa]');
   for (var i = 0; i < waEls.length; i++) {
     var el = waEls[i];
@@ -1670,8 +2056,33 @@ const USE_WHATSAPP_FORM = true;
     el.setAttribute('rel', 'noopener');
   }
   if (isPlaceholderNumber) {
-    console.warn('[BlackZ] WA_NUMBER is still a placeholder. Edit it at the bottom of this file.');
+    console.warn('[BlackZ] WA_NUMBER is still a placeholder. Edit it in the BLACKZ config in <head>.');
   }
+
+  /* --- every mailto link, from the same config ---
+     Runs first so a failure further down cannot leave an empty link. The
+     address is the link text as well, so it is written in exactly one place. */
+  var mailEls = document.querySelectorAll('[data-mail]');
+  for (var m = 0; m < mailEls.length; m++) {
+    mailEls[m].setAttribute('href', 'mailto:' + (CFG.EMAIL || ''));
+    mailEls[m].textContent = CFG.EMAIL || '';
+  }
+
+  /* --- the domain is written twice on purpose: once in the config, once in
+     the crawler-facing block in <head> that cannot be generated at runtime.
+     Warn loudly if a domain change only landed in one of them. --- */
+  (function () {
+    var og = document.querySelector('meta[property="og:url"]');
+    var canon = document.querySelector('link[rel="canonical"]');
+    var domain = (CFG.DOMAIN || '').replace(/\/+$/, '');
+    [og && og.getAttribute('content'), canon && canon.getAttribute('href')].forEach(function (v) {
+      if (v && v.replace(/\/+$/, '') !== domain) {
+        console.warn('[BlackZ] Domain mismatch: BLACKZ.DOMAIN is "' + domain +
+                     '" but the crawler-facing block in <head> says "' + v +
+                     '". Update both.');
+      }
+    });
+  })();
 
   /* --- current year in the footer --- */
   var yearEl = document.getElementById('year');
@@ -1685,10 +2096,26 @@ const USE_WHATSAPP_FORM = true;
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  /* --- scroll reveal --- */
+  /* --- scroll reveal ---
+     The hidden state lives behind .js-rv on <html>, so the page is readable
+     whether or not any of this runs. Everything below is enhancement, and
+     every path out of it ends with the content visible. */
   var revealables = document.querySelectorAll('.rv');
+
   function revealAll() {
     for (var i = 0; i < revealables.length; i++) revealables[i].classList.add('is-in');
+  }
+
+  /* Reveal anything whose top edge has reached the viewport, plus everything
+     above it. Used as a sweep whenever the observer might have missed a batch:
+     after load, after a resize, and once on a timer. */
+  function revealInView() {
+    var h = window.innerHeight || document.documentElement.clientHeight;
+    for (var i = 0; i < revealables.length; i++) {
+      var el = revealables[i];
+      if (el.classList.contains('is-in')) continue;
+      if (el.getBoundingClientRect().top < h) el.classList.add('is-in');
+    }
   }
 
   if ('IntersectionObserver' in window) {
@@ -1699,15 +2126,26 @@ const USE_WHATSAPP_FORM = true;
           io.unobserve(entry.target);
         }
       });
-    }, { rootMargin: '0px 0px -200px 0px', threshold: 0 });
+    }, { rootMargin: '0px 0px -80px 0px', threshold: 0 });
     for (var r = 0; r < revealables.length; r++) io.observe(revealables[r]);
 
-    /* The -200px bottom margin means anything sitting in the last 200px of the
+    /* The negative bottom margin means anything sitting in the last 80px of the
        document can never intersect, and would stay invisible forever. Reveal
        whatever is left once the page is scrolled to the end. */
     window.addEventListener('scroll', function () {
       if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) revealAll();
     }, { passive: true });
+
+    /* Sweeps. Fonts, images and the tab panel all settle after first paint and
+       shift layout, which is when the observer is most likely to have measured
+       an element against a position it no longer holds. */
+    window.addEventListener('load', revealInView);
+    window.addEventListener('resize', revealInView, { passive: true });
+    setTimeout(revealInView, 1200);
+
+    /* A page opened at an anchor, or restored mid-scroll, must not sit behind
+       an observer callback that has not fired yet. */
+    if (window.scrollY > 0 || location.hash) revealInView();
   } else {
     revealAll();
   }
@@ -2038,5 +2476,39 @@ if (!customElements.get('blackz-signature')) {
   customElements.define('blackz-signature', BlackZSignature);
 }
 </script>
+
+<!-- ==========================================================================
+     PLACEHOLDER INDEX
+
+     Thirteen unfilled values, in document order. Each renders with a dashed
+     amber outline, so an unfilled one is visible to any visitor rather than
+     quietly shipping as a blank. Search the file for "[[FILL" to jump to them.
+     Descriptions are English here and Hebrew on the page, per CLAUDE.md.
+
+     Hero
+       1.  Starting price (hero note)
+
+     Case study - #case
+       2.  The "before" state: what existed prior to the store
+       3.  Catalogue size at launch
+       4.  Campaign detail: channels, daily budget, number of creatives
+       5.  Launch date
+       6.  Project duration, start to launch
+       7.  Outcome metric: orders, sales volume or conversion rate
+
+     Services - #services
+       8.  Starting price - the SAME number as 1. Change both together.
+
+     Business and terms - #legal
+       9.  Registered Osek Murshe name, as printed on the certificate
+       10. Osek Murshe number
+       11. Business address
+       12. Cancellation: notice period
+       13. Cancellation: what happens to the advance payment
+
+     Not a placeholder, but still outstanding:
+       - og.jpg (1200x630) does not exist at the site root. Until it is
+         uploaded, every shared link previews as text with no image.
+     ========================================================================== -->
 </body>
 </html>
