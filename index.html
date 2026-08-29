@@ -971,6 +971,19 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 .legal-dl > div{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:baseline}
 .legal-dl dt{font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--c-text)}
 .legal-dl dd{margin:0;font-size:var(--fs-sm);color:var(--c-text-dim);min-width:0}
+/* link to the certificate PDF - 44px tall so it is a comfortable phone target */
+.legal-doc{
+  display:inline-flex;align-items:center;gap:var(--sp-2);
+  margin-top:var(--sp-4);
+  min-height:44px;padding-inline:var(--sp-4);
+  border:var(--border);border-radius:var(--radius-pill);
+  font-size:var(--fs-sm);font-weight:var(--fw-bold);
+  color:var(--c-text-dim);
+  transition:color var(--dur) var(--ease), border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.legal-doc:hover{color:var(--c-accent);border-color:var(--c-line-hi);background:var(--c-hover-wash)}
+.legal-doc svg{width:16px;height:16px;flex:none}
+
 .legal-terms{display:grid;gap:var(--sp-4)}
 .legal-terms h4{font-size:var(--fs-base);margin-bottom:var(--sp-2)}
 .legal-terms p{color:var(--c-text-dim);font-size:var(--fs-sm)}
@@ -1895,6 +1908,20 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
             <dd><a class="ltr" data-mail></a></dd>
           </div>
         </dl>
+        <!-- The certificate itself. Filename is Latin because it becomes a URL;
+             a Hebrew one would percent-encode into something unreadable. It is
+             served with X-Robots-Tag: noindex (see vercel.json) so it stays a
+             document people reach from this page rather than one that turns up
+             in search results on its own. -->
+        <a class="legal-doc" href="osek-murshe.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/>
+          </svg>
+          צפייה בתעודת עוסק מורשה <bdi>(PDF)</bdi>
+        </a>
+
         <p class="info__fine">
           כל תשלום הוא בתוספת מע״מ כחוק, וכנגד חשבונית מס/קבלה.
         </p>
