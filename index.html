@@ -39,6 +39,85 @@ var BLACKZ = {
       that class, so if this script never runs the content is simply visible.
       Removing the class at any later point reveals everything instantly,
       which is what the error handler below does. */
+/* ==========================================================================
+   Accessibility preferences. The store-and-apply half of the widget, kept up
+   here so a returning visitor's settings are on the page before first paint
+   rather than being repainted in front of them - the same reason the theme
+   sits here. The widget UI itself is at the bottom of the file and talks to
+   this object.
+   ========================================================================== */
+var BlackZA11y = (function () {
+  var KEY = "blackz-a11y";
+  var FONT_MIN = -2;
+  var FONT_MAX = 4;
+
+  /* setting -> class stamped on <html>. Single source of truth: the widget
+     reads this map rather than repeating the class names. */
+  var FLAGS = {
+    contrast:       "a11y-contrast",
+    grayscale:      "a11y-grayscale",
+    underlineLinks: "a11y-underline",
+    highlightLinks: "a11y-highlight",
+    spacing:        "a11y-spacing",
+    bigCursor:      "a11y-cursor",
+    noMotion:       "a11y-nomotion"
+  };
+
+  var DEFAULTS = {
+    fontLevel: 0,
+    contrast: false,
+    grayscale: false,
+    underlineLinks: false,
+    highlightLinks: false,
+    spacing: false,
+    bigCursor: false,
+    noMotion: false
+  };
+
+  function clampLevel(n) {
+    n = parseInt(n, 10);
+    if (isNaN(n)) return 0;
+    return Math.max(FONT_MIN, Math.min(FONT_MAX, n));
+  }
+
+  function load() {
+    var out = {}, k;
+    for (k in DEFAULTS) out[k] = DEFAULTS[k];
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        if (saved && typeof saved === "object") {
+          for (k in DEFAULTS) {
+            if (k === "fontLevel") out[k] = clampLevel(saved[k]);
+            else if (typeof saved[k] === "boolean") out[k] = saved[k];
+          }
+        }
+      }
+    } catch (e) {}
+    return out;
+  }
+
+  function save(s) {
+    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+  }
+
+  function apply(s) {
+    var root = document.documentElement, k;
+    for (k in FLAGS) root.classList.toggle(FLAGS[k], !!s[k]);
+    /* One step is 10%. Every type token is rem or clamp() based, so the whole
+       scale moves together instead of only the body copy. */
+    var lvl = clampLevel(s.fontLevel);
+    root.style.fontSize = lvl ? (100 + lvl * 10) + "%" : "";
+  }
+
+  return {
+    KEY: KEY, FONT_MIN: FONT_MIN, FONT_MAX: FONT_MAX,
+    FLAGS: FLAGS, DEFAULTS: DEFAULTS,
+    load: load, save: save, apply: apply
+  };
+})();
+
 (function () {
   var root = document.documentElement;
 
@@ -47,6 +126,8 @@ var BLACKZ = {
       root.setAttribute("data-theme", "light");
     }
   } catch (e) {}
+
+  BlackZA11y.apply(BlackZA11y.load());
 
   root.classList.add("js-rv");
 
@@ -1052,6 +1133,186 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 .wa-bar.is-on{transform:translateY(0)}
 @media (min-width:900px){ .wa-bar{display:none} }
 
+/* ==========================  ACCESSIBILITY WIDGET  ==========================
+   Floating button in the bottom inline-start corner (right, in RTL) plus a
+   panel of controls. Sits above the header (100) and the mobile WhatsApp bar
+   (90), because it has to stay reachable from anywhere on the page. */
+.a11y__btn{
+  position:fixed;z-index:120;
+  inset-inline-start:var(--sp-4);bottom:var(--sp-4);
+  width:44px;height:44px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--c-accent-fill);color:var(--c-accent-ink);
+  border:2px solid var(--c-bg);padding:0;cursor:pointer;
+  box-shadow:0 6px 20px -6px rgba(0,0,0,.65);
+  transition:transform var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.a11y__btn:hover{background:#c6ff4d;transform:scale(1.05)}
+.a11y__btn svg{width:26px;height:26px;fill:currentColor}
+@media (min-width:560px){ .a11y__btn{width:48px;height:48px} }
+
+/* The mobile WhatsApp bar occupies the same corner once it slides up. The
+   widget markup sits after it in the DOM purely so this sibling selector can
+   lift the button clear of it. Phone widths only - the bar is display:none
+   from 900px up, but a display:none element still matches selectors. */
+@media (max-width:899px){
+  .wa-bar.is-on ~ .a11y .a11y__btn{ bottom:calc(var(--sp-4) + 74px + env(safe-area-inset-bottom)) }
+  .wa-bar.is-on ~ .a11y .a11y__panel{ bottom:calc(var(--sp-4) + 128px + env(safe-area-inset-bottom)) }
+}
+
+.a11y__panel{
+  position:fixed;z-index:120;
+  inset-inline-start:var(--sp-4);bottom:calc(var(--sp-4) + 58px);
+  width:320px;max-width:calc(100vw - 2rem);
+  max-height:min(78vh,560px);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius-lg);
+  padding:var(--sp-4);box-shadow:var(--shadow);
+  transform:translateY(8px);opacity:0;
+  transition:transform .2s var(--ease), opacity .2s var(--ease);
+}
+.a11y__panel[hidden]{display:none}
+.a11y__panel.is-open{transform:none;opacity:1}
+
+.a11y__head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3)}
+.a11y__head h2{font-size:var(--fs-md)}
+.a11y__close{
+  flex:none;width:32px;height:32px;border-radius:var(--radius-sm);
+  display:inline-flex;align-items:center;justify-content:center;
+  background:none;border:none;color:var(--c-text-faint);cursor:pointer;
+  transition:background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.a11y__close:hover{background:var(--c-hover-wash);color:var(--c-text)}
+.a11y__close svg{width:18px;height:18px}
+
+/* text size */
+.a11y__size{
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius);
+  padding:var(--sp-3);
+}
+.a11y__size-label{font-size:var(--fs-sm);font-weight:var(--fw-bold);margin-bottom:var(--sp-2)}
+.a11y__size-row{display:flex;align-items:center;gap:var(--sp-2)}
+.a11y__step,.a11y__norm{
+  background:var(--c-surface);border:var(--border);border-radius:var(--radius-sm);
+  color:var(--c-text);cursor:pointer;
+  transition:border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.a11y__step{flex:none;width:36px;height:36px;font-size:1.15rem;font-weight:var(--fw-black);line-height:1}
+.a11y__norm{flex:1;min-height:36px;padding-inline:var(--sp-3);font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--c-text-dim)}
+.a11y__step:hover:not(:disabled),.a11y__norm:hover{border-color:var(--c-accent)}
+.a11y__step:disabled{opacity:.4;cursor:not-allowed}
+
+/* toggles */
+.a11y__toggles{display:grid;gap:6px;margin-top:var(--sp-3)}
+.a11y__toggle{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  width:100%;min-height:44px;padding:.5rem .85rem;
+  background:var(--c-bg);border:var(--border);border-radius:var(--radius);
+  color:var(--c-text-dim);font-size:var(--fs-sm);font-weight:var(--fw-bold);
+  text-align:start;cursor:pointer;
+  transition:background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.a11y__toggle:hover{border-color:var(--c-line-hi);color:var(--c-text)}
+.a11y__toggle[aria-pressed="true"]{
+  background:var(--c-accent-fill);border-color:var(--c-accent-fill);color:var(--c-accent-ink);
+}
+/* the switch is decorative: aria-pressed on the button carries the state */
+.a11y__sw{
+  flex:none;width:36px;height:20px;border-radius:var(--radius-pill);
+  background:var(--c-line-hi);padding:2px;
+  display:flex;justify-content:flex-end;
+  transition:background var(--dur) var(--ease);
+}
+.a11y__toggle[aria-pressed="true"] .a11y__sw{background:rgba(10,10,12,.35);justify-content:flex-start}
+.a11y__sw i{display:block;width:16px;height:16px;border-radius:50%;background:var(--c-text-faint)}
+.a11y__toggle[aria-pressed="true"] .a11y__sw i{background:var(--c-accent-ink)}
+
+.a11y__reset{
+  width:100%;min-height:44px;margin-top:var(--sp-3);
+  background:var(--c-text);color:var(--c-bg);
+  border:none;border-radius:var(--radius);
+  font-size:var(--fs-sm);font-weight:var(--fw-black);cursor:pointer;
+  transition:opacity var(--dur) var(--ease);
+}
+.a11y__reset:hover{opacity:.85}
+.a11y__link{
+  display:block;margin-top:var(--sp-2);text-align:center;
+  font-size:var(--fs-xs);font-weight:var(--fw-bold);color:var(--c-accent);
+}
+.a11y__link:hover{text-decoration:underline}
+
+/* ==========================  ACCESSIBILITY MODES  ==========================
+   Each mode is a class on <html>. Contrast works by overriding the same design
+   tokens the rest of the page reads, so it reaches every component at once
+   rather than needing a per-component override. */
+.a11y-contrast{
+  --c-bg:#000000; --c-bg-alt:#000000; --c-surface:#000000; --c-surface-hi:#1A1A1A;
+  --c-line:#FFFFFF; --c-line-hi:#FFFFFF;
+  --c-text:#FFFFFF; --c-text-dim:#FFFFFF; --c-text-faint:#FFFFFF;
+  --c-accent:#FFFF00; --c-accent-dim:#FFFF00; --c-accent-fill:#FFFF00;
+  --c-accent-ink:#000000; --c-accent-glow:transparent;
+  --c-hdr-bg:#000000; --c-hdr-bg-on:#000000; --c-bar-bg:#000000;
+  --c-hover-wash:#333333; --c-soft-wash:#333333;
+  --c-spot:transparent; --c-spot-2:transparent;
+  --c-ph:#FFFF00; --c-wa:#00FF00; --c-wa-ink:#000000;
+  --shadow:none;
+}
+.a11y-contrast[data-theme="light"]{
+  --c-bg:#FFFFFF; --c-bg-alt:#FFFFFF; --c-surface:#FFFFFF; --c-surface-hi:#E8E8E8;
+  --c-line:#000000; --c-line-hi:#000000;
+  --c-text:#000000; --c-text-dim:#000000; --c-text-faint:#000000;
+  --c-accent:#0000CC; --c-accent-dim:#0000CC; --c-accent-fill:#0000CC;
+  --c-accent-ink:#FFFFFF;
+  --c-hdr-bg:#FFFFFF; --c-hdr-bg-on:#FFFFFF; --c-bar-bg:#FFFFFF;
+  --c-hover-wash:#DDDDDD; --c-soft-wash:#DDDDDD;
+  --c-ph:#8A5A00; --c-wa:#006600; --c-wa-ink:#FFFFFF;
+}
+/* the decorative washes survive a token swap, so remove them outright */
+.a11y-contrast .hero::before,
+.a11y-contrast .spotlight{display:none}
+.a11y-contrast .pack,
+.a11y-contrast .contact__wa,
+.a11y-contrast .portal__fallback{background-image:none}
+.a11y-contrast .hdr,
+.a11y-contrast .mobile-nav,
+.a11y-contrast .wa-bar{backdrop-filter:none;-webkit-backdrop-filter:none}
+
+/* Greyscale is painted by a fixed overlay rather than a filter on <html>.
+   A filter on an ancestor makes it the containing block for fixed children,
+   which would break the sticky header, the WhatsApp bar and this widget. */
+.a11y__grey{
+  position:fixed;inset:0;z-index:130;
+  pointer-events:none;
+  backdrop-filter:grayscale(1);-webkit-backdrop-filter:grayscale(1);
+}
+html:not(.a11y-grayscale) .a11y__grey{display:none}
+
+.a11y-underline a{text-decoration:underline !important}
+/* outline rather than a background fill: several links wrap screenshots, and
+   a fill would paint over them */
+.a11y-highlight a{outline:2px solid var(--c-ph);outline-offset:2px;border-radius:3px}
+
+.a11y-spacing body{line-height:2 !important;letter-spacing:.06em !important;word-spacing:.14em !important}
+.a11y-spacing h1,.a11y-spacing h2,.a11y-spacing h3,.a11y-spacing h4{line-height:1.45 !important}
+.a11y-spacing p,.a11y-spacing li{margin-bottom:.35em}
+
+.a11y-cursor,.a11y-cursor *{
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M5 2l14 8.5-6.2 1.4L10.4 21z' fill='%23ffffff' stroke='%23000000' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4,auto !important;
+}
+.a11y-cursor a,.a11y-cursor button,.a11y-cursor summary,.a11y-cursor [role="tab"],.a11y-cursor input,.a11y-cursor textarea{
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M9 2v10.5L6.4 10 4.6 11.8 10 21h8l2-8-5-1.6V2z' fill='%23ffffff' stroke='%23000000' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 8 4,pointer !important;
+}
+
+.a11y-nomotion *,.a11y-nomotion *::before,.a11y-nomotion *::after{
+  animation-duration:.001ms !important;
+  animation-iteration-count:1 !important;
+  transition-duration:.001ms !important;
+}
+.a11y-nomotion{scroll-behavior:auto !important;--bz-motion:paused}
+.a11y-nomotion .spotlight{display:none}
+/* Stopping animation must never mean stopping content from appearing. The
+   extra html selector beats .js-rv .rv, which has the same class count. */
+html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:none !important}
+
 /* ==========================  SCROLL REVEAL  ==========================
    The hidden state is scoped to .js-rv, which the head script stamps onto
    <html> before first paint. Content is therefore VISIBLE by default and the
@@ -1981,6 +2242,80 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
   </div>
 </section>
 
+<!-- ---------- Accessibility statement ----------
+     Target of the widget's statement link, so it has to keep the id.
+
+     Everything in the first card is a factual description of what is actually
+     implemented and was verified. Everything that is a legal declaration - the
+     conformance level, the known exceptions, the coordinator, the date - is a
+     placeholder. Israeli regulations require those to be accurate, and a
+     conformance claim that has not been audited is exactly the kind of thing
+     that must not be invented here. -->
+<section class="section" id="accessibility">
+  <div class="wrap">
+    <p class="kicker rv">נגישות</p>
+    <h2 class="sec-title rv">הצהרת נגישות</h2>
+    <p class="sec-lead rv">
+      אנחנו רוצים שכל אחד יוכל להשתמש באתר הזה, ולכן הוא נבנה מלכתחילה
+      עם נגישות בראש - ולא כתוספת בסוף.
+    </p>
+
+    <div class="legal-grid rv">
+
+      <div class="info">
+        <h3>מה נגיש באתר</h3>
+        <ul class="case-list">
+          <li>ניווט מלא במקלדת, עם סימון ברור של הרכיב שבפוקוס.</li>
+          <li>מבנה כותרות סמנטי וקישור דילוג ישיר לתוכן הראשי.</li>
+          <li>טקסט חלופי לתמונות, ותוויות לכל הכפתורים והשדות בטופס.</li>
+          <li>תמיכה מלאה בעברית ובכיווניות מימין לשמאל.</li>
+          <li>מצב כהה ומצב בהיר, ושמירה על ניגודיות טקסט גם בשניהם.</li>
+          <li>האתר מכבד את הגדרת מערכת ההפעלה לצמצום אנימציות.</li>
+          <li>התוכן מוצג גם כשה־<bdi>JavaScript</bdi> לא רץ. אנימציית הגלילה היא תוספת, לא תנאי.</li>
+        </ul>
+        <p style="margin-top:var(--sp-4)">
+          בנוסף, כפתור הנגישות שבפינת המסך פותח תפריט להגדלת טקסט, ניגודיות גבוהה,
+          גווני אפור, הדגשת קישורים, הגדלת ריווח, סמן עכבר מוגדל ועצירת אנימציות.
+          ההגדרות נשמרות בדפדפן שלכם ונטענות שוב בכניסה הבאה.
+        </p>
+      </div>
+
+      <div class="info">
+        <h3>רמת הנגישות ופנייה</h3>
+        <p>
+          רמת ההנגשה של האתר: <span class="ph">[[FILL: רמת ההנגשה והתקן שלפיו נבדק]]</span>.
+        </p>
+        <p>
+          חלקים שטרם הונגשו במלואם:
+          <span class="ph">[[FILL: מגבלות ידועות, או "לא ידוע על חלקים כאלה"]]</span>.
+        </p>
+        <p>
+          נתקלתם בבעיית נגישות באתר? נשמח לדעת, ונטפל בזה.
+          אפשר לפנות אלינו ולקבל מענה:
+        </p>
+        <dl class="legal-dl" style="margin-top:var(--sp-3)">
+          <div>
+            <dt>רכז הנגישות:</dt>
+            <dd><span class="ph">[[FILL: שם רכז הנגישות]]</span></dd>
+          </div>
+          <div>
+            <dt>טלפון:</dt>
+            <dd><span class="ph">[[FILL: טלפון לפניות בנושא נגישות]]</span></dd>
+          </div>
+          <div>
+            <dt>אימייל:</dt>
+            <dd><a class="ltr" data-mail></a></dd>
+          </div>
+        </dl>
+        <p class="info__fine">
+          תאריך עדכון ההצהרה: <span class="ph">[[FILL: תאריך עדכון ההצהרה]]</span>.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 </main>
 
 <!-- ==================== FOOTER ==================== -->
@@ -2021,6 +2356,7 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
           <li><a href="#how">תהליך</a></li>
           <li><a href="#faq">שאלות נפוצות</a></li>
           <li><a href="#legal">פרטי העסק ותנאים</a></li>
+          <li><a href="#accessibility">הצהרת נגישות</a></li>
         </ul>
       </nav>
 
@@ -2066,6 +2402,70 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
     <svg class="wa-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.4.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.2-.6-.4M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2"/></svg>
     דברו איתנו בוואטסאפ
   </a>
+</div>
+
+<!-- ==================== ACCESSIBILITY WIDGET ====================
+     Must stay after .wa-bar: the CSS lifts the button clear of the WhatsApp
+     bar with a sibling selector, which only works in this order. -->
+<div class="a11y">
+  <div class="a11y__grey" aria-hidden="true"></div>
+
+  <button class="a11y__btn" id="a11y-btn" type="button"
+          aria-expanded="false" aria-haspopup="dialog" aria-controls="a11y-panel"
+          aria-label="הגדרות נגישות">
+    <!-- the universal accessibility mark, a figure in a circle -->
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="4" r="2"/>
+      <path d="M12 7c-2.5 0-6 .8-6 2.2 0 .9 3 1.3 4.5 1.5l-1.2 6.6a1 1 0 0 0 1.97.36L12 14.5l.75 3.66a1 1 0 0 0 1.97-.36L13.5 10.7c1.5-.2 4.5-.6 4.5-1.5C18 7.8 14.5 7 12 7z"/>
+    </svg>
+  </button>
+
+  <div class="a11y__panel" id="a11y-panel" role="dialog" aria-label="הגדרות נגישות" hidden>
+    <div class="a11y__head">
+      <h2>הגדרות נגישות</h2>
+      <button class="a11y__close" id="a11y-close" type="button" aria-label="סגירה">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="a11y__size">
+      <p class="a11y__size-label">גודל טקסט</p>
+      <div class="a11y__size-row">
+        <button class="a11y__step" type="button" data-a11y-font="-1" aria-label="הקטנת טקסט">&#8722;</button>
+        <button class="a11y__norm" type="button" data-a11y-font="0">רגיל</button>
+        <button class="a11y__step" type="button" data-a11y-font="1" aria-label="הגדלת טקסט">+</button>
+      </div>
+    </div>
+
+    <div class="a11y__toggles">
+      <button class="a11y__toggle" type="button" data-a11y="contrast" aria-pressed="false">
+        <span>ניגודיות גבוהה</span><span class="a11y__sw" aria-hidden="true"><i></i></span>
+      </button>
+      <button class="a11y__toggle" type="button" data-a11y="grayscale" aria-pressed="false">
+        <span>גווני אפור</span><span class="a11y__sw" aria-hidden="true"><i></i></span>
+      </button>
+      <button class="a11y__toggle" type="button" data-a11y="underlineLinks" aria-pressed="false">
+        <span>קו תחתון לקישורים</span><span class="a11y__sw" aria-hidden="true"><i></i></span>
+      </button>
+      <button class="a11y__toggle" type="button" data-a11y="highlightLinks" aria-pressed="false">
+        <span>הדגשת קישורים</span><span class="a11y__sw" aria-hidden="true"><i></i></span>
+      </button>
+      <button class="a11y__toggle" type="button" data-a11y="spacing" aria-pressed="false">
+        <span>ריווח שורות ואותיות</span><span class="a11y__sw" aria-hidden="true"><i></i></span>
+      </button>
+      <button class="a11y__toggle" type="button" data-a11y="bigCursor" aria-pressed="false">
+        <span>סמן עכבר מוגדל</span><span class="a11y__sw" aria-hidden="true"><i></i></span>
+      </button>
+      <button class="a11y__toggle" type="button" data-a11y="noMotion" aria-pressed="false">
+        <span>עצירת אנימציות</span><span class="a11y__sw" aria-hidden="true"><i></i></span>
+      </button>
+    </div>
+
+    <button class="a11y__reset" id="a11y-reset" type="button">איפוס כל ההגדרות</button>
+    <a class="a11y__link" href="#accessibility" id="a11y-statement">הצהרת הנגישות של האתר ←</a>
+  </div>
 </div>
 
 <script>
@@ -2282,6 +2682,110 @@ const USE_WHATSAPP_FORM = true;
     });
   }
 
+  /* --- accessibility widget ---
+     The store-and-apply half lives in BlackZA11y at the top of the file. This
+     is only the UI: read state into the controls, write changes back. */
+  var a11yBtn = document.getElementById('a11y-btn');
+  var a11yPanel = document.getElementById('a11y-panel');
+
+  if (a11yBtn && a11yPanel && window.BlackZA11y) {
+    var A11Y = window.BlackZA11y;
+    var a11yState = A11Y.load();
+    var a11yOpen = false;
+    var a11yToggles = a11yPanel.querySelectorAll('[data-a11y]');
+    var a11ySteps = a11yPanel.querySelectorAll('[data-a11y-font]');
+
+    /* push the current state into the controls */
+    function a11yRender() {
+      for (var i = 0; i < a11yToggles.length; i++) {
+        var key = a11yToggles[i].getAttribute('data-a11y');
+        a11yToggles[i].setAttribute('aria-pressed', a11yState[key] ? 'true' : 'false');
+      }
+      for (var j = 0; j < a11ySteps.length; j++) {
+        var delta = parseInt(a11ySteps[j].getAttribute('data-a11y-font'), 10);
+        if (delta === -1) a11ySteps[j].disabled = a11yState.fontLevel <= A11Y.FONT_MIN;
+        if (delta === 1)  a11ySteps[j].disabled = a11yState.fontLevel >= A11Y.FONT_MAX;
+      }
+    }
+
+    function a11yUpdate(patch) {
+      for (var k in patch) a11yState[k] = patch[k];
+      A11Y.apply(a11yState);
+      A11Y.save(a11yState);
+      a11yRender();
+    }
+
+    for (var t = 0; t < a11yToggles.length; t++) {
+      (function (el) {
+        el.addEventListener('click', function () {
+          var key = el.getAttribute('data-a11y');
+          var patch = {};
+          patch[key] = !a11yState[key];
+          a11yUpdate(patch);
+        });
+      })(a11yToggles[t]);
+    }
+
+    for (var f = 0; f < a11ySteps.length; f++) {
+      (function (el) {
+        el.addEventListener('click', function () {
+          var delta = parseInt(el.getAttribute('data-a11y-font'), 10);
+          /* 0 is the "normal" button: an absolute reset, not a step */
+          a11yUpdate({ fontLevel: delta === 0 ? 0 : a11yState.fontLevel + delta });
+        });
+      })(a11ySteps[f]);
+    }
+
+    var a11yReset = document.getElementById('a11y-reset');
+    if (a11yReset) {
+      a11yReset.addEventListener('click', function () {
+        var fresh = {};
+        for (var k in A11Y.DEFAULTS) fresh[k] = A11Y.DEFAULTS[k];
+        a11yState = fresh;
+        A11Y.apply(a11yState);
+        A11Y.save(a11yState);
+        a11yRender();
+      });
+    }
+
+    function a11ySetOpen(open) {
+      a11yOpen = open;
+      a11yBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        a11yPanel.hidden = false;
+        void a11yPanel.offsetWidth;   /* reflow, so the open transition runs */
+        a11yPanel.classList.add('is-open');
+        a11yPanel.querySelector('.a11y__close').focus();
+      } else {
+        a11yPanel.classList.remove('is-open');
+        setTimeout(function () { if (!a11yOpen) a11yPanel.hidden = true; }, 200);
+      }
+    }
+
+    a11yBtn.addEventListener('click', function () { a11ySetOpen(!a11yOpen); });
+
+    var a11yClose = document.getElementById('a11y-close');
+    if (a11yClose) {
+      a11yClose.addEventListener('click', function () { a11ySetOpen(false); a11yBtn.focus(); });
+    }
+
+    var a11yStatement = document.getElementById('a11y-statement');
+    if (a11yStatement) {
+      a11yStatement.addEventListener('click', function () { a11ySetOpen(false); });
+    }
+
+    /* click outside, and Escape */
+    document.addEventListener('mousedown', function (e) {
+      if (!a11yOpen) return;
+      if (!a11yPanel.contains(e.target) && !a11yBtn.contains(e.target)) a11ySetOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && a11yOpen) { a11ySetOpen(false); a11yBtn.focus(); }
+    });
+
+    a11yRender();
+  }
+
   /* --- spotlight ---
      Fixed element, so viewport coordinates are all it needs. Eased follow
      rather than a hard snap: each frame closes a fraction of the remaining
@@ -2453,7 +2957,10 @@ if (!customElements.get('blackz-signature')) {
           }
           .bz-trigger:hover { opacity: 0.8; }
           .bz-trigger:focus-visible { outline: 1px solid var(--bz-gold); outline-offset: 3px; border-radius: 4px; }
-          .bz-dot { width: 5px; height: 5px; background-color: var(--bz-gold); border-radius: 50%; animation: bz-breathe 3s ease-in-out infinite; }
+          /* --bz-motion is set to "paused" by the accessibility widget's
+             stop-animations toggle. Custom properties inherit through the
+             shadow boundary, which a class on <html> does not. */
+          .bz-dot { width: 5px; height: 5px; background-color: var(--bz-gold); border-radius: 50%; animation: bz-breathe 3s ease-in-out infinite; animation-play-state: var(--bz-motion, running); }
           @keyframes bz-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
           /* --bz-mark-ink is set by the page per theme. It is deliberately NOT
              declared on :host, because a :host value would beat the inherited
@@ -2525,7 +3032,7 @@ if (!customElements.get('blackz-signature')) {
 <!-- ==========================================================================
      PLACEHOLDER INDEX
 
-     Ten unfilled values, in document order. Each renders with a dashed
+     Fifteen unfilled values, in document order. Each renders with a dashed
      amber outline, so an unfilled one is visible to any visitor rather than
      quietly shipping as a blank. Search the file for "[[FILL" to jump to them.
      Descriptions are English here and Hebrew on the page, per CLAUDE.md.
@@ -2547,6 +3054,18 @@ if (!customElements.get('blackz-signature')) {
      Business and terms - #legal
        9.  Cancellation: notice period
        10. Cancellation: what happens to the advance payment
+
+     Accessibility statement - #accessibility
+       11. Conformance level and the standard it was tested against
+       12. Known parts that are not yet fully accessible
+       13. Accessibility coordinator name
+       14. Accessibility contact phone
+       15. Date the statement was last updated
+
+     11-15 are legal declarations under the Israeli accessibility
+     regulations. They have to be accurate, so none of them is guessed at
+     here - in particular, do not write a conformance level that has not
+     actually been audited.
 
      Filled on 2026-08-29 from the Osek Murshe certificate, so no longer
      placeholders: registered holder, trade name, Osek Murshe number and

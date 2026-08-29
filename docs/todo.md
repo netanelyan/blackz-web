@@ -121,6 +121,22 @@ One row, role `admin`, is what you want to see.
       support cover. Only the two cancellation terms are still placeholders,
       because they are a policy decision rather than anything the certificate
       records.
+- [x] **Accessibility widget.** Ported from a React/Tailwind component supplied
+      by the owner into vanilla CSS and JS on the site's own tokens, since
+      there is no build step here. Text size, contrast, greyscale, underline
+      and highlight links, spacing, big cursor, stop animations, reset.
+      Verified by driving all of it in headless Chrome over CDP: 24 checks
+      covering every toggle changing the page, a 44px tap target that nothing
+      covers, focus moving into the panel and back to the button, Escape,
+      persistence across a reload, reset clearing everything, and no
+      horizontal overflow at 390px with the panel open.
+- [ ] **Accessibility statement declarations.** `#accessibility` exists and
+      describes what is actually implemented, but the five legally required
+      declarations are placeholders: conformance level and the standard tested
+      against, known limitations, coordinator name, contact phone, and the
+      date. **Do not fill the conformance level with a level that has not been
+      audited.** Under the Israeli regulations these have to be accurate, and
+      a wrong claim is worse than an honest gap.
 - [x] **Favicon on every page.** `app/dashboard.html` and `c/_template.html`
       had none and rendered with a blank tab icon.
 - [x] **Placeholder brackets no longer mirrored.** `.ph` markers are a

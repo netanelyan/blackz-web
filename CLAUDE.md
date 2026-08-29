@@ -52,6 +52,12 @@ Everything is in `index.html` - inline CSS and JS, no build step, no external re
 - Anything unknown is marked `[כך]` or `[[FILL: ...]]` with `class="ph"`, which renders with
   a dashed amber outline so it is impossible to miss on the page. `.ph` is `direction: ltr`
   so the wrapping brackets do not swap ends in an RTL line.
+- The accessibility widget is split like the module/component pair it was ported from:
+  `BlackZA11y` at the top of `<head>` owns load/save/apply and runs before first paint;
+  the code at the bottom of the file is UI only. Settings are classes on `<html>`.
+  Never apply a CSS `filter` to `<html>` or `<body>` - it makes them the containing block
+  for `position: fixed` children and breaks the header, the WhatsApp bar and the widget.
+  That is why greyscale is a fixed `backdrop-filter` layer instead.
 - Reveal-on-scroll is enhancement only. The hidden state is scoped to `.js-rv`, stamped on
   `<html>` before first paint, and any uncaught error removes it. Never write a rule that
   hides content without that guard.
