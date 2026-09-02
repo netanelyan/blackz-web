@@ -22,7 +22,7 @@ CSS and JS inside it. The data lives in Supabase, the site is hosted on Vercel.
 index.html              the public site
 accessibility.html      accessibility statement. Standalone page, linked from the widget and the footer
 osek-murshe.pdf         Osek Murshe certificate. Linked from the "business and terms" section
-FILL-IN.md              the fifteen unwritten values on the site, and where each one lands
+FILL-IN.md              the unwritten values left on the site, and where each one lands
 app/dashboard.html      the dashboard. Admin and client in one file, by role
 c/_template.html        status-page template. Copy it per account-less client
 internal/sales.html     internal price list and call script. Not deployed
@@ -223,8 +223,15 @@ like `c/_template.html`. That is the price of having no build step: changing the
 email address is a two-file edit, and both are marked.
 
 The legal declarations on that page - conformance level, limitations,
-accessibility coordinator and date - are placeholders, deliberately: they have
-to be accurate. See [FILL-IN.md](FILL-IN.md).
+accessibility coordinator and date - are written. The conformance line says the
+page was **built to** WCAG 2.1 AA and that only an internal check has been run;
+it does not claim a certified standard, because no licensed accessibility
+expert has audited it. Do not upgrade that wording without one.
+
+The one limitation it declares is `osek-murshe.pdf`, which is untagged and so
+not accessible. Every field in it is also plain text in the "business and
+terms" section of `index.html`, which is the accessible equivalent. Replace the
+PDF with a tagged one and that sentence can go.
 
 ---
 
@@ -313,9 +320,11 @@ is a real change.
 
 ## Unwritten values
 
-Fifteen values on the site are still placeholders, and each renders inside a
-dashed amber outline so it cannot ship unnoticed. [FILL-IN.md](FILL-IN.md) lists
-all of them with room to write the answers.
+Eight values on the site are still placeholders, all of them in `index.html`:
+the starting price (in two places), four case-study figures and the two
+cancellation terms. Each renders inside a dashed amber outline so it cannot ship
+unnoticed. [FILL-IN.md](FILL-IN.md) lists them with room to write the answers,
+and records where the already-filled ones came from.
 
 ---
 

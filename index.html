@@ -256,7 +256,7 @@ var BlackZA11y = (function () {
 
   --c-text:        #F6F6F9;   /* primary text */
   --c-text-dim:    #ADADBD;   /* secondary text */
-  --c-text-faint:  #74748C;   /* muted text */
+  --c-text-faint:  #8585A0;   /* muted text */
 
   --c-accent:      #B8F135;   /* brand color. Changing this one value rebrands the page */
   --c-accent-dim:  #94C420;
@@ -369,7 +369,7 @@ var BlackZA11y = (function () {
 
   --c-text:        #101014;
   --c-text-dim:    #52525E;
-  --c-text-faint:  #7C7C8A;
+  --c-text-faint:  #70707E;
 
   /* darkened so accent text clears 4.5:1 on white; fills stay lime */
   --c-accent:      #4F7D0A;
@@ -1640,7 +1640,7 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
             <li>פייפליין אוטומציה להזמנות - מרגע התשלום ועד העדכון ללקוח, בלי טיפול ידני בכל הזמנה.</li>
             <li>סליקה, חשבוניות ומשלוחים מחוברים ועובדים.</li>
           </ul>
-          <p>היקף הקטלוג בהעלייה לאוויר: <span class="ph">[[FILL: מספר מוצרים בחנות]]</span>.</p>
+          <p>היקף הקטלוג בהעלייה לאוויר: כ־<span class="num">60</span> מוצרים.</p>
         </article>
 
         <article class="case-step">
@@ -1664,7 +1664,7 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
             החנות באוויר ומוכרת, ואנחנו מפעילים אותה יום־אחרי־יום -
             מלאי, ספקים, שירות לקוחות ופרסום.
           </p>
-          <p>עלתה לאוויר: <span class="ph">[[FILL: תאריך העלייה לאוויר]]</span>.</p>
+          <p>עלתה לאוויר: יולי <span class="num">2024</span>.</p>
           <p>מהתחלה ועד העלייה לאוויר: <span class="ph">[[FILL: משך הפרויקט]]</span>.</p>
           <p>מאז ועד היום: <span class="ph">[[FILL: מדד תוצאה - מספר הזמנות, נפח מכירות או אחוז המרה]]</span>.</p>
           <p class="info__fine">
@@ -2968,7 +2968,7 @@ if (!customElements.get('blackz-signature')) {
 <!-- ==========================================================================
      PLACEHOLDER INDEX
 
-     Ten unfilled values, in document order. Each renders with a dashed
+     Eight unfilled values, in document order. Each renders with a dashed
      amber outline, so an unfilled one is visible to any visitor rather than
      quietly shipping as a blank. Search the file for "[[FILL" to jump to them.
      Descriptions are English here and Hebrew on the page, per CLAUDE.md.
@@ -2978,25 +2978,32 @@ if (!customElements.get('blackz-signature')) {
 
      Case study - #case
        2.  The "before" state: what existed prior to the store
-       3.  Catalogue size at launch
-       4.  Campaign detail: channels, daily budget, number of creatives
-       5.  Launch date
-       6.  Project duration, start to launch
-       7.  Outcome metric: orders, sales volume or conversion rate
+       3.  Campaign detail: channels, daily budget, number of creatives
+       4.  Project duration, start to launch
+       5.  Outcome metric: orders, sales volume or conversion rate
 
      Services - #services
-       8.  Starting price - the SAME number as 1. Change both together.
+       6.  Starting price - the SAME number as 1. Change both together.
 
      Business and terms - #legal
-       9.  Cancellation: notice period
-       10. Cancellation: what happens to the advance payment
+       7.  Cancellation: notice period
+       8.  Cancellation: what happens to the advance payment
 
-     The accessibility statement moved to accessibility.html and carries five
-     more placeholders of its own. They are indexed at the bottom of that file.
+     The accessibility statement lives in accessibility.html and no longer
+     carries any placeholder of its own.
 
      Filled on 2026-08-29 from the Osek Murshe certificate, so no longer
      placeholders: registered holder, trade name, Osek Murshe number and
      business address.
+
+     Filled on 2026-09-02 from the live Shopify catalogue at hashofet.com
+     (its public /products.json feed), so no longer placeholders:
+       - Catalogue size at launch. 60 products were first published across
+         2024-07-02 and 2024-07-03, the seeding batch. 366 products and
+         3,929 variants are live today.
+       - Launch date. Same evidence: July 2024.
+     Both are derived from published_at, which moves if a product is
+     unpublished and republished. Correct them if the real dates differ.
 
      Not a placeholder, but still outstanding:
        - og.jpg (1200x630) does not exist at the site root. Until it is

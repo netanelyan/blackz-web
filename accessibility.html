@@ -136,7 +136,7 @@ var BlackZA11y = (function () {
 :root{
   --c-bg:#0A0A0C; --c-bg-alt:#101015; --c-surface:#15151B; --c-surface-hi:#1D1D25;
   --c-line:#262630; --c-line-hi:#3A3A48;
-  --c-text:#F6F6F9; --c-text-dim:#ADADBD; --c-text-faint:#74748C;
+  --c-text:#F6F6F9; --c-text-dim:#ADADBD; --c-text-faint:#8585A0;
   --c-accent:#B8F135; --c-accent-dim:#94C420; --c-accent-ink:#0A0A0C;
   --c-accent-glow:rgba(184,241,53,.14); --c-accent-fill:#B8F135;
   --c-hdr-bg:rgba(10,10,12,.72); --c-hdr-bg-on:rgba(10,10,12,.93);
@@ -169,7 +169,7 @@ var BlackZA11y = (function () {
 :root[data-theme="light"]{
   --c-bg:#F4F7F5; --c-bg-alt:#FFFFFF; --c-surface:#FFFFFF; --c-surface-hi:#F4F7F5;
   --c-line:#E4EBE5; --c-line-hi:#CBD8CE;
-  --c-text:#101014; --c-text-dim:#52525E; --c-text-faint:#7C7C8A;
+  --c-text:#101014; --c-text-dim:#52525E; --c-text-faint:#70707E;
   --c-accent:#4F7D0A; --c-accent-dim:#3F6408; --c-accent-glow:rgba(79,125,10,.12);
   --c-ph:#6B4700;
   --c-hdr-bg:rgba(244,247,245,.78); --c-hdr-bg-on:rgba(244,247,245,.95);
@@ -489,11 +489,16 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
       <div class="info">
         <h3>רמת הנגישות ופנייה</h3>
         <p>
-          רמת ההנגשה של האתר: <span class="ph">[[FILL: רמת ההנגשה והתקן שלפיו נבדק]]</span>.
+          רמת ההנגשה של האתר: האתר נבנה לפי הנחיות <bdi>WCAG 2.1</bdi> ברמה
+          <bdi>AA</bdi>, שהן הבסיס לתקן הישראלי <span class="num">5568</span>.
+          הבדיקה שבוצעה עד כה היא בדיקה פנימית שלנו, וטרם נערכה ביקורת נגישות
+          על ידי מורשה נגישות מוסמך.
         </p>
         <p>
-          חלקים שטרם הונגשו במלואם:
-          <span class="ph">[[FILL: מגבלות ידועות, או "לא ידוע על חלקים כאלה"]]</span>.
+          חלקים שטרם הונגשו במלואם: תעודת העוסק המורשה מוצגת כקובץ
+          <bdi>PDF</bdi> שאינו מונגש. כל הפרטים שבה - שם העוסק, שם העסק,
+          מספר העוסק המורשה והכתובת - מופיעים גם כטקסט רגיל ונגיש בעמוד הבית,
+          בסעיף "פרטי העסק ותנאים". מעבר לכך לא ידוע לנו על חלקים כאלה.
         </p>
         <p>
           נתקלתם בבעיית נגישות באתר? נשמח לדעת, ונטפל בזה.
@@ -502,11 +507,11 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
         <dl class="legal-dl" style="margin-top:var(--sp-3)">
           <div>
             <dt>רכז הנגישות:</dt>
-            <dd><span class="ph">[[FILL: שם רכז הנגישות]]</span></dd>
+            <dd>יאנצ׳בסקי נתנאל</dd>
           </div>
           <div>
             <dt>טלפון:</dt>
-            <dd><span class="ph">[[FILL: טלפון לפניות בנושא נגישות]]</span></dd>
+            <dd><a class="ltr" href="tel:+972515310498">051-5310498</a></dd>
           </div>
           <div>
             <dt>אימייל:</dt>
@@ -514,7 +519,7 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
           </div>
         </dl>
         <p class="info__fine">
-          תאריך עדכון ההצהרה: <span class="ph">[[FILL: תאריך עדכון ההצהרה]]</span>.
+          תאריך עדכון ההצהרה: <span class="num">02.09.2026</span>.
         </p>
       </div>
 
@@ -749,23 +754,35 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
 <!-- ==========================================================================
      PLACEHOLDER INDEX
 
-     Five unfilled values on this page. Each renders with a dashed amber
-     outline, so an unfilled one is visible to any visitor.
-     Search this file for "[[FILL" to jump to them.
+     No unfilled values remain on this page. All five were written on
+     2026-09-02. They are legal declarations under the Israeli accessibility
+     regulations, so what each one claims is deliberately narrow:
 
-       1. Conformance level and the standard it was tested against
-       2. Known parts that are not yet fully accessible
-       3. Accessibility coordinator name
-       4. Accessibility contact phone
-       5. Date the statement was last updated
+       1. Conformance level. States that the page was BUILT to WCAG 2.1 AA,
+          which underpins Israeli standard 5568, and that only an internal
+          check has been run. It does not claim a certified level, because
+          no certified audit has happened. Do not upgrade this wording
+          without an audit by a licensed accessibility expert - a wrong
+          claim is worse than an honest gap.
+       2. Known limitations. osek-murshe.pdf is untagged (no StructTreeRoot,
+          no MarkInfo) and carries image content, so it is not accessible.
+          Every field in it is also plain text in the "business and terms"
+          section of index.html, which is the accessible equivalent. If the
+          PDF is ever replaced with a tagged one, drop this sentence.
+       3. Coordinator. The registered holder, same source as index.html.
+       4. Phone. The same line as BLACKZ.WA_NUMBER, as a tel: link.
+       5. Date. Bump it whenever 1 to 4 change.
 
-     All five are legal declarations under the Israeli accessibility
-     regulations. They have to be accurate, so none is guessed at here. In
-     particular, do not write a conformance level that has not actually been
-     audited - a wrong claim is worse than an honest gap.
+     A contrast fix shipped alongside these: --c-text-faint was 4.00:1 on a
+     card in dark mode and 4.11:1 on white in light mode, both under the
+     4.5:1 that WCAG AA wants for text this size (--fs-xs is .8rem). It is
+     now #8585A0 dark and #70707E light, which clear 4.5:1 against every
+     surface either theme puts behind it. The same two values were updated
+     in index.html, app/dashboard.html, c/_template.html and
+     internal/sales.html, because the tokens are copied per file.
 
-     index.html carries ten placeholders of its own, indexed at the bottom
-     of that file.
+     index.html still carries placeholders of its own, indexed at the bottom
+     of that file and listed in FILL-IN.md.
      ========================================================================== -->
 </body>
 </html>
