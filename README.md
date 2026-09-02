@@ -1,140 +1,152 @@
 # blackz-web
 
-האתר והמערכת של BlackZ. שלושה חלקים בריפו אחד:
+The BlackZ site and system. Three parts in one repo:
 
-| | מה זה | מי נכנס |
+| | What it is | Who gets in |
 |---|---|---|
-| **האתר הציבורי** | `index.html` - עמוד יחיד, עברית RTL | כולם |
-| **הדשבורד** | `app/dashboard.html` - ניהול פרויקטים, בניית הצעות מחיר, תשובות להתנגדויות, שאלות לשיחה | אתה, ולקוחות שרואים רק את הפרויקט שלהם |
-| **עמוד סטטוס ידני** | `c/_template.html` - תבנית ללקוח בלי חשבון | מי שקיבל את הקישור |
+| **The public site** | `index.html` - single page, Hebrew RTL | everyone |
+| **The dashboard** | `app/dashboard.html` - project management, quote builder, objection answers, call questions | you, plus clients who see only their own project |
+| **Manual status page** | `c/_template.html` - a template for a client with no account | whoever has the link |
 
-אין שלב build ואין תלויות. כל קובץ HTML עומד בפני עצמו, עם ה־CSS וה־JS בתוכו.
-הנתונים יושבים ב־Supabase, האתר מתארח ב־Vercel.
+No build step and no dependencies. Every HTML file stands on its own, with its
+CSS and JS inside it. The data lives in Supabase, the site is hosted on Vercel.
 
-> `internal/sales.html` הוא דף מכירות פנימי בלי התחברות, ולכן **לא נפרס לאוויר**
-> (ראו `.vercelignore`). התוכן שלו עבר לדשבורד.
+> `internal/sales.html` is an internal sales page with no login, so it is
+> **not deployed** (see `.vercelignore`). Its content moved into the dashboard.
 
 ---
 
-## מבנה הריפו
+## Repo layout
 
 ```
-index.html              האתר הציבורי
-accessibility.html      הצהרת נגישות. עמוד עצמאי, מקושר מהווידג׳ט ומהפוטר
-osek-murshe.pdf         תעודת עוסק מורשה. מקושרת מהסעיף "פרטי העסק ותנאים"
-app/dashboard.html      הדשבורד. אדמין ולקוח באותו קובץ, לפי role
-c/_template.html        תבנית עמוד סטטוס. להעתיק לכל לקוח בלי חשבון
-internal/sales.html     מחירון וסקריפט שיחה פנימיים. לא נפרס
-supabase/               סכימה ומיגרציות. להריץ ידנית ב־SQL editor
-  schema.sql            טבלאות, RLS, טריגרים
-  002..006_*.sql        מיגרציות לפי הסדר
-  functions/create-client/  Edge Function שיוצרת חשבון לקוח
+index.html              the public site
+accessibility.html      accessibility statement. Standalone page, linked from the widget and the footer
+osek-murshe.pdf         Osek Murshe certificate. Linked from the "business and terms" section
+FILL-IN.md              the fifteen unwritten values on the site, and where each one lands
+app/dashboard.html      the dashboard. Admin and client in one file, by role
+c/_template.html        status-page template. Copy it per account-less client
+internal/sales.html     internal price list and call script. Not deployed
+supabase/               schema and migrations. Run them by hand in the SQL editor
+  schema.sql            tables, RLS, triggers
+  002..006_*.sql        migrations, in order
+  functions/create-client/  Edge Function that creates a client account
 docs/
-  deploy.md             הקמה מאפס: Supabase ואז Vercel
-  pricing.md            תמונת מצב של המחירון
-  todo.md               מה נשאר לעשות
-scripts/shoot.js        צילומי מסך אוטומטיים של המיזמים
-shots/*.jpg             התוצאה. מתרעננים לבד פעם בשבוע
+  deploy.md             setup from scratch: Supabase, then Vercel
+  pricing.md            snapshot of the price list
+  todo.md               what is left to do
+scripts/shoot.js        automated screenshots of the ventures
+shots/*.jpg             the results. They refresh themselves weekly
 ```
 
-**הקמה מאפס:** [docs/deploy.md](docs/deploy.md). זה המדריך המלא, שלב אחר שלב.
+**Setting up from scratch:** [docs/deploy.md](docs/deploy.md). That is the full
+guide, step by step.
 
 ---
 
-## איך זה עובד
+## How it works
 
-### הרשאות
+### Permissions
 
-ההרשאה נאכפת בבסיס הנתונים, לא בדף. כל טבלה מוגנת ב־Row Level Security:
+Authorization is enforced in the database, not in the page. Every table is
+protected by Row Level Security:
 
-- **אדמין** רואה ועורך הכול.
-- **לקוח** רואה רק את הפרויקט שמקושר אליו, וקריאה בלבד.
+- **Admin** sees and edits everything.
+- **Client** sees only the project linked to them, read-only.
 
-לכן המפתח שמוטמע ב־`app/dashboard.html` הוא ה־Publishable key ובטוח לפרסום -
-לבדו הוא לא נותן כלום. **לעולם לא להטמיע את ה־Secret key.** הוא עוקף את כל
-המדיניות.
+That is why the key embedded in `app/dashboard.html` is the publishable key and
+is safe to ship - on its own it grants nothing. **Never embed the secret key.**
+It bypasses every policy.
 
-לקוחות לא נרשמים לבד. אתה יוצר כל חשבון, והרשמה עצמית מכובה.
+Clients do not sign themselves up. You create each account, and self-signup is
+turned off.
 
-### למה יש Edge Function
+### Why there is an Edge Function
 
-יצירת משתמש דורשת את ה־Secret key, שאסור שיגיע לדפדפן. לכן `create-client`
-רצה בצד השרת: היא מוודאת שהקורא הוא אדמין מחובר, יוצרת את המשתמש והפרויקט,
-ואם משהו נכשל באמצע היא מוחקת את המשתמש בחזרה - כדי שלא ייווצר חשבון בלי פרויקט.
+Creating a user requires the secret key, which must never reach the browser. So
+`create-client` runs server-side: it verifies the caller is a signed-in admin,
+creates the user and the project, and if anything fails midway it deletes the
+user again - so no account is left without a project.
 
 ---
 
-## משימות שוטפות
+## Routine tasks
 
-### לשנות מחיר
+### Changing a price
 
-דשבורד ← לשונית הצעת מחיר ← **מחירון** ← לערוך ← לשמור. נכתב ישירות לבסיס הנתונים.
-`docs/pricing.md` הוא רק תמונת מצב לקריאה, כדאי לעדכן גם אותו.
+Dashboard -> quote tab -> **price list** -> edit -> save. It writes straight to
+the database. `docs/pricing.md` is a read-only snapshot, worth updating too.
 
-**כלול** פירושו שהסעיף תמיד חלק ממחיר הבסיס. הוא מודפס בהצעה כ"כלול", לא מוסיף
-לסכום, ולא מפעיל את האזהרה על סעיף בלי מחיר.
+**Included** means the item is always part of the base price. It prints on the
+quote as "included", adds nothing to the total, and does not trigger the warning
+about an item with no price.
 
-### להוסיף לקוח
+### Adding a client
 
-דשבורד ← **לקוח חדש**. ממלאים מייל, סיסמה זמנית, שם ותאריכים, ואפשר לצרף
-קובץ הצעת מחיר. החשבון, הפרויקט, ארבעת השלבים והחומרים נוצרים בבת אחת.
+Dashboard -> **new client**. Fill in email, temporary password, name and dates,
+and optionally attach a quote file. The account, the project, the four stages
+and the materials are all created at once.
 
-מוסרים ללקוח את כתובת הדשבורד, המייל והסיסמה הזמנית.
+Give the client the dashboard address, the email and the temporary password.
 
-> ללקוח שלא רוצים לפתוח לו חשבון: להעתיק את `c/_template.html` לשם חדש תחת `c/`,
-> למלא את בלוק ה־CONFIG בראש הקובץ, ולשלוח את הקישור. הקובץ עצמו לא נפרס - רק
-> העותקים שיצרת.
+> For a client you do not want to open an account for: copy `c/_template.html`
+> to a new name under `c/`, fill in the CONFIG block at the top of the file, and
+> send the link. The template itself is not deployed - only the copies you make.
 
-### לעדכן סטטוס לקוח
+### Updating a client's status
 
-בדשבורד, גם מהטלפון. פותחים פרויקט, עורכים, שומרים. ארבעה חלקים ניתנים לעריכה:
+In the dashboard, phone included. Open a project, edit, save. Four parts are
+editable:
 
-| חלק | מה אפשר |
+| Part | What you can do |
 |---|---|
-| **מפת התקדמות** | לשנות מצב של כל שלב |
-| **מה צריך מהלקוח** | להוסיף פריט, לשנות ניסוח, לסדר מחדש, למחוק |
-| **תשלום** | שורה לכל תשלום: סכום, מצב, תאריך ומספר חשבונית |
-| **לוח הפרויקט** | כרטיסים שמוסיפים לפרויקט |
+| **Progress map** | change the state of any stage |
+| **What we need from the client** | add an item, reword it, reorder, delete |
+| **Payment** | one row per payment: amount, state, date and invoice number |
+| **Project board** | cards you add to the project |
 
-### תשלום
+### Payment
 
-לא בוליאני אחד אלא **שורה לכל תשלום**, בטבלת `payments`. אפשר לסמן כל אחת
-מהן כשולמה בנפרד, ולכן גם את היתרה ולא רק את המקדמה. פרויקט חדש נולד עם שתי
-שורות (מקדמה ויתרה), ואפשר להוסיף עוד - אבני דרך, ריטיינר, מה שצריך - בלי
-מיגרציה נוספת.
+Not a single boolean but **one row per payment**, in the `payments` table. Each
+row can be marked paid on its own, so the balance can be tracked and not just
+the advance. A new project is born with two rows (advance and balance), and you
+can add more - milestones, a retainer, whatever is needed - with no further
+migration.
 
-> **חשבונית מס נרשמת כאן, לא מונפקת כאן.** חשבונית מס דורשת מספור עוקב ממערכת
-> מורשית. השדות כאן שומרים את המספר, התאריך, הסכום והקובץ ממה שהנפיק אותה.
+> **A tax invoice is recorded here, not issued here.** A tax invoice requires
+> sequential numbering from an authorized system. The fields here store the
+> number, date, amount and file from whatever issued it.
 
-### לוח הפרויקט
+### The project board
 
-כרטיסים שמוסיפים לפרויקט, בשישה סוגים: פתק, קישור, קובץ, חשבונית מס, צ׳קליסט
-וסיכום תשלומים. לכל כרטיס יש צבע, אפשר לנעוץ אותו למעלה, ואפשר לסדר מחדש.
+Cards you add to a project, in six types: note, link, file, tax invoice,
+checklist and payment summary. Each card has a color, can be pinned to the top,
+and can be reordered.
 
-> **כרטיס חדש הוא פנימי כברירת מחדל.** הוא מגיע ללקוח רק אחרי סימון מפורש של
-> "מוצג ללקוח". הכלל הזה נאכף ב־RLS ולא בדף: ללקוח יש טוקן אמיתי והוא יכול
-> לפנות ל־API ישירות, כך שהסתרה ב־JavaScript בלבד הייתה משאירה כרטיס פנימי
-> במרחק בקשה אחת.
+> **A new card is internal by default.** It reaches the client only after the
+> "shown to client" flag is explicitly ticked. That rule is enforced in RLS, not
+> in the page: the client holds a real token and can call the API directly, so
+> hiding a card in JavaScript alone would leave an internal card one request
+> away.
 
-קבצים נשמרים ב־bucket פרטי בשם `files`, בתיקייה לכל פרויקט, ונפתחים בקישור
-חתום שפג. לקוח יכול לקרוא קובץ רק אם הוא בפרויקט שלו **וגם** הכרטיס שמצביע
-עליו משותף איתו.
+Files are stored in a private bucket named `files`, in a folder per project, and
+are opened through a signed link that expires. A client can read a file only if
+it is in their project **and** the card pointing at it is shared with them.
 
-השדה **עודכן לאחרונה** נכתב ביד בכוונה. תאריך אוטומטי היה מציג את העמוד כעדכני
-ביום שאף אחד לא בדק בו כלום.
+The **last updated** field is written by hand on purpose. An automatic date
+would present the page as current on a day nobody checked anything.
 
-### לפרוס שינוי בקוד
+### Deploying a code change
 
-`git push` ל־`main`. Vercel פורס לבד.
+`git push` to `main`. Vercel deploys on its own.
 
-> בוט צילומי המסך דוחף ל־`main` פעם בשבוע. לכן **תמיד `git fetch` לפני push**,
-> ורבייס במקום force אם הדחיפה נדחתה.
+> The screenshot bot pushes to `main` once a week. So **always `git fetch`
+> before pushing**, and rebase rather than forcing if the push is rejected.
 
 ---
 
-## דומיין, מייל ומספר וואטסאפ
+## Domain, email and WhatsApp number
 
-שלושתם יושבים בבלוק אחד בראש ה־`<head>` של `index.html`:
+All three live in one block at the top of the `<head>` in `index.html`:
 
 ```js
 var BLACKZ = {
@@ -144,146 +156,171 @@ var BLACKZ = {
 };
 ```
 
-מספר הוואטסאפ בפורמט בינלאומי, בלי `+` ובלי מקפים. `050-1234567` ← `972501234567`.
+The WhatsApp number is in international format, with no `+` and no hyphens.
+`050-1234567` becomes `972501234567`.
 
-מהבלוק הזה נבנים **כל** כפתורי הוואטסאפ, **כל** קישורי המייל (וגם הטקסט שלהם),
-ובלוק ה־JSON-LD. שינוי כאן משנה את כולם.
+**Every** WhatsApp button, **every** mailto link (including its visible text)
+and the JSON-LD block are built from that block. Changing it changes all of them.
 
-> **יוצא דופן אחד.** מתחת לבלוק יושבות ארבע תגיות עם הדומיין כטקסט:
-> `canonical`, `og:url`, `og:image` ו־`twitter:image`. הזחלנים שקוראים אותן -
-> וואטסאפ, פייסבוק ו־iMessage - לא מריצים JavaScript, ולכן אי אפשר לייצר אותן
-> מהקונפיג. הן מסומנות בהערה, והדף מדפיס אזהרה לקונסולה אם הן והקונפיג לא
-> מסכימים על אותו דומיין.
+> **One exception.** Four tags sit directly beneath the block with the domain as
+> literal text: `canonical`, `og:url`, `og:image` and `twitter:image`. The
+> crawlers that read them - WhatsApp, Facebook and iMessage - do not run
+> JavaScript, so they cannot be generated from the config. They are marked with
+> a comment, and the page prints a console warning if they and the config
+> disagree about the domain.
 >
-> חסר עדיין `og.jpg` בגודל 1200x630 בשורש האתר. בלעדיו כל שיתוף מוצג כטקסט בלבד.
+> Still missing: a 1200x630 `og.jpg` at the site root. Without it every share
+> renders as text only.
 
-בעמוד הסטטוס של הלקוח המספר יושב בנפרד, בתוך ה־CONFIG של אותו קובץ.
+On the client status page the number sits separately, inside that file's own
+CONFIG block.
 
 ---
 
-## נגישות
+## Accessibility
 
-כפתור עגול בפינה התחתונה (בצד ההתחלה, כלומר ימין ב־RTL) פותח תפריט הגדרות:
-גודל טקסט, ניגודיות גבוהה, גווני אפור, קו תחתון והדגשה לקישורים, ריווח,
-סמן עכבר מוגדל ועצירת אנימציות.
+A round button in the bottom corner (on the start side, meaning the right in
+RTL) opens a settings menu: text size, high contrast, greyscale, link underline
+and emphasis, spacing, enlarged cursor and stopped animations.
 
-הקוד מחולק לשניים, כמו בכל מודול והרכיב שמשתמש בו:
+The code is split in two, like the module and the component that uses it:
 
-| איפה | מה |
+| Where | What |
 |---|---|
-| `BlackZA11y` בראש ה־`<head>` | טעינה, שמירה והחלה. רץ **לפני** הציור הראשון |
-| הרכיב בתחתית הקובץ | ממשק המשתמש בלבד: קורא מהאובייקט וכותב אליו |
+| `BlackZA11y` at the top of the `<head>` | load, save and apply. Runs **before** first paint |
+| the component at the bottom of the file | UI only: reads from the object and writes to it |
 
-ההגדרות נשמרות ב־localStorage תחת `blackz-a11y`, ומוחלות כמחלקות על `<html>`
-(`a11y-contrast`, `a11y-grayscale` וכו׳). לכן הן מוחלות מיד בטעינה חוזרת, בלי
-הבהוב - בדיוק מאותה סיבה שערכת הצבעים יושבת שם.
+Settings are saved in localStorage under `blackz-a11y`, and applied as classes
+on `<html>` (`a11y-contrast`, `a11y-grayscale` and so on). That way they apply
+immediately on a reload, with no flash - the same reason the color scheme lives
+there.
 
-שלוש נקודות שקל להישבר בהן:
+Three things that are easy to break:
 
-- **ניגודיות** עובדת בדריסת אותם משתני CSS שכל העמוד קורא, ולכן היא מגיעה לכל
-  רכיב בבת אחת. אין צורך בדריסה לכל רכיב בנפרד.
-- **גווני אפור** מצוירים בשכבת `backdrop-filter` קבועה ולא ב־`filter` על `<html>`.
-  `filter` על אלמנט הופך אותו לבלוק המכיל של צאצאים ב־`position:fixed`, וזה היה
-  שובר את ההדר הדביק, את סרגל הוואטסאפ ואת הווידג׳ט עצמו.
-- **עצירת אנימציות** חייבת גם לחשוף את התוכן. הכלל
-  `html.a11y-nomotion .rv` דורס את מצב ההסתרה, אחרת עצירת האנימציה הייתה
-  מקפיאה סקשנים כשהם עדיין שקופים.
+- **Contrast** works by overriding the same CSS variables the whole page reads,
+  so it reaches every component at once. No per-component override is needed.
+- **Greyscale** is painted as a fixed `backdrop-filter` layer, not as a `filter`
+  on `<html>`. A `filter` on an element makes it the containing block for
+  `position: fixed` descendants, which would break the sticky header, the
+  WhatsApp bar and the widget itself.
+- **Stopping animations** must also reveal the content. The rule
+  `html.a11y-nomotion .rv` overrides the hidden state; otherwise stopping the
+  animation would freeze sections while they are still transparent.
 
-הווידג׳ט יושב גם ב־`index.html` וגם ב־`accessibility.html`, ולכן שלושה בלוקים
-מוכפלים בין שני הקבצים ומסומנים `[KEEP IN SYNC WITH index.html]`: המודול
-`BlackZA11y`, ה־CSS של המצבים, והלוגיקה של הממשק. שני הראשונים מוכפלים
-**בית־בבית** בכוונה, כדי שאפשר יהיה לוודא את זה בהשוואה פשוטה:
+The widget sits in both `index.html` and `accessibility.html`, so three blocks
+are duplicated between the two files and marked
+`[KEEP IN SYNC WITH index.html]`: the `BlackZA11y` module, the CSS for the
+states, and the UI logic. The first two are duplicated **byte for byte** on
+purpose, so a plain comparison can verify it:
 
 ```bash
 node -e "const f=require('fs'),g=(s)=>{const i=s.indexOf('var BlackZA11y');return s.slice(i,s.indexOf('})();',i))};
 console.log(g(f.readFileSync('index.html','utf8'))===g(f.readFileSync('accessibility.html','utf8')))"
 ```
 
-`accessibility.html` נושא גם בלוק `CONFIG` משלו עם כתובת המייל, כמו
-`c/_template.html`. זאת הפשרה על כך שאין שלב build: החלפת כתובת המייל היא
-שינוי בשני קבצים, ושניהם מסומנים.
+`accessibility.html` also carries its own `CONFIG` block with the email address,
+like `c/_template.html`. That is the price of having no build step: changing the
+email address is a two-file edit, and both are marked.
 
-ההצהרות המשפטיות בעמוד - רמת ההנגשה, המגבלות, רכז הנגישות והתאריך - הן
-פלייסהולדרים, ובכוונה: הן חייבות להיות מדויקות.
+The legal declarations on that page - conformance level, limitations,
+accessibility coordinator and date - are placeholders, deliberately: they have
+to be accurate. See [FILL-IN.md](FILL-IN.md).
 
 ---
 
-## עיצוב ומיתוג
+## Design and branding
 
-כל הצבעים, הפונטים והמרווחים הם משתני CSS בראש כל קובץ, בתוך `:root`.
-לשינוי צבע המותג - משנים ערך אחד: `--c-accent`.
+Every color, font and spacing value is a CSS variable at the top of each file,
+inside `:root`. To change the brand color, change one value: `--c-accent`.
 
-> הטוקנים מועתקים לכל קובץ ולא משותפים, כי אין שלב build ולכל דף יש להיות
-> עצמאי. שינוי צבע מותג צריך לעבור על `index.html`, `app/dashboard.html`,
-> `c/_template.html` ו־`internal/sales.html`.
+> The tokens are copied into each file rather than shared, because there is no
+> build step and each page has to stand alone. A brand color change has to pass
+> through `index.html`, `app/dashboard.html`, `c/_template.html` and
+> `internal/sales.html`.
 
-**הלוגו** מגיע בשלושה מקומות, וכולם מאותו וקטור:
+**The logo** appears in three places, all from the same vector:
 
-| קובץ | שימוש |
+| File | Use |
 |---|---|
-| `logo.svg` | קובץ הלוגו העצמאי, לבן על רקע שקוף |
-| `favicon.svg` | האייקון בלשונית הדפדפן - שקוף, מתהפך לפי ערכת הצבעים |
-| `index.html` | מוטמע כ־`<symbol id="blackz-mark">` בראש ה־`<body>` |
+| `logo.svg` | the standalone logo file, white on transparent |
+| `favicon.svg` | the browser-tab icon - transparent, inverts with the color scheme |
+| `index.html` | embedded as `<symbol id="blackz-mark">` at the top of the `<body>` |
 
-בתוך העמוד הלוגו מצויר ב־`currentColor`, כך שהוא לובש את צבע הטקסט של ההדר
-ומקבל את צבע המותג במעבר עכבר. לשינוי צבע הלוגו - משנים את `.logo__mark`.
+Inside the page the logo is drawn in `currentColor`, so it wears the header's
+text color and takes the brand color on hover. To change the logo color, change
+`.logo__mark`.
 
-> החלפתם את הלוגו? צריך לעדכן גם את ה־`<symbol>` בתוך `index.html` וגם את
-> שני קבצי ה־SVG. הם לא מסונכרנים אוטומטית.
+> Replaced the logo? Update the `<symbol>` inside `index.html` and both SVG
+> files. They are not synced automatically.
 
-### פונט
+### Font
 
-האתר הציבורי משתמש ב־[Arimo](https://fonts.google.com/specimen/Arimo), משובץ
-כ־base64: שני תת־קבצים (עברית ולטינית), גופן משתנה במשקלים 400-700, כ־31KB.
-אין בקשת רשת - הפונט נטען מיד וגם בלי אינטרנט. רישיון: Apache License 2.0.
+The public site uses [Arimo](https://fonts.google.com/specimen/Arimo), embedded
+as base64: two subsets (Hebrew and Latin), a variable font at weights 400-700,
+about 31KB. No network request - the font loads immediately, offline included.
+License: Apache License 2.0.
 
-להחלפה: מוחקים את שתי הגדרות ה־`@font-face` בראש ה־`<style>` ומעדכנים את `--f-sans`.
+To replace it: delete the two `@font-face` declarations at the top of the
+`<style>` block and update `--f-sans`.
 
-> Arimo מגיע עד משקל 700, ולכן `--fw-black` מוגדר ל־700 ולא ל־900.
+> Arimo only goes up to weight 700, which is why `--fw-black` is set to 700 and
+> not 900.
 
-**הדשבורד ועמוד הלקוח לא מטמיעים את הפונט** ומשתמשים בפונט המערכת. אלה כלים
-שצריכים להיפתח מיד בטלפון, ו־31KB בכל עותק של עמוד לקוח זה בזבוז.
+**The dashboard and the client page do not embed the font** and use the system
+font instead. Those are tools that need to open instantly on a phone, and 31KB
+in every copy of a client page is waste.
 
 ---
 
-## צילומי מסך של המיזמים
+## Venture screenshots
 
-כרטיסי המיזמים בנויים כחלונות דפדפן, וכל אחד מצפה לקובץ:
+The venture cards are built as browser windows, and each one expects a file:
 
 ```
 shots/hashofet.jpg   shots/clutchstore.jpg
 shots/tiyulplus.jpg  shots/brickdealil.jpg
 ```
 
-יחס 16:10, רוחב 1200px ומעלה. כל עוד אין קובץ - מוצג פלייסהולדר מעוצב ושום דבר
-לא נשבר.
+16:10 ratio, 1200px wide or more. As long as a file is missing, a styled
+placeholder shows and nothing breaks.
 
-**לא לערוך אותם ביד.** `.github/workflows/screenshots.yml` מריץ את
-`scripts/shoot.js` כל יום שני ודוחף את התוצאה. להוספת מיזם: מוסיפים שורה
-למערך `SITES` ב־`scripts/shoot.js` ומשכפלים בלוק `<article class="venture">`
-ב־`index.html`.
-
----
-
-## טופס יצירת קשר
-
-בברירת מחדל הטופס פותח שיחת וואטסאפ עם הפרטים שמולאו - עובד מיד, בלי שרת.
-למעבר לשליחה במייל: ההוראות המלאות מופיעות בהערה ליד הטופס בקובץ.
+**Do not edit them by hand.** `.github/workflows/screenshots.yml` runs
+`scripts/shoot.js` every Monday and pushes the result. To add a venture: add a
+row to the `SITES` array in `scripts/shoot.js` and duplicate an
+`<article class="venture">` block in `index.html`.
 
 ---
 
-## הרצה מקומית
+## Contact form
+
+By default the form opens a WhatsApp conversation with the details that were
+filled in - it works immediately, with no server. To switch to sending by email:
+the full instructions are in the comment next to the form in the file.
+
+---
+
+## Running locally
 
 ```bash
 python -m http.server 8000
 ```
 
-`http://localhost:8000` לאתר, `/app/dashboard.html` לדשבורד. הדשבורד מדבר מול
-Supabase האמיתי גם מקומית, אז שינוי שנשמר מקומית הוא שינוי אמיתי.
+`http://localhost:8000` for the site, `/app/dashboard.html` for the dashboard.
+The dashboard talks to the real Supabase even locally, so a change saved locally
+is a real change.
 
 ---
 
-## כללי עבודה בקוד
+## Unwritten values
 
-מפורט ב־[CLAUDE.md](CLAUDE.md). בקצרה: הערות וקומיטים באנגלית, טקסט שגולש רואה
-בעברית, בלי קו מפריד ארוך, ותכונות לוגיות ב־CSS במקום `left` / `right`.
+Fifteen values on the site are still placeholders, and each renders inside a
+dashed amber outline so it cannot ship unnoticed. [FILL-IN.md](FILL-IN.md) lists
+all of them with room to write the answers.
+
+---
+
+## Working rules for the code
+
+Spelled out in [CLAUDE.md](CLAUDE.md). In short: comments and commits in
+English, anything a visitor reads in Hebrew, no long dashes, and logical CSS
+properties instead of `left` / `right`.
