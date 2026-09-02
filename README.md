@@ -320,11 +320,11 @@ is a real change.
 
 ## Unwritten values
 
-Eight values on the site are still placeholders, all of them in `index.html`:
-the starting price (in two places), four case-study figures and the two
-cancellation terms. Each renders inside a dashed amber outline so it cannot ship
-unnoticed. [FILL-IN.md](FILL-IN.md) lists them with room to write the answers,
-and records where the already-filled ones came from.
+Five values on the site are still placeholders, all of them in `index.html`:
+the starting price (in two places) and three case-study figures. Each renders
+inside a dashed amber outline so it cannot ship unnoticed.
+[FILL-IN.md](FILL-IN.md) lists them with room to write the answers, and records
+where the already-filled ones came from.
 
 ---
 

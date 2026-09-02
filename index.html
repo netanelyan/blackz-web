@@ -1621,7 +1621,7 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
           <span class="case-step__no">01</span>
           <h4>המצב לפני</h4>
           <p>
-            נקודת הפתיחה: <span class="ph">[[FILL: מה היה קיים לפני - חנות ישנה, אינסטגרם בלבד, או אפס נוכחות]]</span>.
+            נקודת הפתיחה: אפס נוכחות - המותג נבנה מאפס, בלי חנות קודמת ובלי קהל קיים.
           </p>
           <p>
             מה שהיה ברור כבר בהתחלה: שוק חולצות הכדורגל בישראל רץ כמעט כולו
@@ -2229,8 +2229,9 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
             <h4>ביטול</h4>
             <p>
               הודעת ביטול מכל צד תימסר בכתב.
-              תקופת ההודעה המוקדמת: <span class="ph">[[FILL: תקופת הודעה מוקדמת לביטול]]</span>.
-              דין המקדמה במקרה של ביטול: <span class="ph">[[FILL: מה קורה למקדמה בביטול]]</span>.
+              תקופת ההודעה המוקדמת: <span class="num">14</span> יום.
+              דין המקדמה במקרה של ביטול: המקדמה מקוזזת כנגד העבודה שבוצעה בפועל
+              עד למועד הביטול, ויתרתה מוחזרת לכם.
               בכל מקרה של הפסקת עבודה, מה שכבר נבנה ושולם עליו נשאר שלכם,
               והחשבונות רשומים על שמכם ממילא.
             </p>
@@ -2968,7 +2969,7 @@ if (!customElements.get('blackz-signature')) {
 <!-- ==========================================================================
      PLACEHOLDER INDEX
 
-     Eight unfilled values, in document order. Each renders with a dashed
+     Five unfilled values, in document order. Each renders with a dashed
      amber outline, so an unfilled one is visible to any visitor rather than
      quietly shipping as a blank. Search the file for "[[FILL" to jump to them.
      Descriptions are English here and Hebrew on the page, per CLAUDE.md.
@@ -2977,17 +2978,13 @@ if (!customElements.get('blackz-signature')) {
        1.  Starting price (hero note)
 
      Case study - #case
-       2.  The "before" state: what existed prior to the store
-       3.  Campaign detail: channels, daily budget, number of creatives
-       4.  Project duration, start to launch
-       5.  Outcome metric: orders, sales volume or conversion rate
+       2.  Campaign detail: channels, daily budget, number of creatives
+       3.  Project duration, start to launch
+       4.  Outcome metric. Confirmed as orders or sales volume rather than
+           conversion rate or catalogue growth; waiting on the figure.
 
      Services - #services
-       6.  Starting price - the SAME number as 1. Change both together.
-
-     Business and terms - #legal
-       7.  Cancellation: notice period
-       8.  Cancellation: what happens to the advance payment
+       5.  Starting price - the SAME number as 1. Change both together.
 
      The accessibility statement lives in accessibility.html and no longer
      carries any placeholder of its own.
@@ -2995,6 +2992,15 @@ if (!customElements.get('blackz-signature')) {
      Filled on 2026-08-29 from the Osek Murshe certificate, so no longer
      placeholders: registered holder, trade name, Osek Murshe number and
      business address.
+
+     Decided on 2026-09-02 and no longer placeholders:
+       - The "before" state: zero presence, built from scratch.
+       - Cancellation notice: 14 days, which matches the 4-week build the
+         same section promises.
+       - The advance is offset against work actually performed, with the
+         remainder returned. Chosen over a flatly non-refundable advance
+         because the next sentence promises that what was paid for stays
+         theirs, and the two have to agree.
 
      Filled on 2026-09-02 from the live Shopify catalogue at hashofet.com
      (its public /products.json feed), so no longer placeholders:
