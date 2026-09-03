@@ -775,6 +775,15 @@ button,input,select{font:inherit;color:inherit}
     }).then(function (s) { saveSession(s); return s; });
   }
 
+  /* A 401 that survives the refresh is the only real "sign in again" case.
+     It is tagged so callers can tell it apart from a data or schema fault,
+     which must never be reported as an expired session. */
+  function authError() {
+    var e = new Error('auth');
+    e.auth = true;
+    return e;
+  }
+
   function api(path, opts, isRetry) {
     opts = opts || {};
     return fetch(SUPABASE_URL + '/rest/v1/' + path, {
@@ -782,8 +791,12 @@ button,input,select{font:inherit;color:inherit}
       headers: Object.assign(headers(true), opts.headers || {}),
       body: opts.body ? JSON.stringify(opts.body) : undefined
     }).then(function (r) {
-      if (r.status === 401 && !isRetry) {
-        return refresh().then(function () { return api(path, opts, true); });
+      if (r.status === 401) {
+        if (isRetry) throw authError();
+        return refresh().then(
+          function () { return api(path, opts, true); },
+          function () { throw authError(); }
+        );
       }
       if (!r.ok) {
         return r.text().then(function (t) { throw new Error(t || ('HTTP ' + r.status)); });
@@ -842,11 +855,24 @@ button,input,select{font:inherit;color:inherit}
       })
       .catch(function (err) {
         /* a dead refresh token lands here: drop back to the login screen */
-        clearSession();
-        $('app').hidden = true;
-        $('login').hidden = false;
-        $('login-msg').className = 'msg msg--err';
-        $('login-msg').textContent = 'צריך להתחבר מחדש.';
+        if (err && err.auth) {
+          clearSession();
+          $('app').hidden = true;
+          $('login').hidden = false;
+          $('login-msg').className = 'msg msg--err';
+          $('login-msg').textContent = 'צריך להתחבר מחדש.';
+          return;
+        }
+        /* Everything else is a data, schema or render fault and reaches here
+           too, because the render calls above are inside the same chain. The
+           session is still good, so keep it: signing the user out would hide
+           the real error behind a wrong one. */
+        console.error('boot failed', err);
+        $('view').innerHTML =
+          '<div class="card"><p class="msg msg--err">הטעינה נכשלה.</p>' +
+          '<pre class="ltr" style="white-space:pre-wrap;font-size:var(--fs-xs);' +
+          'color:var(--c-text-dim);margin-top:var(--sp-3)">' +
+          esc(err && err.message ? err.message : String(err)) + '</pre></div>';
       });
   }
 
