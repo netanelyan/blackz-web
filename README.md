@@ -23,6 +23,8 @@ index.html              the public site
 accessibility.html      accessibility statement. Standalone page, linked from the widget and the footer
 takanon.html            terms of service. Standalone page, built from the same shell as the statement
 osek-murshe.pdf         Osek Murshe certificate. Linked from the "business and terms" section
+robots.txt              crawling is allowed everywhere. Private paths are noindexed by header, not by a Disallow
+sitemap.xml             the three public pages. Domain is literal, keep it in sync with BLACKZ.DOMAIN
 FILL-IN.md              record of every value that was unwritten on the site, and where each came from
 app/dashboard.html      the dashboard. Admin and client in one file, by role
 c/_template.html        status-page template. Copy it per account-less client

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The three public pages. Everything else the site serves is either noindexed
+  by header (app/, c/) or not a page (the certificate PDF, the screenshots).
+
+  [KEEP IN SYNC WITH BLACKZ.DOMAIN IN index.html] There is no build step here,
+  so the domain is literal. Change it in the config object and change it here.
+
+  lastmod is the day the page's content last changed, not the day the file was
+  touched. A bumped date on an unchanged page teaches a crawler to ignore it.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://getblackz.com/</loc>
+    <lastmod>2026-09-03</lastmod>
+  </url>
+  <url>
+    <loc>https://getblackz.com/takanon.html</loc>
+    <lastmod>2026-09-03</lastmod>
+  </url>
+  <url>
+    <loc>https://getblackz.com/accessibility.html</loc>
+    <lastmod>2026-09-03</lastmod>
+  </url>
+</urlset>

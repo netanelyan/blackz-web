@@ -1,0 +1,18 @@
+# Crawling is allowed everywhere on purpose, including /app/ and /c/.
+#
+# Those are kept out of search results by an X-Robots-Tag: noindex header set
+# in vercel.json, not by a rule here. The two are not interchangeable: a
+# Disallow line stops a crawler from FETCHING the page, which means it never
+# reads the noindex header, and the URL can still surface in results from a
+# link alone. The dashboard is linked from the footer of the home page, so
+# that is a real path, not a hypothetical one.
+#
+# A Disallow line would also publish the private paths to anyone who opens
+# this file, which is the opposite of what it is for.
+#
+# So: let them in, let the header do the work.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://getblackz.com/sitemap.xml
