@@ -21,8 +21,9 @@ CSS and JS inside it. The data lives in Supabase, the site is hosted on Vercel.
 ```
 index.html              the public site
 accessibility.html      accessibility statement. Standalone page, linked from the widget and the footer
+takanon.html            terms of service. Standalone page, built from the same shell as the statement
 osek-murshe.pdf         Osek Murshe certificate. Linked from the "business and terms" section
-FILL-IN.md              the unwritten values left on the site, and where each one lands
+FILL-IN.md              record of every value that was unwritten on the site, and where each came from
 app/dashboard.html      the dashboard. Admin and client in one file, by role
 c/_template.html        status-page template. Copy it per account-less client
 internal/sales.html     internal price list and call script. Not deployed
@@ -320,11 +321,17 @@ is a real change.
 
 ## Unwritten values
 
-Five values on the site are still placeholders, all of them in `index.html`:
-the starting price (in two places) and three case-study figures. Each renders
-inside a dashed amber outline so it cannot ship unnoticed.
-[FILL-IN.md](FILL-IN.md) lists them with room to write the answers, and records
-where the already-filled ones came from.
+None. Every value on the site is written and sourced, and
+[FILL-IN.md](FILL-IN.md) records where each one came from.
+
+The machinery stays, because the next unknown will need it. A value nobody has
+yet gets the `.ph` class and a `[[FILL: ...]]` marker, which renders inside a
+dashed amber outline so it cannot ship unnoticed, plus a line in the
+PLACEHOLDER INDEX at the bottom of `index.html` saying what it is waiting on.
+
+The rule that produced it is the one in CLAUDE.md: never invent a figure. When
+the campaign detail in the case study turned out to have no publishable answer,
+the sentence was cut rather than softened into something vague.
 
 ---
 

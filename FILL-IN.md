@@ -1,48 +1,31 @@
 # Fill-in sheet
 
-One value on the live site is still unwritten, in `index.html`. It renders
-inside a dashed amber outline, so an unfilled value is visible to every visitor
-rather than shipping as a silent blank.
+Nothing is open. Every value on the site is written and sourced, and this file
+is now the record of where each one came from.
 
-Write your answer on the `Answer:` line below, then hand the file back and
-the value gets pasted into the page. Or paste it straight into the HTML
-yourself: search the file for the quoted `[[FILL: ...]]` string, and replace
-the whole `<span class="ph">...</span>` element - including the `<span>`
-tags - with the plain text. Leaving the `<span class="ph">` in place keeps the
-amber outline on a value that is no longer a placeholder.
+It stays as a sheet because the next unknown will need one. When a value is not
+known yet, do not guess it: mark it, and add an item here.
 
-**Answers are page copy, so write them in Hebrew.** Wrap bare numerals in
-`<span class="num">` the way the surrounding lines already do.
+## How a new placeholder works
 
-Skip it if you do not have it. An honest amber gap is better than a number that
-is not true; that is the whole reason it is marked instead of guessed.
+Give the value `class="ph"` and a `[[FILL: what it is]]` marker in the HTML. It
+renders inside a dashed amber outline, so an unfilled value is visible to every
+visitor rather than shipping as a silent blank. Add a line to the PLACEHOLDER
+INDEX comment at the bottom of `index.html` saying what it is waiting on, and an
+item to this file with an `Answer:` line.
 
-Thirteen values that used to be on this sheet are now written - see
-[Already filled](#already-filled) at the bottom.
+Answers are page copy, so they are written in Hebrew. Bare numerals get
+`<span class="num">` the way the surrounding lines already do. Descriptions in
+the code and in this file are English, per CLAUDE.md.
 
----
+To fill one: replace the whole `<span class="ph">...</span>` element, including
+the `<span>` tags, with the plain text. Leaving the `<span class="ph">` in place
+keeps the amber outline on a value that is no longer a placeholder.
 
-## Case study - חנות השופט
+**A value with no honest answer gets cut, not softened.** That is what happened
+to the campaign detail below.
 
-### 1. Campaign detail - step 03
-
-Search: `[[FILL: פירוט הקמפיינים`
-Renders as: `ערוצים, תקציב יומי והיקף הקריאטיבים: ___.`
-
-Channels, daily budget and how many creatives ran. The paragraph above already
-says Meta and TikTok, so this is the concrete version of that.
-
-Only you have the budget and creative counts. If you would rather not publish a
-daily budget - plenty of shops do not - the honest move is to cut the sentence
-entirely rather than leave it vague. Say the word and I will remove it.
-
-Answer:
-
----
-
-## Already filled
-
-Nothing to do here - kept as a record of where each value came from.
+## Where each value came from
 
 | Value | Written as | Source |
 |---|---|---|
@@ -61,19 +44,35 @@ Nothing to do here - kept as a record of where each value came from.
 | Project duration | `4 שבועות` | same; agrees with the 4-week build in the terms |
 | Outcome metric | `מעל 2,000 הזמנות` | same; written as a running total |
 
-The two case-study figures come from the public `/products.json` feed at
-hashofet.com. They are derived from `published_at`, which moves if a product is
-unpublished and republished, so correct them if the real dates differ. The same
-feed reports 366 products and 3,929 variants live today.
+## Cut rather than written
+
+**Campaign detail, case study step 03.** It was going to read
+`ערוצים, תקציב יומי והיקף הקריאטיבים: ___`, and the honest version needed a
+daily budget and a creative count. A daily budget is not something every shop
+publishes, and there was no way to write the sentence without one that was not
+vague. The sentence was removed on 2026-09-03. The paragraph above it already
+names Meta and TikTok, so nothing factual was lost.
+
+Removed the same day, for the same reason in reverse: the line under the case
+study promising that testimonials would appear once clients agreed to be named.
+A page does not need to narrate what it does not have.
+
+## Notes on two of the entries
+
+The two case-study figures at the top of the table come from the public
+`/products.json` feed at hashofet.com. They are derived from `published_at`,
+which moves if a product is unpublished and republished, so correct them if the
+real dates differ. The same feed reports 366 products and 3,929 variants live
+today.
 
 **The conformance level does not claim a certified standard, on purpose.** It
 says the page was *built to* WCAG 2.1 AA and that only an internal check has
 been run. Upgrading that to a compliance claim needs a real audit by a licensed
 accessibility expert; a wrong claim there is worse than an honest gap.
 
-## Not on this sheet
+## Not a placeholder
 
-The four venture screenshots under `shots/` also have `.ph` fallback text, but
+The four venture screenshots under `shots/` also carry `.ph` fallback text, but
 those are not values to write - they are the message shown if an image fails to
 load. `.github/workflows/screenshots.yml` regenerates the images weekly.
 

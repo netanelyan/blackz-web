@@ -938,6 +938,7 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 .info h3{font-size:var(--fs-lg);margin-bottom:var(--sp-3);color:var(--c-accent)}
 .info p{color:var(--c-text-dim);font-size:var(--fs-sm)}
 .info p + p{margin-top:var(--sp-3)}
+.txt-link{color:var(--c-accent);text-decoration:underline;text-underline-offset:3px}
 .info__fine{
   margin-top:var(--sp-4);padding-top:var(--sp-3);
   border-top:1px dashed var(--c-line-hi);
@@ -1584,10 +1585,11 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
 </section>
 
 <!-- ---------- Case study: Hanut Hashofet ----------
-     Any figure still unwritten here is a [[FILL: ...]] placeholder wearing
-     the .ph style, so an unfilled number is impossible to miss on the page.
-     Do not replace one with an estimate. The full list is indexed in the
-     PLACEHOLDER INDEX comment at the bottom of this file. -->
+     Every figure here is written and sourced; the file carries no [[FILL]]
+     placeholder any more. If a new one is ever needed, give it the .ph style
+     so an unfilled number is impossible to miss on the page, and index it in
+     the PLACEHOLDER INDEX comment at the bottom of this file. Never replace
+     one with an estimate. -->
 <section class="section section--alt" id="case">
   <div class="wrap">
     <p class="kicker rv">מקרה בוחן</p>
@@ -1651,10 +1653,6 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
             מדיד. משם קריאטיבים וקמפיינים במטא ובטיקטוק, מול קהלים
             שנבנו סביב קבוצות, נבחרות ועונות.
           </p>
-          <p>
-            ערוצים, תקציב יומי והיקף הקריאטיבים:
-            <span class="ph">[[FILL: פירוט הקמפיינים - ערוצים, תקציב יומי, מספר קריאטיבים]]</span>.
-          </p>
         </article>
 
         <article class="case-step case-step--out">
@@ -1667,10 +1665,6 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
           <p>עלתה לאוויר: יולי <span class="num">2024</span>.</p>
           <p>מהתחלה ועד העלייה לאוויר: <span class="num">4</span> שבועות.</p>
           <p>מאז ועד היום: מעל <span class="num">2,000</span> הזמנות.</p>
-          <p class="info__fine">
-            אין כאן ציטוטים ואין המלצות. כשיהיו לנו לקוחות שירצו להעיד בשמם,
-            זה יופיע כאן בשמם המלא.
-          </p>
         </article>
 
       </div>
@@ -2238,6 +2232,11 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
           </div>
 
         </div>
+
+        <p class="info__fine">
+          התנאים המלאים, לרבות קניין רוחני, פרטיות, אחריות וסמכות שיפוט,
+          נמצאים <a class="txt-link" href="takanon.html">בתקנון האתר</a>.
+        </p>
       </div>
 
     </div>
@@ -2291,6 +2290,7 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
           <li><a href="#how">תהליך</a></li>
           <li><a href="#faq">שאלות נפוצות</a></li>
           <li><a href="#legal">פרטי העסק ותנאים</a></li>
+          <li><a href="takanon.html">תקנון ותנאי שימוש</a></li>
           <li><a href="accessibility.html">הצהרת נגישות</a></li>
         </ul>
       </nav>
@@ -2969,19 +2969,25 @@ if (!customElements.get('blackz-signature')) {
 <!-- ==========================================================================
      PLACEHOLDER INDEX
 
-     One unfilled value. It renders with a dashed amber outline, so it is
-     visible to any visitor rather than quietly shipping as a blank. Search
-     the file for "[[FILL" to jump to it.
-     Descriptions are English here and Hebrew on the page, per CLAUDE.md.
+     Empty. Every value on the page is written and sourced.
 
-     Case study - #case
-       1.  Campaign detail: channels, daily budget, number of creatives.
-           Still open on purpose: a daily budget is not something every shop
-           publishes. The alternative to writing it is cutting the sentence,
-           not softening it into a vague one.
+     Kept as the place to record the next one: a value that is not known yet
+     gets the .ph style, a [[FILL: ...]] marker, and a line here saying what
+     it is waiting on. Descriptions are English here and Hebrew on the page,
+     per CLAUDE.md.
 
-     The accessibility statement lives in accessibility.html and no longer
-     carries any placeholder of its own.
+     The accessibility statement lives in accessibility.html and carries no
+     placeholder of its own either.
+
+     Closed on 2026-09-03: the campaign detail in the case study - channels,
+     daily budget and creative count - was cut rather than written. A daily
+     budget is not something every shop publishes, and the sentence had no
+     honest form without one. The paragraph above it already names Meta and
+     TikTok, so nothing factual was lost.
+
+     Removed the same day: the line under the case study promising that
+     testimonials would appear once clients agreed to be named. A page does
+     not need to narrate what it does not have.
 
      Filled on 2026-09-03 from the answers on FILL-IN.md, so no longer
      placeholders:

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>הצהרת נגישות - בלאקזי</title>
-<meta name="description" content="הצהרת הנגישות של אתר בלאקזי: מה נגיש באתר, רמת ההנגשה, ואיך פונים אלינו בנושא נגישות.">
+<title>תקנון ותנאי שימוש - בלאקזי</title>
+<meta name="description" content="התקנון של בלאקזי איקומרס: תנאי ההתקשרות, תשלומים, לוחות זמנים, ביטול, קניין רוחני ופרטיות.">
 <meta name="theme-color" content="#0A0A0C" id="theme-color">
 
 <script>
@@ -12,10 +12,10 @@
    CONFIG
 
    [KEEP IN SYNC WITH THE BLACKZ CONFIG IN index.html]
-   Only the email is needed here, for the accessibility contact below. There
+   Only the email is needed here, for the contact section at the bottom. There
    is no build step in this repo, so standalone pages carry their own config
    block rather than importing one - the same arrangement c/_template.html
-   uses. If the contact address changes, it changes in both files.
+   uses. If the contact address changes, it changes in every file that has one.
    ========================================================================== */
 var BLACKZ = { EMAIL: 'natikyan153@gmail.com' };
 
@@ -113,13 +113,13 @@ var BlackZA11y = (function () {
 <meta name="color-scheme" content="dark">
 
 <!-- [KEEP IN SYNC WITH BLACKZ.DOMAIN IN index.html] -->
-<link rel="canonical" href="https://getblackz.com/accessibility.html">
+<link rel="canonical" href="https://getblackz.com/takanon.html">
 
 <meta property="og:type" content="article">
 <meta property="og:locale" content="he_IL">
 <meta property="og:site_name" content="בלאקזי">
-<meta property="og:title" content="הצהרת נגישות - בלאקזי">
-<meta property="og:description" content="מה נגיש באתר, רמת ההנגשה, ואיך פונים אלינו בנושא נגישות.">
+<meta property="og:title" content="תקנון ותנאי שימוש - בלאקזי">
+<meta property="og:description" content="תנאי ההתקשרות של בלאקזי: תשלומים, לוחות זמנים, ביטול, קניין רוחני ופרטיות.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="favicon.svg">
 
@@ -277,6 +277,33 @@ strong{font-weight:var(--fw-bold)}
 .legal-dl > div{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:baseline}
 .legal-dl dt{font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--c-text)}
 .legal-dl dd{margin:0;font-size:var(--fs-sm);color:var(--c-text-dim);min-width:0}
+
+/* ---- terms document ----
+   One column of .info cards, each a clause, plus the index that jumps
+   between them. Nothing here is shared with index.html: the tokens are
+   copied per file in this repo, and so is anything built on them. */
+.doc-toc{
+  padding:var(--sp-4) var(--sp-5);border-radius:var(--radius-lg);
+  background:var(--c-surface);border:var(--border);margin-bottom:var(--sp-5)
+}
+.doc-toc h2{font-size:var(--fs-md);margin-bottom:var(--sp-3)}
+.doc-toc ol{
+  display:grid;gap:var(--sp-2);margin:0;padding:0;list-style:none;
+  counter-reset:toc
+}
+@media (min-width:640px){ .doc-toc ol{grid-template-columns:1fr 1fr} }
+.doc-toc li{counter-increment:toc;font-size:var(--fs-sm)}
+.doc-toc a{color:var(--c-text-dim);display:inline-flex;gap:var(--sp-2)}
+.doc-toc a::before{content:counter(toc) ".";color:var(--c-accent);font-variant-numeric:tabular-nums}
+.doc-toc a:hover,.doc-toc a:focus-visible{color:var(--c-accent)}
+.doc-stack{display:grid;gap:var(--sp-4)}
+/* Scroll-margin so the sticky header does not sit on a clause that was
+   jumped to from the index above. */
+.doc-stack .info{scroll-margin-top:calc(var(--header-h) + var(--sp-4))}
+.doc-stack .info h2{font-size:var(--fs-lg);margin-bottom:var(--sp-3);color:var(--c-accent)}
+.doc-list li strong{color:var(--c-text)}
+.doc-link{color:var(--c-accent);text-decoration:underline;text-underline-offset:3px}
+.doc-updated{margin-top:var(--sp-5);font-size:var(--fs-sm);color:var(--c-text-dim)}
 
 /* ==========================  FOOTER  ========================== */
 .ftr{border-top:var(--border);background:var(--c-bg-alt);padding-block:var(--sp-6)}
@@ -451,66 +478,253 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
 </header>
 
 <main id="main">
-<!-- Everything in the first card is a factual description of what is actually
-     implemented and was verified. Everything that is a legal declaration - the
-     conformance level, the known exceptions, the coordinator, the date - is a
-     placeholder. Israeli regulations require those to be accurate, and a
-     conformance claim that has not been audited must not be invented here. -->
+<!-- The terms. Every clause here restates something the site already commits
+     to - the 50/50 split, the 4 weeks, the 2 weeks of support, the 14 days of
+     notice - or a term that follows from how the business actually works. The
+     source of truth for the overlapping half is the #legal section of
+     index.html: if one changes, both change, or a client can hold us to
+     whichever version suits them. Nothing here is a claim about results. -->
 <section class="section">
   <div class="wrap">
-    <p class="kicker">נגישות</p>
-    <h1 class="sec-title">הצהרת נגישות</h1>
+    <p class="kicker">תקנון</p>
+    <h1 class="sec-title">תקנון ותנאי שימוש</h1>
     <p class="sec-lead">
-      אנחנו רוצים שכל אחד יוכל להשתמש באתר הזה, ולכן הוא נבנה מלכתחילה
-      עם נגישות בראש - ולא כתוספת בסוף.
+      התנאים שלפיהם אנחנו עובדים, ומה חל על השימוש באתר הזה.
+      מה שכתוב כאן הוא מה שיופיע גם בהצעת המחיר.
     </p>
 
-    <div class="a11y-grid">
+    <nav class="doc-toc" aria-label="תוכן העניינים">
+      <h2>מה יש בעמוד</h2>
+      <ol>
+        <li><a href="#t-general">כללי</a></li>
+        <li><a href="#t-site">האתר אינו חנות</a></li>
+        <li><a href="#t-services">השירותים</a></li>
+        <li><a href="#t-quote">הצעת מחיר והתקשרות</a></li>
+        <li><a href="#t-pay">תשלומים, מע״מ וחשבוניות</a></li>
+        <li><a href="#t-time">לוח זמנים</a></li>
+        <li><a href="#t-you">מה נדרש מכם</a></li>
+        <li><a href="#t-support">ליווי אחרי העלייה לאוויר</a></li>
+        <li><a href="#t-cancel">ביטול</a></li>
+        <li><a href="#t-ip">קניין רוחני</a></li>
+        <li><a href="#t-third">פלטפורמות וצדדים שלישיים</a></li>
+        <li><a href="#t-liability">אחריות והגבלתה</a></li>
+        <li><a href="#t-privacy">פרטיות ומידע</a></li>
+        <li><a href="#t-a11y">נגישות</a></li>
+        <li><a href="#t-changes">שינויים בתקנון</a></li>
+        <li><a href="#t-law">דין וסמכות שיפוט</a></li>
+        <li><a href="#t-contact">יצירת קשר</a></li>
+      </ol>
+    </nav>
 
-      <div class="info">
-        <h3>מה נגיש באתר</h3>
+    <div class="doc-stack">
+
+      <section class="info" id="t-general">
+        <h2>כללי</h2>
+        <p>
+          האתר <bdi>getblackz.com</bdi> מופעל על ידי בלאקזי איקומרס, עוסק מורשה
+          מספר <span class="num">327727525</span>, מרחוב חדרה <span class="num">16</span>,
+          אשדוד. בתקנון הזה: "אנחנו" או "בלאקזי" - העסק; "אתם" - כל מי שגולש
+          באתר או מתקשר איתנו בעקבותיו.
+        </p>
+        <p>
+          התקנון חל על כל שימוש באתר ועל כל התקשרות שנוצרת דרכו. גלישה באתר
+          מהווה הסכמה לו. מי שאינו מסכים לתנאי מהתנאים כאן, מוזמן לא להשתמש באתר.
+        </p>
+        <p>
+          הניסוח בלשון רבים נועד לנוחות הקריאה בלבד ופונה לכל אדם, בכל מגדר.
+          כותרות הסעיפים נועדו לנוחות ואינן משמשות לפרשנות.
+        </p>
+      </section>
+
+      <section class="info" id="t-site">
+        <h2>האתר אינו חנות</h2>
         <ul class="doc-list">
-          <li>ניווט מלא במקלדת, עם סימון ברור של הרכיב שבפוקוס.</li>
-          <li>מבנה כותרות סמנטי וקישור דילוג ישיר לתוכן הראשי.</li>
-          <li>טקסט חלופי לתמונות, ותוויות לכל הכפתורים והשדות בטופס.</li>
-          <li>תמיכה מלאה בעברית ובכיווניות מימין לשמאל.</li>
-          <li>מצב כהה ומצב בהיר, ושמירה על ניגודיות טקסט בשניהם.</li>
-          <li>האתר מכבד את הגדרת מערכת ההפעלה לצמצום אנימציות.</li>
-          <li>התוכן מוצג גם כשה־<bdi>JavaScript</bdi> לא רץ. אנימציית הגלילה היא תוספת, לא תנאי.</li>
+          <li>לא מתבצעת באתר מכירה, לא נגבה בו תשלום ואין בו סליקה. הוא מציג את מה שאנחנו עושים ומאפשר ליצור קשר.</li>
+          <li>המחיר שמופיע באתר הוא נקודת התחלה להמחשה, לא הצעה מחייבת. המחיר המחייב הוא זה שבהצעת המחיר הכתובה שתקבלו.</li>
+          <li>מקרה הבוחן והמיזמים שמוצגים באתר מתארים עבודה שבוצעה בפועל. אין בהם התחייבות לתוצאה דומה אצל אף לקוח אחר.</li>
         </ul>
-        <p style="margin-top:var(--sp-4)">
-          בנוסף, כפתור הנגישות שבפינת המסך פותח תפריט להגדלת טקסט, ניגודיות גבוהה,
-          גווני אפור, קו תחתון והדגשה לקישורים, הגדלת ריווח, סמן עכבר מוגדל
-          ועצירת אנימציות. ההגדרות נשמרות בדפדפן שלכם, נטענות שוב בכניסה הבאה,
-          ועוברות איתכם בין העמודים באתר.
-        </p>
-      </div>
+      </section>
 
-      <div class="info">
-        <h3>רמת הנגישות ופנייה</h3>
+      <section class="info" id="t-services">
+        <h2>השירותים</h2>
         <p>
-          רמת ההנגשה של האתר: האתר נבנה לפי הנחיות <bdi>WCAG 2.1</bdi> ברמה
-          <bdi>AA</bdi>, שהן הבסיס לתקן הישראלי <span class="num">5568</span>.
-          הבדיקה שבוצעה עד כה היא בדיקה פנימית שלנו, וטרם נערכה ביקורת נגישות
-          על ידי מורשה נגישות מוסמך.
+          הקמת חנויות אונליין, פיתוח והתאמות לפי מידה, הקמה וניהול של קמפיינים,
+          ותפעול שוטף של חנות פעילה.
         </p>
         <p>
-          חלקים שטרם הונגשו במלואם: תעודת העוסק המורשה מוצגת כקובץ
-          <bdi>PDF</bdi> שאינו מונגש. כל הפרטים שבה - שם העוסק, שם העסק,
-          מספר העוסק המורשה והכתובת - מופיעים גם כטקסט רגיל ונגיש בעמוד הבית,
-          בסעיף "פרטי העסק ותנאים". מעבר לכך לא ידוע לנו על חלקים כאלה.
+          היקף השירות בכל פרויקט מוגדר בהצעת המחיר, ורק בה. מה שלא נכתב בהצעה
+          אינו כלול בה, גם אם עלה בשיחה.
+        </p>
+      </section>
+
+      <section class="info" id="t-quote">
+        <h2>הצעת מחיר והתקשרות</h2>
+        <ul class="doc-list">
+          <li>ההתקשרות נוצרת עם אישור הצעת המחיר בכתב. אישור בוואטסאפ או במייל נחשב אישור בכתב לעניין זה.</li>
+          <li>היקף העבודה, המחיר, לוח הזמנים ותוקף ההצעה מפורטים בגוף ההצעה.</li>
+          <li>במקרה של סתירה בין מה שכתוב באתר לבין הצעת המחיר שאישרתם, ההצעה גוברת.</li>
+          <li>תוספות מעבר להיקף שסוכם מתומחרות בנפרד ומאושרות בכתב לפני ביצוען.</li>
+        </ul>
+      </section>
+
+      <section class="info" id="t-pay">
+        <h2>תשלומים, מע״מ וחשבוניות</h2>
+        <ul class="doc-list">
+          <li><span class="num">50%</span> מקדמה עם אישור ההצעה ולפני תחילת העבודה, ו־<span class="num">50%</span> הנותרים עם סיום הפרויקט ולפני העלייה לאוויר.</li>
+          <li>כל הסכומים הם בתוספת מע״מ כחוק, וכנגד חשבונית מס או קבלה.</li>
+          <li>עלויות של צדדים שלישיים אינן כלולות במחיר: מנוי לפלטפורמה, תקציב מדיה, דומיין, אפליקציות, תבניות בתשלום וכל שירות חיצוני אחר. אלה משולמים על ידכם ישירות לספק, ורשומים על שמכם.</li>
+          <li>יתרת התשלום היא תנאי לעלייה לאוויר. כל עוד לא הוסדרה, המועד נדחה בהתאמה.</li>
+        </ul>
+      </section>
+
+      <section class="info" id="t-time">
+        <h2>לוח זמנים</h2>
+        <p>
+          <span class="num">4</span> שבועות להקמת חנות. הספירה מתחילה מהיום שבו
+          התקבלו מכם כל החומרים והגישות - מוצרים, מחירים, תמונות, לוגו וגישה
+          למערכות קיימות - ולא מיום אישור ההצעה.
         </p>
         <p>
-          נתקלתם בבעיית נגישות באתר? נשמח לדעת, ונטפל בזה.
-          אפשר לפנות אלינו ולקבל מענה:
+          עיכוב בהעברת חומרים או בקבלת משוב על גרסת הביניים דוחה את התאריך
+          בהתאמה. בפרויקט פיתוח לפי מידה לוח הזמנים נקבע במסמך האפיון ולא לפי
+          <span class="num">4</span> השבועות האלה.
         </p>
+        <p>
+          איננו אחראים לעיכוב שנובע מכוח עליון, ממצב חירום, מתקלה אצל ספק
+          חיצוני או מהמתנה לאישור של פלטפורמה.
+        </p>
+      </section>
+
+      <section class="info" id="t-you">
+        <h2>מה נדרש מכם</h2>
+        <ul class="doc-list">
+          <li>העברת החומרים והגישות שהפרויקט צריך, במועד שסוכם.</li>
+          <li>מענה על שאלות ומשוב על גרסת הביניים בתוך זמן סביר. פרויקט שממתין למשוב אינו רץ.</li>
+          <li>אתם מצהירים שהזכויות בחומרים שתעבירו לנו - תמונות, טקסטים, לוגו, שמות מסחריים - הן שלכם או שיש בידיכם רישיון להשתמש בהם. איננו בודקים זכויות בחומר שהתקבל, והאחריות לכך עליכם.</li>
+          <li>החשבונות - הפלטפורמה, הדומיין, חשבונות הפרסום והסליקה - נרשמים על שמכם ובבעלותכם, גם בזמן שאנחנו מפעילים אותם.</li>
+        </ul>
+      </section>
+
+      <section class="info" id="t-support">
+        <h2>ליווי אחרי העלייה לאוויר</h2>
+        <p>
+          <span class="num">2</span> שבועות ליווי כלולים מרגע העלייה לאוויר:
+          תיקון תקלות ובאגים במה שנבנה, שאלות תפעול על החנות ועל חשבונות
+          הפרסום, והתאמות קטנות בתוך ההיקף שסוכם.
+        </p>
+        <p>
+          הליווי אינו כולל עמודים או פיצ׳רים חדשים, שינויי עיצוב מהותיים,
+          העלאת מוצרים נוספת, ניהול שוטף של הקמפיינים או כתיבת תוכן. אלה עבודה
+          חדשה, ומתומחרים בנפרד.
+        </p>
+      </section>
+
+      <section class="info" id="t-cancel">
+        <h2>ביטול</h2>
+        <ul class="doc-list">
+          <li>הודעת ביטול מכל צד תימסר בכתב. תקופת ההודעה המוקדמת: <span class="num">14</span> יום.</li>
+          <li>המקדמה מקוזזת כנגד העבודה שבוצעה בפועל עד למועד הביטול, ויתרתה מוחזרת לכם.</li>
+          <li>מה שכבר נבנה ושולם עליו נשאר שלכם, והחשבונות רשומים על שמכם ממילא.</li>
+          <li>עלויות שכבר שולמו לצדדים שלישיים - תקציב מדיה שרץ, מנוי, דומיין - אינן ניתנות להשבה על ידינו.</li>
+          <li>אין באמור כדי לגרוע מזכויות שמוקנות לכם לפי דין, ככל שהן חלות על ההתקשרות.</li>
+        </ul>
+      </section>
+
+      <section class="info" id="t-ip">
+        <h2>קניין רוחני</h2>
+        <ul class="doc-list">
+          <li>עם השלמת התשלום המלא עוברות אליכם הזכויות בתוצרים שנבנו עבורכם: העיצוב, הקוד הייעודי, הקריאייטיב והתוכן שנכתב עבורכם.</li>
+          <li>הזכויות בכלים, ברכיבים הגנריים ובשיטות העבודה שלנו נשארות שלנו, ואנחנו רשאים להשתמש בהם גם בפרויקטים אחרים.</li>
+          <li>אנחנו רשאים להציג את העבודה בתיק העבודות ובערוצים שלנו. אם אתם מעדיפים שלא, כתבו לנו ונוריד אותה.</li>
+          <li>התכנים של האתר הזה - הטקסטים, העיצוב, הלוגו והקוד - הם שלנו. אין להעתיק אותם או לעשות בהם שימוש מסחרי בלי אישור בכתב.</li>
+        </ul>
+      </section>
+
+      <section class="info" id="t-third">
+        <h2>פלטפורמות וצדדים שלישיים</h2>
+        <p>
+          העבודה מתבצעת על גבי שירותים של צדדים שלישיים: פלטפורמת החנות, מערכות
+          הפרסום, ספקי הסליקה, השילוח והדומיין. לכל אחד מהם תנאי שימוש, מדיניות
+          ותמחור משלו, והם משתנים מעת לעת בלי קשר אלינו.
+        </p>
+        <p>
+          איננו אחראים להשעיה או לדחייה של חשבון פרסום, לשינוי מדיניות, לתקלה
+          או להפסקת שירות אצל ספק חיצוני. נסייע בטיפול ככל שנוכל, אבל ההחלטה
+          אינה בידינו.
+        </p>
+      </section>
+
+      <section class="info" id="t-liability">
+        <h2>אחריות והגבלתה</h2>
+        <ul class="doc-list">
+          <li>אנחנו מתחייבים לבצע את העבודה במקצועיות ובהתאם להיקף שסוכם בהצעה.</li>
+          <li>איננו מתחייבים לתוצאה עסקית. מחזור מכירות, מספר הזמנות, אחוז המרה, עלות רכישה ודירוג במנועי חיפוש תלויים בגורמים רבים שאינם בשליטתנו, בהם המוצר, המחיר, השוק והתחרות.</li>
+          <li>אחריותנו הכוללת לא תעלה על הסכום ששולם לנו בפועל עבור השירות שבגינו נטענה הטענה.</li>
+          <li>איננו אחראים לנזק עקיף או תוצאתי, לרבות אובדן רווח, אובדן נתונים או פגיעה במוניטין.</li>
+          <li>האתר הזה מוצג כמות שהוא. אנחנו משתדלים שהמידע בו יהיה מדויק ומעודכן, אבל טעות או השמטה בו אינן מקימות עילה.</li>
+        </ul>
+      </section>
+
+      <section class="info" id="t-privacy">
+        <h2>פרטיות ומידע</h2>
+        <ul class="doc-list">
+          <li>באתר הזה אין מערכת ניתוח נתונים, אין פיקסלים של פרסום ואין קובצי <bdi>Cookie</bdi>. איננו אוספים מידע על הגלישה בו.</li>
+          <li>טופס יצירת הקשר אינו שולח מידע לשרת שלנו. הוא פותח שיחת וואטסאפ עם הפרטים שמילאתם, ומשם הם מגיעים אלינו כמו כל פנייה אחרת.</li>
+          <li>העדפות התצוגה שלכם - מצב כהה או בהיר והגדרות הנגישות - נשמרות בדפדפן שלכם בלבד ואינן מגיעות אלינו.</li>
+          <li>פרטים שתמסרו לנו בפנייה ישמשו למענה ולניהול ההתקשרות. לא נעביר אותם לצד שלישי, אלא לצורך מתן השירות עצמו או אם נידרש לכך על פי דין.</li>
+          <li>וואטסאפ הוא שירות של צד שלישי וכפוף למדיניות הפרטיות שלו.</li>
+        </ul>
+      </section>
+
+      <section class="info" id="t-a11y">
+        <h2>נגישות</h2>
+        <p>
+          האתר נבנה עם נגישות בראש, ולא כתוספת בסוף. הפירוט המלא - מה נגיש,
+          באיזו רמה, ואיך פונים אלינו בנושא - נמצא
+          <a class="doc-link" href="accessibility.html">בהצהרת הנגישות</a>.
+        </p>
+      </section>
+
+      <section class="info" id="t-changes">
+        <h2>שינויים בתקנון</h2>
+        <p>
+          אנחנו רשאים לעדכן את התקנון מעת לעת. הנוסח המחייב הוא זה שמופיע באתר
+          במועד השימוש. על התקשרות שכבר נוצרה חלים התנאים שהיו בתוקף במועד
+          אישור ההצעה, יחד עם ההצעה עצמה.
+        </p>
+      </section>
+
+      <section class="info" id="t-law">
+        <h2>דין וסמכות שיפוט</h2>
+        <p>
+          על תקנון זה ועל כל התקשרות שנוצרת דרך האתר יחולו דיני מדינת ישראל
+          בלבד. סמכות השיפוט הבלעדית בכל מחלוקת נתונה לבתי המשפט המוסמכים
+          במחוז הדרום.
+        </p>
+      </section>
+
+      <section class="info" id="t-contact">
+        <h2>יצירת קשר</h2>
+        <p>בכל שאלה על התקנון או על ההתקשרות אפשר לפנות אלינו:</p>
         <dl class="legal-dl" style="margin-top:var(--sp-3)">
           <div>
-            <dt>רכז הנגישות:</dt>
+            <dt>שם העוסק:</dt>
             <dd>יאנצ׳בסקי נתנאל</dd>
           </div>
           <div>
-            <dt>טלפון:</dt>
+            <dt>שם העסק:</dt>
+            <dd>בלאקזי איקומרס</dd>
+          </div>
+          <div>
+            <dt>מספר עוסק מורשה:</dt>
+            <dd><span class="num">327727525</span></dd>
+          </div>
+          <div>
+            <dt>כתובת:</dt>
+            <dd>חדרה <span class="num">16</span>, אשדוד</dd>
+          </div>
+          <div>
+            <dt>טלפון ווואטסאפ:</dt>
             <dd><a class="ltr" href="tel:+972515310498">051-5310498</a></dd>
           </div>
           <div>
@@ -518,12 +732,13 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
             <dd><a class="ltr" data-mail></a></dd>
           </div>
         </dl>
-        <p class="info__fine">
-          תאריך עדכון ההצהרה: <span class="num">02.09.2026</span>.
-        </p>
-      </div>
+      </section>
 
     </div>
+
+    <p class="doc-updated">
+      תאריך עדכון אחרון: <span class="num">03.09.2026</span>.
+    </p>
   </div>
 </section>
 </main>
@@ -534,7 +749,7 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
     <nav class="ftr__links" aria-label="ניווט תחתון">
       <a href="index.html">לעמוד הראשי</a>
       <a href="index.html#legal">פרטי העסק ותנאים</a>
-      <a href="takanon.html">תקנון</a>
+      <a href="accessibility.html">הצהרת נגישות</a>
       <a href="index.html#contact">יצירת קשר</a>
     </nav>
   </div>
@@ -542,7 +757,7 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
 
 <!-- ==================== ACCESSIBILITY WIDGET ====================
      [KEEP IN SYNC WITH index.html] The only difference is the link at the
-     bottom of the panel, which points back to the main page from here. -->
+     bottom of the panel, which points at the accessibility statement. -->
 <div class="a11y">
   <div class="a11y__grey" aria-hidden="true"></div>
 
@@ -599,7 +814,7 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
     </div>
 
     <button class="a11y__reset" id="a11y-reset" type="button">איפוס כל ההגדרות</button>
-    <a class="a11y__link" href="index.html" id="a11y-statement">חזרה לעמוד הראשי ←</a>
+    <a class="a11y__link" href="accessibility.html" id="a11y-statement">הצהרת הנגישות של האתר ←</a>
   </div>
 </div>
 
@@ -753,37 +968,32 @@ html:not(.a11y-grayscale) .a11y__grey{display:none}
 </script>
 
 <!-- ==========================================================================
-     PLACEHOLDER INDEX
+     WHERE THESE TERMS COME FROM
 
-     No unfilled values remain on this page. All five were written on
-     2026-09-02. They are legal declarations under the Israeli accessibility
-     regulations, so what each one claims is deliberately narrow:
+     No placeholder on this page, and nothing here was invented. Each clause
+     is one of three things:
 
-       1. Conformance level. States that the page was BUILT to WCAG 2.1 AA,
-          which underpins Israeli standard 5568, and that only an internal
-          check has been run. It does not claim a certified level, because
-          no certified audit has happened. Do not upgrade this wording
-          without an audit by a licensed accessibility expert - a wrong
-          claim is worse than an honest gap.
-       2. Known limitations. osek-murshe.pdf is untagged (no StructTreeRoot,
-          no MarkInfo) and carries image content, so it is not accessible.
-          Every field in it is also plain text in the "business and terms"
-          section of index.html, which is the accessible equivalent. If the
-          PDF is ever replaced with a tagged one, drop this sentence.
-       3. Coordinator. The registered holder, same source as index.html.
-       4. Phone. The same line as BLACKZ.WA_NUMBER, as a tel: link.
-       5. Date. Bump it whenever 1 to 4 change.
+       1. A term the site already commits to, restated. The 50/50 split, the
+          4-week build, the 2 weeks of support and the 14 days of notice are
+          copied from the #legal section of index.html, which is the source of
+          truth. Change one and the other has to change with it, or a client
+          can hold us to whichever version suits them better.
+       2. A description of how the site actually behaves. The privacy clause
+          is the notable one: this site really does load no analytics, set no
+          cookies and post the contact form nowhere - it opens WhatsApp with
+          the fields prefilled. Verify that before editing the clause, and if
+          a tracker is ever added, the clause is wrong the moment it lands.
+       3. An ordinary contract term: scope, IP, third-party platforms,
+          limitation of liability, governing law.
 
-     A contrast fix shipped alongside these: --c-text-faint was 4.00:1 on a
-     card in dark mode and 4.11:1 on white in light mode, both under the
-     4.5:1 that WCAG AA wants for text this size (--fs-xs is .8rem). It is
-     now #8585A0 dark and #70707E light, which clear 4.5:1 against every
-     surface either theme puts behind it. The same two values were updated
-     in index.html, app/dashboard.html, c/_template.html and
-     internal/sales.html, because the tokens are copied per file.
+     What is deliberately NOT here: any promise about results. No revenue, no
+     order count, no conversion rate, no ROAS, no ranking. The liability
+     clause says so outright, because the whole business is judged on numbers
+     nobody can guarantee.
 
-     index.html carries no placeholder of its own any more either. The index
-     at the bottom of that file records what each one was and how it closed.
+     Jurisdiction is the Southern District, which is where the business is
+     registered. This is not legal advice and the page has not been reviewed
+     by a lawyer; it states the terms the business actually works by.
      ========================================================================== -->
 </body>
 </html>
