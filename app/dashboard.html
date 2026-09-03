@@ -763,23 +763,42 @@ button,input,select{font:inherit;color:inherit}
   }
 
   /* One retry path: an expired access token is refreshed once, then the call
-     is replayed. Anything else surfaces to the caller. */
+     is replayed. Anything else surfaces to the caller.
+
+     Single flight: refresh tokens rotate, so two calls racing on the same one
+     spend it twice and the loser is told its token is invalid. That signed the
+     user out in the middle of a working session, so parallel 401s now wait on
+     one refresh. */
+  var refreshing = null;
+
   function refresh() {
-    if (!session || !session.refresh_token) return Promise.reject(new Error('no session'));
-    return fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
+    if (refreshing) return refreshing;
+    if (!session || !session.refresh_token) return Promise.reject(authError('no refresh token'));
+    refreshing = fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
       method: 'POST', headers: headers(false),
       body: JSON.stringify({ refresh_token: session.refresh_token })
     }).then(function (r) {
-      if (!r.ok) throw new Error('refresh failed');
-      return r.json();
+      if (r.ok) return r.json();
+      /* Only the server rejecting the token ends the session. A dropped
+         connection or a 5xx must not: signing out over a blip throws away a
+         session that was still good. */
+      return r.text().then(function (t) {
+        var m = 'refresh ' + r.status + ': ' + t;
+        throw (r.status >= 400 && r.status < 500) ? authError(m) : new Error(m);
+      });
     }).then(function (s) { saveSession(s); return s; });
+    var done = function () { refreshing = null; };
+    refreshing.then(done, done);
+    return refreshing;
   }
 
   /* A 401 that survives the refresh is the only real "sign in again" case.
      It is tagged so callers can tell it apart from a data or schema fault,
-     which must never be reported as an expired session. */
-  function authError() {
-    var e = new Error('auth');
+     which must never be reported as an expired session. The response body
+     rides along, so the login screen can say what actually came back instead
+     of leaving the user to guess. */
+  function authError(detail) {
+    var e = new Error(detail || 'auth');
     e.auth = true;
     return e;
   }
@@ -792,11 +811,12 @@ button,input,select{font:inherit;color:inherit}
       body: opts.body ? JSON.stringify(opts.body) : undefined
     }).then(function (r) {
       if (r.status === 401) {
-        if (isRetry) throw authError();
-        return refresh().then(
-          function () { return api(path, opts, true); },
-          function () { throw authError(); }
-        );
+        return r.text().then(function (t) {
+          if (isRetry) throw authError('401 ' + path + ': ' + t);
+          /* refresh() decides whether its own failure was the token or the
+             network, so its error is passed through as it comes. */
+          return refresh().then(function () { return api(path, opts, true); });
+        });
       }
       if (!r.ok) {
         return r.text().then(function (t) { throw new Error(t || ('HTTP ' + r.status)); });
@@ -856,11 +876,18 @@ button,input,select{font:inherit;color:inherit}
       .catch(function (err) {
         /* a dead refresh token lands here: drop back to the login screen */
         if (err && err.auth) {
+          console.error('auth failed', err);
           clearSession();
           $('app').hidden = true;
           $('login').hidden = false;
           $('login-msg').className = 'msg msg--err';
-          $('login-msg').textContent = 'צריך להתחבר מחדש.';
+          /* The reason goes on the screen in small print. Without it a rejected
+             token and a wrong project key look identical from here. */
+          $('login-msg').innerHTML = 'צריך להתחבר מחדש.' +
+            (err.message && err.message !== 'auth'
+              ? '<br><span class="ltr" style="font-size:var(--fs-xs);color:var(--c-text-dim)">' +
+                esc(err.message) + '</span>'
+              : '');
           return;
         }
         /* Everything else is a data, schema or render fault and reaches here
