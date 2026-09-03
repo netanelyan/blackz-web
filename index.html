@@ -1435,7 +1435,7 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
     </div>
 
     <p class="hero__note">
-      פרויקטים מתחילים ב־<span class="ph">[[FILL: מחיר התחלתי]]</span> ₪ + מע״מ.
+      פרויקטים מתחילים ב־<span class="num">2,700</span> ₪ + מע״מ.
       אין מחירון קבוע: שיחה קצרה, ואתם מקבלים הצעת מחיר סגורה.
     </p>
   </div>
@@ -1584,8 +1584,8 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
 </section>
 
 <!-- ---------- Case study: Hanut Hashofet ----------
-     Every figure in this section is a [[FILL: ...]] placeholder wearing the
-     .ph style, so an unfilled number is impossible to miss on the page.
+     Any figure still unwritten here is a [[FILL: ...]] placeholder wearing
+     the .ph style, so an unfilled number is impossible to miss on the page.
      Do not replace one with an estimate. The full list is indexed in the
      PLACEHOLDER INDEX comment at the bottom of this file. -->
 <section class="section section--alt" id="case">
@@ -1665,8 +1665,8 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
             מלאי, ספקים, שירות לקוחות ופרסום.
           </p>
           <p>עלתה לאוויר: יולי <span class="num">2024</span>.</p>
-          <p>מהתחלה ועד העלייה לאוויר: <span class="ph">[[FILL: משך הפרויקט]]</span>.</p>
-          <p>מאז ועד היום: <span class="ph">[[FILL: מדד תוצאה - מספר הזמנות, נפח מכירות או אחוז המרה]]</span>.</p>
+          <p>מהתחלה ועד העלייה לאוויר: <span class="num">4</span> שבועות.</p>
+          <p>מאז ועד היום: מעל <span class="num">2,000</span> הזמנות.</p>
           <p class="info__fine">
             אין כאן ציטוטים ואין המלצות. כשיהיו לנו לקוחות שירצו להעיד בשמם,
             זה יופיע כאן בשמם המלא.
@@ -1885,7 +1885,7 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
                there so people can rule themselves out before they message. -->
           <p class="price-anchor">
             <span class="price-anchor__label">מתחילים מ־</span>
-            <span class="price-anchor__val"><span class="ph">[[FILL: מחיר התחלתי]]</span> ₪ + מע״מ</span>
+            <span class="price-anchor__val"><span class="num">2,700</span> ₪ + מע״מ</span>
           </p>
           <p>
             זו נקודת ההתחלה, לא המחיר הסופי. אין מחירון קבוע ולא במקרה:
@@ -2125,11 +2125,11 @@ html.a11y-nomotion .rv{opacity:1 !important;transform:none !important;filter:non
 </section>
 
 <!-- ---------- Business details and terms ----------
-     Every factual detail about the business is a [[FILL: ...]] placeholder.
-     Nothing here was inferred from anything: the Osek Murshe certificate has
-     not been supplied, so none of these values are guessed at. The terms that
-     ARE written out (50/50, 4 weeks, 2 weeks of support) repeat what the FAQ
-     already commits to - keep the two in step if either changes. -->
+     Every factual detail about the business is read off the Osek Murshe
+     certificate, supplied on 2026-08-29. Nothing here is inferred, and nothing
+     goes in that the certificate does not say. The terms that are written out
+     (50/50, 4 weeks, 2 weeks of support) repeat what the FAQ already commits
+     to - keep the two in step if either changes. -->
 <section class="section section--alt" id="legal">
   <div class="wrap">
     <p class="kicker rv">פרטי העסק ותנאים</p>
@@ -2969,25 +2969,28 @@ if (!customElements.get('blackz-signature')) {
 <!-- ==========================================================================
      PLACEHOLDER INDEX
 
-     Five unfilled values, in document order. Each renders with a dashed
-     amber outline, so an unfilled one is visible to any visitor rather than
-     quietly shipping as a blank. Search the file for "[[FILL" to jump to them.
+     One unfilled value. It renders with a dashed amber outline, so it is
+     visible to any visitor rather than quietly shipping as a blank. Search
+     the file for "[[FILL" to jump to it.
      Descriptions are English here and Hebrew on the page, per CLAUDE.md.
 
-     Hero
-       1.  Starting price (hero note)
-
      Case study - #case
-       2.  Campaign detail: channels, daily budget, number of creatives
-       3.  Project duration, start to launch
-       4.  Outcome metric. Confirmed as orders or sales volume rather than
-           conversion rate or catalogue growth; waiting on the figure.
-
-     Services - #services
-       5.  Starting price - the SAME number as 1. Change both together.
+       1.  Campaign detail: channels, daily budget, number of creatives.
+           Still open on purpose: a daily budget is not something every shop
+           publishes. The alternative to writing it is cutting the sentence,
+           not softening it into a vague one.
 
      The accessibility statement lives in accessibility.html and no longer
      carries any placeholder of its own.
+
+     Filled on 2026-09-03 from the answers on FILL-IN.md, so no longer
+     placeholders:
+       - Starting price, 2,700 + VAT. It appears twice, in the hero note and
+         in the services price anchor, and the two must stay equal.
+       - Project duration, 4 weeks. Agrees with the 4-week build the terms
+         section promises, so the page does not contradict itself.
+       - Outcome metric, over 2,000 orders. A running total rather than a
+         monthly figure, so it does not go stale.
 
      Filled on 2026-08-29 from the Osek Murshe certificate, so no longer
      placeholders: registered holder, trade name, Osek Murshe number and
