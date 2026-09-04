@@ -1135,6 +1135,14 @@ body,.hdr,.section--alt,.ftr,.venture,.portal,.tab,.deliver,.info,.faq details,.
 .wa-bar.is-on{transform:translateY(0)}
 @media (min-width:900px){ .wa-bar{display:none} }
 
+/* The bar and the floating accessibility button both hover over the end of the
+   page, and the last footer row is the client login link. Reserve room under
+   the footer so that row can be scrolled clear of both instead of ending up
+   underneath them. */
+@media (max-width:899px){
+  .ftr{padding-bottom:calc(var(--sp-5) + 72px + env(safe-area-inset-bottom))}
+}
+
 /* ==========================  ACCESSIBILITY WIDGET  ==========================
    Floating button in the bottom inline-start corner (right, in RTL) plus a
    panel of controls. Sits above the header (100) and the mobile WhatsApp bar
@@ -2536,9 +2544,12 @@ const USE_WHATSAPP_FORM = true;
   var bar = document.getElementById('wa-bar');
   var contact = document.getElementById('contact');
   var hero = document.querySelector('.hero');
+  var ftrEnd = document.querySelector('.ftr__bottom');
   if (bar && 'IntersectionObserver' in window) {
-    var pastHero = false, atContact = false;
-    var sync = function () { bar.classList.toggle('is-on', pastHero && !atContact); };
+    var pastHero = false, atContact = false, atFooterEnd = false;
+    var sync = function () {
+      bar.classList.toggle('is-on', pastHero && !atContact && !atFooterEnd);
+    };
 
     if (hero) {
       new IntersectionObserver(function (e) { pastHero = !e[0].isIntersecting; sync(); },
@@ -2547,6 +2558,13 @@ const USE_WHATSAPP_FORM = true;
     if (contact) {
       new IntersectionObserver(function (e) { atContact = e[0].isIntersecting; sync(); },
         { threshold: 0 }).observe(contact);
+    }
+    /* The footer bottom row carries the client login link. The bar is fixed and
+       would cover it, so stand down once that row is on screen - the footer has
+       its own WhatsApp link anyway. */
+    if (ftrEnd) {
+      new IntersectionObserver(function (e) { atFooterEnd = e[0].isIntersecting; sync(); },
+        { threshold: 0 }).observe(ftrEnd);
     }
   }
 
