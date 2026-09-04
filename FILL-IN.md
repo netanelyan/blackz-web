@@ -76,6 +76,9 @@ The four venture screenshots under `shots/` also carry `.ph` fallback text, but
 those are not values to write - they are the message shown if an image fails to
 load. `.github/workflows/screenshots.yml` regenerates the images weekly.
 
-`og.jpg` (1200x630) is still missing from the site root. It is not a
-placeholder, so nothing on the page shows amber, but until it exists every
-shared link previews as text with no image.
+`og.jpg` (1200x630) sat in this section as the last outstanding item. It was
+built on 2026-09-04 and now exists at the site root, so a shared link previews
+with an image. It was never a placeholder - nothing on the page showed amber
+for it - and it is not a value to write either: `scripts/og.js` renders it from
+the page's own Arimo faces, `logo.svg` and the `:root` tokens. Re-run the
+script after a rebrand rather than editing the file.

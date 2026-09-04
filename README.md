@@ -39,6 +39,8 @@ docs/
   todo.md               what is left to do
 scripts/shoot.js        automated screenshots of the ventures
 shots/*.jpg             the results. They refresh themselves weekly
+scripts/og.js           builds og.jpg, the share-preview card
+og.jpg                  the result. 1200x630, regenerate after a rebrand
 ```
 
 **Setting up from scratch:** [docs/deploy.md](docs/deploy.md). That is the full
@@ -172,8 +174,8 @@ and the JSON-LD block are built from that block. Changing it changes all of them
 > a comment, and the page prints a console warning if they and the config
 > disagree about the domain.
 >
-> Still missing: a 1200x630 `og.jpg` at the site root. Without it every share
-> renders as text only.
+> `og.jpg` at the site root is the image those crawlers show. It is built by
+> `node scripts/og.js`, not by hand - see [Share preview](#share-preview).
 
 On the client status page the number sits separately, inside that file's own
 CONFIG block.
@@ -247,6 +249,10 @@ inside `:root`. To change the brand color, change one value: `--c-accent`.
 > build step and each page has to stand alone. A brand color change has to pass
 > through `index.html`, `app/dashboard.html`, `c/_template.html` and
 > `internal/sales.html`.
+>
+> It also has to pass through `scripts/og.js`, which mirrors the tokens for the
+> share-preview card. Re-run that script afterwards, or `og.jpg` keeps the old
+> brand color while every page carries the new one.
 
 **The logo** appears in three places, all from the same vector:
 
@@ -298,6 +304,41 @@ placeholder shows and nothing breaks.
 `scripts/shoot.js` every Monday and pushes the result. To add a venture: add a
 row to the `SITES` array in `scripts/shoot.js` and duplicate an
 `<article class="venture">` block in `index.html`.
+
+---
+
+## Share preview
+
+`og.jpg` at the site root is the 1200x630 card WhatsApp, Facebook, iMessage,
+Slack and X show when someone pastes a link to the site. `index.html` points
+`og:image` and `twitter:image` at it, and declares its size in
+`og:image:width` / `og:image:height`.
+
+**Do not edit it by hand.** It is rendered by:
+
+```
+npm install playwright
+npx playwright install chromium
+node scripts/og.js
+```
+
+The script does not carry its own copy of the design. It reads the two embedded
+Arimo `@font-face` rules straight out of `index.html` and the mark out of
+`logo.svg`, and mirrors the `:root` colors in a small `T` object at the top of
+the file. So the card renders in the page's own Hebrew face with no network
+call, and a rebrand is a re-run rather than a redraw.
+
+Re-run it after any of these change:
+
+| Change | Why the card moves with it |
+|---|---|
+| `--c-accent` or the other tokens | update the matching value in `T` first, then re-run |
+| `og:title` / `og:description` | the card's headline and sub-line quote them, so they must agree |
+| `logo.svg` | the mark and the watermark both come from that file |
+| the embedded Arimo faces | the script fails loudly rather than fall back to a system font |
+
+There is no scheduled workflow for it, unlike the venture screenshots. Nothing
+about the card goes stale on its own - it only changes when the brand does.
 
 ---
 

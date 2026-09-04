@@ -112,7 +112,9 @@ var BlackZA11y = (function () {
 </script>
 <meta name="color-scheme" content="dark">
 
-<!-- [KEEP IN SYNC WITH BLACKZ.DOMAIN IN index.html] -->
+<!-- [KEEP IN SYNC WITH BLACKZ.DOMAIN IN index.html]
+     canonical, og:url, og:image and twitter:image below all carry the domain
+     as literal text, because share-preview crawlers do not run JavaScript. -->
 <link rel="canonical" href="https://getblackz.com/accessibility.html">
 
 <meta property="og:type" content="article">
@@ -120,6 +122,15 @@ var BlackZA11y = (function () {
 <meta property="og:site_name" content="בלאקזי">
 <meta property="og:title" content="הצהרת נגישות - בלאקזי">
 <meta property="og:description" content="מה נגיש באתר, רמת ההנגשה, ואיך פונים אלינו בנושא נגישות.">
+<meta property="og:url" content="https://getblackz.com/accessibility.html">
+<!-- Same card the home page shares. Built by scripts/og.js. -->
+<meta property="og:image" content="https://getblackz.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="בלאקזי - בונים מותגים באינטרנט">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="הצהרת נגישות - בלאקזי">
+<meta name="twitter:image" content="https://getblackz.com/og.jpg">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="favicon.svg">
 
