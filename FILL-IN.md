@@ -40,7 +40,7 @@ to the campaign detail below.
 | Accessibility coordinator | `יאנצ׳בסקי נתנאל` | the registered holder |
 | Accessibility phone | `051-5310498` | `BLACKZ.WA_NUMBER` |
 | Statement date | `02.09.2026` | the day it was written |
-| Starting price, both places | `2,700` ₪ + מע״מ | your answer on this sheet, 2026-09-03 |
+| Starting price per package | `3,900` full package, `2,700` website build, `1,450` advertising only, all + מע״מ | your answers, 2026-09-05 |
 | Project duration | `4 שבועות` | same; agrees with the 4-week build in the terms |
 | Outcome metric | `מעל 2,000 הזמנות` | same; written as a running total |
 
