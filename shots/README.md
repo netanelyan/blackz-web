@@ -5,7 +5,7 @@
 | קובץ | אתר |
 |---|---|
 | `hashofet.jpg` | https://hashofet.com |
-| `clutchstore.jpg` | https://clutchstore.net |
+| `clutchstore.jpg` | https://netanelyan.github.io/clutch-archive |
 | `tiyulplus.jpg` | https://tiyulplus.com |
 | `brickdealil.jpg` | https://brickdealil.com |
 

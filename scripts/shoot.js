@@ -21,10 +21,10 @@ const path = require('path');
    hide = extra selectors to hide before the shot (optional)
    ------------------------------------------------------------------ */
 const SITES = [
-  { file: 'hashofet.jpg',    url: 'https://hashofet.com',    hide: [] },
-  { file: 'clutchstore.jpg', url: 'https://clutchstore.net', hide: [] },
-  { file: 'tiyulplus.jpg',   url: 'https://tiyulplus.com',   hide: [] },
-  { file: 'brickdealil.jpg', url: 'https://brickdealil.com', hide: [] },
+  { file: 'hashofet.jpg',    url: 'https://hashofet.com',                          hide: [] },
+  { file: 'clutchstore.jpg', url: 'https://netanelyan.github.io/clutch-archive',   hide: [] },
+  { file: 'tiyulplus.jpg',   url: 'https://tiyulplus.com',                         hide: [] },
+  { file: 'brickdealil.jpg', url: 'https://brickdealil.com',                       hide: [] },
 ];
 
 const WIDTH = 1600;
